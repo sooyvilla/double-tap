@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "valomatch_app" "\0"
+            VALUE "FileDescription", "insane_bolt" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "valomatch_app" "\0"
+            VALUE "InternalName", "insane_bolt" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "valomatch_app.exe" "\0"
-            VALUE "ProductName", "valomatch_app" "\0"
+            VALUE "OriginalFilename", "insane_bolt.exe" "\0"
+            VALUE "ProductName", "insane_bolt" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

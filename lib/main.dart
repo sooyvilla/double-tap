@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hcaptcha_widget/hcaptcha_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'app/config/config.dart';
+import 'app/ui/widgets/widgets.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await SharedPreferencesConfig.init();
+
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -11,54 +18,49 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Insane Bolt',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        colorScheme: ColorScheme.fromSeed(
+          brightness: Brightness.dark,
+          seedColor: Colors.black,
+          background: Colors.black,
+          onBackground: Colors.black,
+          onPrimary: Colors.black,
+          onSecondary: Colors.black,
+          onTertiary: Colors.black,
+          onError: Colors.black,
+          onSurface: Colors.white,
+          onSurfaceVariant: Colors.white,
+          onInverseSurface: Colors.black,
+          error: Colors.black,
+          errorContainer: Colors.black,
+          onErrorContainer: Colors.black,
+          inversePrimary: Colors.black,
+          onPrimaryContainer: Colors.black,
+          primaryContainer: Colors.black,
+          secondary: Colors.black,
+          secondaryContainer: Colors.black,
+          tertiary: Colors.black,
+          tertiaryContainer: Colors.black,
+          inverseSurface: Colors.black,
+          onSecondaryContainer: Colors.black,
+          onTertiaryContainer: Colors.black,
+          outline: Colors.black,
+          outlineVariant: Colors.black,
+          primary: Colors.white,
+          scrim: Colors.black,
+          shadow: Colors.black,
+          surface: Colors.black,
+          surfaceVariant: Colors.black,
+          surfaceTint: Colors.black,
+        ),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: TextButton(
-          style: ButtonStyle(
-            foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-          ),
-          onPressed: () async {
-            await Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) {
-                return HCaptchaWidget(
-                  siteKeyUrl: 'https://todolist-3effa.firebaseapp.com/',
-                  onTokenReceived: (token) {
-                    print(token);
-                  },
-                );
-              }),
-            );
-            final dio = 
-          },
-          child: const Text('Join'),
-        ),
-      ),
+      home: const NavigationbarCustom(),
     );
   }
 }
