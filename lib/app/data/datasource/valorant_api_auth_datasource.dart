@@ -11,14 +11,13 @@ import '../../../app/config/config.dart';
 
 class ValorantApiAuthDatasource extends ValorantAuthDatasource
     with DioConfigService {
-
   Future<void> _getCookies() async {
     final prefs = SharedPreferencesConfig.prefs;
     try {
       await _getVersionApi();
       final versionApi = prefs?.getString(KeysAuth.versionApi);
       final userAgent =
-          "RiotClient/$versionApi rso-auth (Windows; 10;;Professional, x64)";
+          'RiotClient/$versionApi rso-auth (Windows; 10;;Professional, x64)';
       final response = await dio.post(
         ValorantUrls.urlAuth,
         data: {
@@ -48,8 +47,6 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
       rethrow;
     }
   }
-
-
 
   Future<bool?> _getToken(String username, String password) async {
     final prefs = SharedPreferencesConfig.prefs;
@@ -107,39 +104,34 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
 
   //todo: implementar esto
 
+  @override
   Future<void> reauthentication() async {
     final prefs = SharedPreferencesConfig.prefs;
     final cookie = prefs?.getString(KeysAuth.cookie) ?? '';
 
-    try {
-      await dio.get(
-        ValorantUrls.urlCookieReAuth,
-        queryParameters: {
-          'client_id': 'play-valorant-web-prod',
-          'nonce': '1',
-          'redirect_uri': 'https://playvalorant.com/opt_in',
-          'response_type': 'token id_token',
-          'scope': 'account openid',
-        },
-        options: Options(headers: {'cookie': cookie}),
-      );
-    } catch (e) {
-      final responseURL =
-          (e as DioException).response?.redirects.last.location.toString();
-      if (responseURL != null) {
-        final hash = Uri.parse(responseURL).fragment;
-        final params = Uri.splitQueryString(hash);
-        final accessToken = params['access_token'];
-        final idToken = params['id_token'];
+    final versionApi = prefs?.getString(KeysAuth.versionApi);
+    final userAgent =
+        'RiotClient/$versionApi rso-auth (Windows; 10;;Professional, x64)';
 
-        if (accessToken != null && idToken != null) {
-          await prefs?.setString(KeysAuth.accessToken, accessToken);
-          await prefs?.setString(KeysAuth.idToken, idToken);
-        }
-      } else {
-        log('cookieReauth error: $e', name: 'cookieReauth error');
-        rethrow;
-      }
+    try {
+      final response = await dio.post(ValorantUrls.urlAuth,
+          options: Options(headers: {
+            'User-Agent': userAgent,
+            'Cookie': cookie,
+          }),
+          data: {
+            'client_id': 'play-valorant-web-prod',
+            'nonce': 1,
+            'redirect_uri': 'https://playvalorant.com/opt_in',
+            'response_type': 'token id_token',
+            'response_mode': 'query',
+            'scope': 'account openid',
+          });
+      _saveToken(response.data['response']['parameters']['uri']);
+        await _getEntitlement();
+    } catch (e) {
+      log('reauthentication error: $e', name: 'reauthentication error');
+      rethrow;
     }
   }
 

@@ -19,6 +19,8 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
   final ValorantApiAuthRepositoryImp datasource;
 
+  final prefs = SharedPreferencesConfig.prefs;
+
   Future<void> login() async {
     setIsLoading(true);
     try {
@@ -35,6 +37,16 @@ class AccountNotifier extends StateNotifier<AccountState> {
     }
   }
 
+  Future<void> validateSession() async {
+    setIsLoading(true);
+    if (prefs?.getString(KeysAuth.accessToken) != null) {
+      await datasource.reauthentication();
+      await setPlayer();
+      setIsLoggedIn(true);
+    }
+    setIsLoading(false);
+  }
+
   Future<void> loginWebView(String token) async {
     setIsLoading(true);
     try {
@@ -49,8 +61,6 @@ class AccountNotifier extends StateNotifier<AccountState> {
   }
 
   void logout() {
-    final prefs = SharedPreferencesConfig.prefs;
-
     for (var element in KeysAuth.allKeys) {
       prefs?.remove(element);
     }
@@ -97,7 +107,7 @@ class AccountState {
   String? tagLine;
   String? password;
   bool isLoggedIn;
-  bool? isLoading;
+  bool isLoading;
   AccountState({
     this.username,
     this.password,

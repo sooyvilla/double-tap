@@ -14,6 +14,11 @@ class ValorantApiAuthRepositoryImp extends ValorantAuthRepository {
   }
 
   @override
+  Future<void> reauthentication() {
+    return datasource.reauthentication();
+  }
+
+  @override
   Future<bool> login(String username, String password) {
     return datasource.login(username, password);
   }
