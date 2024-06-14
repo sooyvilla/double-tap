@@ -40,9 +40,13 @@ class AccountNotifier extends StateNotifier<AccountState> {
   Future<void> validateSession() async {
     setIsLoading(true);
     if (prefs?.getString(KeysAuth.accessToken) != null) {
-      await datasource.reauthentication();
-      await setPlayer();
-      setIsLoggedIn(true);
+      try {
+        await datasource.reauthentication();
+        await setPlayer();
+        setIsLoggedIn(true);
+      } catch (e) {
+        logout();
+      }
     }
     setIsLoading(false);
   }
