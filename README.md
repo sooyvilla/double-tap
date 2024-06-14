@@ -1,4 +1,4 @@
-# valomatch_app
+# double-tap
 
 A new Flutter project.
 
