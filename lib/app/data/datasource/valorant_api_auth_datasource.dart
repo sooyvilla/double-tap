@@ -1,21 +1,47 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:insane_bolt/app/config/constants/keys.dart';
-import 'package:insane_bolt/app/config/constants/valorant_urls.dart';
-import 'package:insane_bolt/app/domain/datasource/valorant_auth_datasource.dart';
-import 'package:insane_bolt/app/domain/models/user_v1.dart';
+import 'package:double_tap/app/config/constants/keys.dart';
+import 'package:double_tap/app/config/constants/valorant_urls.dart';
+import 'package:double_tap/app/data/models/user_v1.dart';
+import 'package:double_tap/app/domain/datasource/valorant_auth_datasource.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 import '../../../app/config/config.dart';
+import '../utils/headers.dart';
 
 class ValorantApiAuthDatasource extends ValorantAuthDatasource
     with DioConfigService {
+  final _prefs = SharedPreferencesConfig.prefs;
+
+  Future<void> _getRegionLoginPlayer() async {
+    final idToken = _prefs?.getString(KeysAuth.idToken);
+    final accessToken = _prefs?.getString(KeysAuth.accessToken);
+    try {
+      final response = await dio.put(
+        'https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant',
+        data: {'id_token': idToken},
+        options: Options(
+          headers: {'Authorization': 'Bearer $accessToken'},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final region = response.data['affinities']['live'];
+        final shard = response.data['affinities']['pbe'];
+        _prefs?.setString(KeysAuth.region, region);
+        _prefs?.setString(KeysAuth.shard, shard);
+      }
+    } catch (e) {
+      log('getRegionLoginPlayer error: $e', name: 'getRegionLoginPlayer error');
+      rethrow;
+    }
+  }
+
   Future<void> _getCookies() async {
-    final prefs = SharedPreferencesConfig.prefs;
     try {
       await _getVersionApi();
-      final versionApi = prefs?.getString(KeysAuth.versionApi);
+      final versionApi = _prefs?.getString(KeysAuth.versionApi);
       final userAgent =
           'RiotClient/$versionApi rso-auth (Windows; 10;;Professional, x64)';
       final response = await dio.post(
@@ -41,7 +67,7 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
 
       final cookie = setCookie.map((item) => item.split(';')[0]).join('; ');
 
-      await prefs?.setString(KeysAuth.cookie, cookie);
+      await _prefs?.setString(KeysAuth.cookie, cookie);
     } catch (e) {
       log('getCookie error: $e', name: 'authCookie error');
       rethrow;
@@ -49,8 +75,7 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
   }
 
   Future<bool?> _getToken(String username, String password) async {
-    final prefs = SharedPreferencesConfig.prefs;
-    final cookie = prefs?.getString(KeysAuth.cookie) ?? '';
+    final cookie = _prefs?.getString(KeysAuth.cookie) ?? '';
 
     try {
       final response = await dio.put(
@@ -62,7 +87,7 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
           'type': 'auth',
           'username': username,
           'password': password,
-          'remember': false,
+          'remember': true,
           'language': 'en_US',
         },
       );
@@ -83,7 +108,6 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
   }
 
   Future<void> _saveToken(String uri) async {
-    final prefs = SharedPreferencesConfig.prefs;
     try {
       final authUrl = (uri);
       final parsedUri = Uri.tryParse(authUrl.replaceFirst('#', '?'));
@@ -93,42 +117,33 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
       }
 
       final accessToken = parsedUri.queryParameters['access_token'];
+      final idToken = parsedUri.queryParameters['id_token'];
 
       if (accessToken != null) {
-        await prefs?.setString(KeysAuth.accessToken, accessToken);
+        await _prefs?.setString(KeysAuth.accessToken, accessToken);
+      }
+
+      if (idToken != null) {
+        await _prefs?.setString(KeysAuth.idToken, idToken);
       }
     } catch (e) {
       throw Exception('saveToken error: $e');
     }
   }
 
-  //todo: implementar esto
+  //todo: falta fixear el reauth
 
   @override
   Future<void> reauthentication() async {
-    final prefs = SharedPreferencesConfig.prefs;
-    final cookie = prefs?.getString(KeysAuth.cookie) ?? '';
+    final cookie = _prefs?.getString(KeysAuth.cookie) ?? '';
 
-    final versionApi = prefs?.getString(KeysAuth.versionApi);
-    final userAgent =
-        'RiotClient/$versionApi rso-auth (Windows; 10;;Professional, x64)';
+    final versionApi = _prefs?.getString(KeysAuth.versionApi);
 
     try {
-      final response = await dio.post(ValorantUrls.urlAuth,
-          options: Options(headers: {
-            'User-Agent': userAgent,
-            'Cookie': cookie,
-          }),
-          data: {
-            'client_id': 'play-valorant-web-prod',
-            'nonce': 1,
-            'redirect_uri': 'https://playvalorant.com/opt_in',
-            'response_type': 'token id_token',
-            'response_mode': 'query',
-            'scope': 'account openid',
-          });
-      _saveToken(response.data['response']['parameters']['uri']);
-        await _getEntitlement();
+      final response = await dio.get(ValorantUrls.urlCookieReAuth);
+      log(response.realUri.toString());
+      // _saveToken(response.data['response']['parameters']['uri']);
+      await _getEntitlement();
     } catch (e) {
       log('reauthentication error: $e', name: 'reauthentication error');
       rethrow;
@@ -136,8 +151,7 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
   }
 
   Future<void> _getEntitlement() async {
-    final prefs = SharedPreferencesConfig.prefs;
-    final accessToken = prefs?.getString(KeysAuth.accessToken) ?? '';
+    final accessToken = _prefs?.getString(KeysAuth.accessToken) ?? '';
 
     try {
       final response = await dio.post(
@@ -154,7 +168,7 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
         throw Exception('Entitlements token not found');
       }
 
-      await prefs?.setString(KeysAuth.entitlementsToken, entitlementsToken);
+      await _prefs?.setString(KeysAuth.entitlementsToken, entitlementsToken);
     } catch (e) {
       log('getEntitlement error: $e', name: 'getEntitlement error');
       rethrow;
@@ -180,11 +194,9 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
   @override
   Future<UserV1> getInfoPlayer() async {
     try {
-      final prefs = SharedPreferencesConfig.prefs;
-
-      final accessToken = prefs?.getString(KeysAuth.accessToken) ?? '';
+      final accessToken = _prefs?.getString(KeysAuth.accessToken) ?? '';
       final entitlementsToken =
-          prefs?.getString(KeysAuth.entitlementsToken) ?? '';
+          _prefs?.getString(KeysAuth.entitlementsToken) ?? '';
 
       final response = await dio.get(
         ValorantUrls.urlUserInfo,
@@ -195,45 +207,65 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
       );
 
       final puuid =
-          Jwt.parseJwt(prefs?.getString(KeysAuth.accessToken) ?? '')['sub']
+          Jwt.parseJwt(_prefs?.getString(KeysAuth.accessToken) ?? '')['sub']
               as String;
 
-      prefs?.setString(KeysAuth.puuid, puuid);
-
-      return UserV1.fromMap(response.data);
+      _prefs?.setString(KeysAuth.puuid, puuid);
+      await _getRegionLoginPlayer();
+      Map<String, dynamic> data = response.data;
+      data['identity'] = await _playerLoadout();
+      return UserV1.fromMap(data);
     } catch (e) {
       log('getInfoPlayer error: $e', name: 'getInfoPlayer error');
       rethrow;
     }
   }
 
+  Future<Map<String, dynamic>> _playerLoadout() async {
+    final shard = _prefs?.getString(KeysAuth.shard) ?? '';
+    final puuid = _prefs?.getString(KeysAuth.puuid) ?? '';
+    try {
+      final response = await dio.get(
+        ValorantUrls.urlPersonalization(shard, puuid),
+        options: Options(headers: getHeaders()),
+      );
+
+      return response.data['Identity'];
+    } catch (e) {
+      log('playerLoadout error: $e', name: 'playerLoadout error');
+      rethrow;
+    }
+  }
+
   Future<void> _getVersionApi() async {
-    final prefs = SharedPreferencesConfig.prefs;
-    final versionApi = prefs?.getString(KeysAuth.versionApi);
+    final versionApi = _prefs?.getString(KeysAuth.versionApi);
     try {
       final response = await dio.get(ValorantUrls.urlVersionApi);
 
       if (response.statusCode == 200) {
         final versionApiRemote = response.data['data']['version'];
         if (versionApi != versionApiRemote) {
-          prefs?.setString(KeysAuth.versionApi, versionApiRemote);
+          _prefs?.setString(KeysAuth.versionApi, versionApiRemote);
         }
       }
     } catch (e) {
       log('getVersionApi error: $e', name: 'getVersionApi error');
     } finally {
       if (versionApi == null) {
-        prefs?.setString(KeysAuth.versionApi, '07.00.00.913116');
+        _prefs?.setString(KeysAuth.versionApi, '07.00.00.913116');
       }
     }
   }
 
   @override
-  Future<void> loginWebView(String token) async {
-    final prefs = SharedPreferencesConfig.prefs;
-
-    await _getCookies();
-    prefs?.setString(KeysAuth.accessToken, token);
-    await _getEntitlement();
+  Future<void> loginWebView(String url) async {
+    try {
+      await _getCookies();
+      _saveToken(url);
+      await _getEntitlement();
+    } catch (e) {
+      log('loginWebView error: $e', name: 'loginWebView error datasource');
+      rethrow;
+    }
   }
 }

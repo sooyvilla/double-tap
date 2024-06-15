@@ -7,10 +7,14 @@ class DividerCustom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Divider(
-      color: dividerGrey,
-      thickness: 1.5,
-      indent: 12,
+    return Container(
+      padding: const EdgeInsets.all(0),
+      child: Divider(
+        color: dividerGrey,
+        thickness: 1.5,
+        indent: 12,
+        height: 0,
+      ),
     );
   }
 }

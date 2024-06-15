@@ -1,9 +1,9 @@
+import 'package:double_tap/app/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:insane_bolt/app/ui/theme/theme.dart';
 
 const buttonWithBackground = TextStyle(
   fontSize: 16,
-  fontWeight: FontWeight.w400,
+  fontWeight: FontWeight.w600,
   color: Colors.white,
 );
 

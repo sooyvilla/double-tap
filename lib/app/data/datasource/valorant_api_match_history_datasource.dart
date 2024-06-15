@@ -2,41 +2,31 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:insane_bolt/app/config/constants/constants.dart';
+import 'package:double_tap/app/config/constants/constants.dart';
+import 'package:double_tap/app/data/utils/headers.dart';
 
 import '../../config/config.dart';
 import '../../domain/datasource/valorant_match_history_datasource.dart';
-import '../../domain/models/match_history.dart';
+import '../models/match_history.dart';
 
 class ValorantApiMatchHistoryDatasource extends ValorantMatchHistoryDatasource
     with DioConfigService {
-  final _clientPlatform =
-      'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9';
-
+  final _prefs = SharedPreferencesConfig.prefs;
   Future<void> getMatchHistory() async {
-    final prefs = SharedPreferencesConfig.prefs;
-
-    final puuid = prefs?.getString(KeysAuth.puuid) ?? '';
-    final verrsionApi = prefs?.getString(KeysAuth.versionApi) ?? '';
-    final entitlementsToken =
-        prefs?.getString(KeysAuth.entitlementsToken) ?? '';
-    final accessToken = prefs?.getString(KeysAuth.accessToken) ?? '';
+    final puuid = _prefs?.getString(KeysAuth.puuid) ?? '';
+    final shard = _prefs?.getString(KeysAuth.shard) ?? '';
     try {
       final response = await dio.get(
-        ValorantUrls.urlMatch('na', puuid),
-        options: Options(headers: {
-          'X-Riot-ClientPlatform': _clientPlatform,
-          'X-Riot-ClientVersion': verrsionApi,
-          'X-Riot-Entitlements-JWT': entitlementsToken,
-          'Authorization': 'Bearer $accessToken',
-        }),
+        ValorantUrls.urlMatch(shard, puuid),
+        options: Options(headers: getHeaders()),
       );
 
-      log(response.data.runtimeType.toString(), name: 'getMatchHistory');
+      log(response.data.toString(), name: 'getMatchHistory');
 
       final match = MatchHistory.fromJson(
           jsonDecode(response.data) as Map<String, dynamic>);
 
+      match;
     } catch (e) {
       log('getMatchHistory error: $e', name: 'getMatchHistory error');
       rethrow;

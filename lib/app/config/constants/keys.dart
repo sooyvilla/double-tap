@@ -6,6 +6,8 @@ class KeysAuth {
   static const String versionApi = 'version_api';
   static const String ssid = 'ssid';
   static const String puuid = 'puuid';
+  static const String region = 'region';
+  static const String shard = 'shard';
 
   static List<String> get allKeys => [
         cookie,
@@ -15,5 +17,6 @@ class KeysAuth {
         versionApi,
         ssid,
         puuid,
+        region,
       ];
 }

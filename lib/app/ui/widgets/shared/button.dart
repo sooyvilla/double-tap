@@ -1,21 +1,34 @@
+import 'package:double_tap/app/ui/ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:insane_bolt/app/ui/ui.dart';
 
 class ButtonPrimary extends StatelessWidget {
   const ButtonPrimary({
     super.key,
     required this.onPressed,
     required this.text,
+    this.top = 12,
+    this.bottom = 12,
+    this.left = 12,
+    this.right = 12,
+    this.ceroPadding = false,
   });
 
   final void Function()? onPressed;
   final String text;
+  final double top;
+  final double bottom;
+  final double left;
+  final double right;
+  final bool ceroPadding;
 
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
       onPressed: onPressed,
+      padding: ceroPadding
+          ? const EdgeInsets.all(0)
+          : EdgeInsets.fromLTRB(left, top, right, bottom),
       child: SizedBox(
         width: double.infinity,
         child: Text(
@@ -26,27 +39,27 @@ class ButtonPrimary extends StatelessWidget {
       ),
     );
 
-    return TextButton(
-      onPressed: onPressed,
-      style: ButtonStyle(
-        splashFactory: NoSplash.splashFactory,
-        backgroundColor: MaterialStateProperty.all<Color?>(Colors.transparent),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-        ),
-        alignment: Alignment.centerRight,
-      ),
-      child: SizedBox(
-        width: double.infinity,
-        child: Text(
-          text,
-          textAlign: TextAlign.left,
-          style: buttonWithoutBackground,
-        ),
-      ),
-    );
+    // return TextButton(
+    //   onPressed: onPressed,
+    //   style: ButtonStyle(
+    //     splashFactory: NoSplash.splashFactory,
+    //     backgroundColor: MaterialStateProperty.all<Color?>(Colors.transparent),
+    //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+    //       RoundedRectangleBorder(
+    //         borderRadius: BorderRadius.circular(8.0),
+    //       ),
+    //     ),
+    //     alignment: Alignment.centerRight,
+    //   ),
+    //   child: SizedBox(
+    //     width: double.infinity,
+    //     child: Text(
+    //       text,
+    //       textAlign: TextAlign.left,
+    //       style: buttonWithoutBackground,
+    //     ),
+    //   ),
+    // );
   }
 }
 
@@ -55,16 +68,20 @@ class ButtonCustomBackground extends StatelessWidget {
     super.key,
     this.onPressed,
     required this.text,
+    this.invertColors = false,
   });
 
   final void Function()? onPressed;
   final String text;
+  final bool invertColors;
 
   @override
   Widget build(BuildContext context) {
+    final firstColor = invertColors ? dividerGrey : primaryRed;
+    final secondColor = invertColors ? primaryRed : Colors.white;
     return TextButton(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color?>(primaryRed),
+        backgroundColor: MaterialStateProperty.all<Color?>(firstColor),
         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
           const EdgeInsets.symmetric(horizontal: 20.0),
         ),
@@ -73,7 +90,7 @@ class ButtonCustomBackground extends StatelessWidget {
       onPressed: onPressed,
       child: Text(
         text,
-        style: buttonWithBackground,
+        style: buttonWithBackground.copyWith(color: secondColor),
       ),
     );
   }

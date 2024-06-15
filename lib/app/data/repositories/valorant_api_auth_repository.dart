@@ -1,4 +1,4 @@
-import 'package:insane_bolt/app/domain/models/user_v1.dart';
+import 'package:double_tap/app/data/models/user_v1.dart';
 
 import '../../domain/datasource/valorant_auth_datasource.dart';
 import '../../domain/repositories/valorant_auth_repository.dart';
@@ -24,7 +24,7 @@ class ValorantApiAuthRepositoryImp extends ValorantAuthRepository {
   }
 
   @override
-  Future<void> loginWebView(String token) {
-    return datasource.loginWebView(token);
+  Future<void> loginWebView(String url) {
+    return datasource.loginWebView(url);
   }
 }

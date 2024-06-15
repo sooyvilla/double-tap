@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 class UserV1 {
   final String? country;
   final String? sub;
@@ -14,9 +16,11 @@ class UserV1 {
   final int? age;
   final String? jti;
   final Affinity? affinity;
+  final Identity? identity;
 
   UserV1({
     this.country,
+    this.identity,
     this.sub,
     this.emailVerified,
     this.playerPlocale,
@@ -84,6 +88,52 @@ class UserV1 {
       jti: map['jti'] != null ? map['jti'] as String : null,
       affinity: map['affinity'] != null
           ? Affinity.fromMap(map['affinity'] as Map<String, dynamic>)
+          : null,
+      identity: map['identity'] != null
+          ? Identity.fromMap(map['identity'] as Map<String, dynamic>)
+          : null,
+    );
+  }
+}
+
+class Identity {
+  final String? playerCardID;
+  final String? playerTitleID;
+  final int? accountLevel;
+  final String? preferredLevelBorderID;
+  final bool? hideAccountLevel;
+
+  Identity({
+    this.playerCardID,
+    this.playerTitleID,
+    this.accountLevel,
+    this.preferredLevelBorderID,
+    this.hideAccountLevel,
+  });
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'playerCardID': playerCardID,
+      'playerTitleID': playerTitleID,
+      'accountLevel': accountLevel,
+      'preferredLevelBorderID': preferredLevelBorderID,
+      'hideAccountLevel': hideAccountLevel,
+    };
+  }
+
+  factory Identity.fromMap(Map<String, dynamic> map) {
+    return Identity(
+      playerCardID:
+          map['PlayerCardID'] != null ? map['PlayerCardID'] as String : null,
+      playerTitleID:
+          map['PlayerTitleID'] != null ? map['PlayerTitleID'] as String : null,
+      accountLevel:
+          map['AccountLevel'] != null ? map['AccountLevel'] as int : null,
+      preferredLevelBorderID: map['PreferredLevelBorderID'] != null
+          ? map['PreferredLevelBorderID'] as String
+          : null,
+      hideAccountLevel: map['HideAccountLevel'] != null
+          ? map['HideAccountLevel'] as bool
           : null,
     );
   }

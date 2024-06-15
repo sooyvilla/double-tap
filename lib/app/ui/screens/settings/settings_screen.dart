@@ -10,16 +10,12 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScaffoldPrimary(
       appBarText: 'Account',
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        width: double.infinity,
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            AccountSection(),
-          ],
-        ),
+      body: WidgetBody(
+        children: [
+          AccountSection(),
+        ]
       ),
     );
   }
 }
+

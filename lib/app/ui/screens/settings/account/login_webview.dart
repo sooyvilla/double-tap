@@ -1,7 +1,7 @@
+import 'package:double_tap/app/config/constants/valorant_urls.dart';
+import 'package:double_tap/app/ui/providers/account/account_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:insane_bolt/app/config/constants/valorant_urls.dart';
-import 'package:insane_bolt/app/ui/providers/account/account_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class LoginWebView extends ConsumerStatefulWidget {
@@ -29,7 +29,7 @@ class _LoginWebViewState extends ConsumerState<LoginWebView> {
           }
           await ref
               .read(accountProvider.notifier)
-              .loginWebView(request.url.split('=')[1].split('&')[0])
+              .loginWebView(request.url)
               .then((value) {
             Navigator.of(context).pop();
             Navigator.of(context).pop();

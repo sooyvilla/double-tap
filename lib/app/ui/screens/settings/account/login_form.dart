@@ -28,7 +28,7 @@ class LoginForm extends ConsumerWidget {
             hintText: 'User',
             // autofocus: true,
             onChanged: (value) =>
-                ref.read(accountProvider.notifier).setUser(value),
+                ref.read(accountProvider.notifier).setUsername(value),
           ),
           const SizedBox(height: 20),
           InputCustom(

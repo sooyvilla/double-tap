@@ -44,12 +44,12 @@ class _AccountSectionState extends ConsumerState<AccountSection> {
                 Row(
                   children: [
                     TextWithPadding(
-                      text: user.username!,
+                      text: user.user!.username!,
                       right: 0,
                       style: textNormal,
                     ),
                     TextWithPadding(
-                      text: ' #${user.tagLine}',
+                      text: ' #${user.user!.tagLine}',
                       left: 0,
                       style: textNormalGrey,
                     ),

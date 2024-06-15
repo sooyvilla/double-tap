@@ -1,5 +1,5 @@
+import 'package:double_tap/app/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:insane_bolt/app/ui/theme/theme.dart';
 
 void showModal(
   BuildContext context,
