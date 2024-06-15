@@ -13,12 +13,12 @@ class ValorantUrls {
       'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9';
   static const String urlLoginWebView =
       'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid';
-  static urlBaseParty(String region, String shard) =>
+  static String urlBaseParty(String region, String shard) =>
       'https://glz-$region-1.$shard.a.pvp.net/parties/v1/';
-  static set urlBaseStore(String shard) =>
+  static String urlBaseStore(String shard) =>
       'https://pd.$shard.a.pvp.net/store/v1/';
-  static urlMatch(String shard, String puuid) =>
+  static String urlMatch(String shard, String puuid) =>
       'https://pd.$shard.a.pvp.net/match-history/v1/history/$puuid';
-  static urlPersonalization(String shard, String puuid) =>
+  static String urlPersonalization(String shard, String puuid) =>
       'https://pd.$shard.a.pvp.net/personalization/v2/players/$puuid/playerloadout';
 }

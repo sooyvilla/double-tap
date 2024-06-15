@@ -16,8 +16,9 @@ class ValorantApiLiveDatasource extends ValorantLiveDatasource
     final shard = _prefs?.getString(KeysAuth.shard) ?? '';
     try {
       final party = await getPartyPlayer();
-      final response = await dio.get(ValorantUrls.urlBaseParty(region, shard) +
-          'parties/${party!.requests[0].partyID}');
+      final response = await dio.get(
+          '${ValorantUrls.urlBaseParty(region, shard)}parties/${party!.requests[0].partyID}',
+          options: Options(headers: getHeaders()));
 
       return PartyResponse.fromJson(response.data);
     } catch (e) {
@@ -32,7 +33,7 @@ class ValorantApiLiveDatasource extends ValorantLiveDatasource
     final puuid = _prefs?.getString(KeysAuth.puuid) ?? '';
     try {
       final response = await dio.get(
-        ValorantUrls.urlBaseParty(region, shard) + 'players/$puuid',
+        '${ValorantUrls.urlBaseParty(region, shard)}players/$puuid',
         options: Options(headers: getHeaders()),
       );
 
