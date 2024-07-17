@@ -3,10 +3,10 @@ import 'package:double_tap/app/data/models/user_v1.dart';
 import '../../domain/datasource/valorant_auth_datasource.dart';
 import '../../domain/repositories/valorant_auth_repository.dart';
 
-class ValorantApiAuthRepositoryImp extends ValorantAuthRepository {
+class ValorantApiAuthRepository extends ValorantAuthRepository {
   final ValorantAuthDatasource datasource;
 
-  ValorantApiAuthRepositoryImp(this.datasource);
+  ValorantApiAuthRepository(this.datasource);
 
   @override
   Future<UserV1> getInfoPlayer() {

@@ -5,3 +5,4 @@ export 'shared/navbar.dart';
 export 'shared/scaffold.dart';
 export 'shared/text_with_padding.dart';
 export 'shared/widget_body.dart';
+export 'shared/circular_load.dart';

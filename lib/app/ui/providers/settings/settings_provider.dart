@@ -2,25 +2,28 @@
 import 'dart:developer';
 
 import 'package:double_tap/app/config/config.dart';
-import 'package:double_tap/app/data/datasource/valorant_api_live_datasource.dart';
-import 'package:double_tap/app/data/models/party.dart';
 import 'package:double_tap/app/domain/entities/valorant_user.dart';
-import 'package:double_tap/app/ui/providers/account/account_provider_imp.dart';
+import 'package:double_tap/app/ui/providers/settings/settings_provider_imp.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/repositories/valorant_api_auth_repository.dart';
 import '../../../domain/mappers/players_mapper.dart';
 
-final accountProvider =
-    StateNotifierProvider<AccountNotifier, AccountState>((ref) {
-  final datasource = ref.watch(accountProviderImp);
-  return AccountNotifier(datasource);
+final settingsProvider =
+    StateNotifierProvider<AccountNotifier, SettingsState>((ref) {
+  final datasource = ref.watch(settingsProviderImp);
+  return AccountNotifier(
+    datasource: datasource,
+  );
 });
 
-class AccountNotifier extends StateNotifier<AccountState> {
-  AccountNotifier(this.datasource) : super(AccountState());
+class AccountNotifier extends StateNotifier<SettingsState> {
+  AccountNotifier({
+    required this.datasource,
+  }) : super(SettingsState());
 
-  final ValorantApiAuthRepositoryImp datasource;
+  final ValorantApiAuthRepository datasource;
 
   final prefs = SharedPreferencesConfig.prefs;
 
@@ -45,7 +48,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
     final accessToken = prefs?.getString(KeysAuth.accessToken);
     if (accessToken != null) {
       try {
-        await datasource.reauthentication();
+        // await datasource.reauthentication();
         await setUser();
         setIsLoggedIn(true);
       } catch (e) {
@@ -63,29 +66,26 @@ class AccountNotifier extends StateNotifier<AccountState> {
       await setUser();
     } catch (e) {
       log('loginWebView error: $e', name: 'loginWebView error provider');
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   }
 
   void logout() {
     for (var element in KeysAuth.allKeys) {
       prefs?.remove(element);
     }
-
     state = state.copyWith(
       username: null,
       password: null,
       isLoggedIn: false,
+      user: null,
     );
   }
 
   Future<void> setUser() async {
     try {
       final user = await datasource.getInfoPlayer();
-      final newUser = mapPlayer(user);
-      final partyPlayer = await ValorantApiLiveDatasource().getParty();
-      state = state.copyWith(user: newUser, partyPlayer: partyPlayer);
+      state = state.copyWith(user: mapPlayer(user));
       setIsLoggedIn(true);
     } catch (e) {
       logout();
@@ -111,37 +111,33 @@ class AccountNotifier extends StateNotifier<AccountState> {
   }
 }
 
-class AccountState {
+class SettingsState {
   String? username;
   String? password;
   ValorantUser? user;
   bool isLoggedIn;
   bool isLoading;
-  PartyResponse? partyPlayer;
-  AccountState({
+  SettingsState({
     this.username,
     this.password,
     this.isLoggedIn = false,
     this.isLoading = false,
     this.user,
-    this.partyPlayer,
   });
 
-  AccountState copyWith({
+  SettingsState copyWith({
     String? username,
     String? password,
     bool? isLoggedIn,
     bool? isLoading,
     ValorantUser? user,
-    PartyResponse? partyPlayer,
   }) {
-    return AccountState(
+    return SettingsState(
       username: username ?? this.username,
       password: password ?? this.password,
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       isLoading: isLoading ?? this.isLoading,
       user: user ?? this.user,
-      partyPlayer: partyPlayer ?? this.partyPlayer,
     );
   }
 }

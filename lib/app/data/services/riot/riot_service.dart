@@ -4,30 +4,30 @@ import 'package:jwt_decode/jwt_decode.dart';
 import '../../../config/config.dart';
 
 class RiotService with DioConfigService {
-  static String region = "eu";
+  static String region = 'eu';
   static String newLoginUrl =
-      "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid";
+      'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid';
   static String loginUrl =
       'https://auth.riotgames.com/login#client_id=play-valorant-web-prod&nonce=1&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&response_type=token%20id_token';
   static String entitlementsUri =
       'https://entitlements.auth.riotgames.com/api/token/v1/';
 
-  static String accessToken = "";
-  static String entitlements = "";
-  static String cookies = "";
-  static String userId = "";
+  static String accessToken = '';
+  static String entitlements = '';
+  static String cookies = '';
+  static String userId = '';
 
   static void getUserId() {
     userId = Jwt.parseJwt(accessToken)['sub'];
   }
 
   static String getStoreLink(String uuid, String region) =>
-      "https://pd.$region.a.pvp.net/store/v2/storefront/$uuid/";
+      'https://pd.$region.a.pvp.net/store/v2/storefront/$uuid/';
 
   Future<String> getEntitlements() async {
     // await saveCookies();
 
-    var entitlementsRequest = await dio.post(
+    final entitlementsRequest = await dio.post(
       entitlementsUri,
       options: Options(
         headers: {

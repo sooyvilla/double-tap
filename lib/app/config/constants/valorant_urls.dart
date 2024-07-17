@@ -21,4 +21,6 @@ class ValorantUrls {
       'https://pd.$shard.a.pvp.net/match-history/v1/history/$puuid';
   static String urlPersonalization(String shard, String puuid) =>
       'https://pd.$shard.a.pvp.net/personalization/v2/players/$puuid/playerloadout';
+  static String urlStore(String shard, String puuid) =>
+      'https://pd.$shard.a.pvp.net/store/v2/storefront/$puuid';
 }

@@ -5,9 +5,9 @@ import '../../ui.dart';
 class ContainerGreyColumn extends StatelessWidget {
   const ContainerGreyColumn({
     super.key,
+    required this.titleSection,
     required this.children,
     this.crossAxisAlignment = CrossAxisAlignment.center,
-    required this.titleSection,
   });
 
   final List<Widget> children;
@@ -15,7 +15,7 @@ class ContainerGreyColumn extends StatelessWidget {
   final CrossAxisAlignment crossAxisAlignment;
 
   List<Widget> _buildChildrenWithDividers() {
-    List<Widget> childrenWithDividers = [];
+    final List<Widget> childrenWithDividers = [];
 
     for (int i = 0; i < children.length; i++) {
       childrenWithDividers.add(children[i]);

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:double_tap/app/config/constants/constants.dart';
 import 'package:double_tap/app/data/utils/headers.dart';
 
 import '../../config/config.dart';

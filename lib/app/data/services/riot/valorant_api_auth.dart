@@ -20,7 +20,7 @@ class ValorantApiAuth with DioConfigService {
         },
       );
 
-      List<String>? setCookie = response.headers['set-cookie'];
+      final List<String>? setCookie = response.headers['set-cookie'];
       if (setCookie != null) {
         cookie = setCookie.map((item) => item.split(';')[0]).join('; ');
       }
@@ -33,7 +33,6 @@ class ValorantApiAuth with DioConfigService {
   }
 
   Future<bool> getToken(String username, String password) async {
-
     try {
       final response = await dio.put(
         'https://auth.riotgames.com/api/v1/authorization',
@@ -78,14 +77,14 @@ class ValorantApiAuth with DioConfigService {
 
   String extractAccessToken(String url) {
     // Parse the URL
-    Uri uri = Uri.parse(url);
+    final Uri uri = Uri.parse(url);
 
     // Extract the fragment part of the URL (everything after #)
-    String fragment = uri.fragment;
+    final String fragment = uri.fragment;
 
     // Use a regular expression to find the value of access_token
-    RegExp regExp = RegExp(r'access_token=([^&]*)');
-    Match? match = regExp.firstMatch(fragment);
+    final RegExp regExp = RegExp(r'access_token=([^&]*)');
+    final Match? match = regExp.firstMatch(fragment);
 
     // Check if we found a match
     if (match != null && match.groupCount >= 1) {
@@ -208,7 +207,6 @@ class ValorantApiAuth with DioConfigService {
   // }
 
   Future<void> logout() async {
-
     try {
       final response = await dio.post(
         'https://auth.riotgames.com/api/v1/authorization',

@@ -6,37 +6,17 @@ import '../../../ui.dart';
 import '../../../util/util.dart';
 import 'login_form.dart';
 
-class AccountSection extends ConsumerStatefulWidget {
+class AccountSection extends ConsumerWidget {
   const AccountSection({super.key});
 
   @override
-  ConsumerState<AccountSection> createState() => _AccountSectionState();
-}
-
-class _AccountSectionState extends ConsumerState<AccountSection> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(accountProvider.notifier).validateSession();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final user = ref.watch(accountProvider);
+  Widget build(BuildContext context, ref) {
+    final user = ref.watch(settingsProvider);
     return ContainerGreyColumn(
       titleSection: 'Accounts',
       crossAxisAlignment: CrossAxisAlignment.start,
       children: user.isLoading
-          ? [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            ]
+          ? [const CircularLoad()]
           : [
               if (!user.isLoggedIn)
                 const TextWithPadding(text: 'Not signed in yet'),
@@ -59,7 +39,10 @@ class _AccountSectionState extends ConsumerState<AccountSection> {
                 text: user.isLoggedIn ? 'Logout' : 'Login',
                 onPressed: () {
                   user.isLoggedIn
-                      ? ref.read(accountProvider.notifier).logout()
+                      ? {
+                          ref.read(settingsProvider.notifier).logout(),
+                          ref.read(liveProvider.notifier).cleanAll(),
+                        }
                       : showModal(context, const LoginForm());
                   // ValorantApiMatchHistoryDatasource().getMatchHistory();
                 },

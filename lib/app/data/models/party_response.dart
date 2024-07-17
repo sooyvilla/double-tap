@@ -105,81 +105,81 @@ class PartyResponse {
   String toRawJson() => json.encode(toJson());
 
   factory PartyResponse.fromJson(Map<String, dynamic> json) => PartyResponse(
-        id: json["ID"],
-        mucName: json["MUCName"],
-        voiceRoomId: json["VoiceRoomID"],
-        version: json["Version"],
-        clientVersion: json["ClientVersion"],
-        members: json["Members"] == null
+        id: json['ID'],
+        mucName: json['MUCName'],
+        voiceRoomId: json['VoiceRoomID'],
+        version: json['Version'],
+        clientVersion: json['ClientVersion'],
+        members: json['Members'] == null
             ? []
             : List<Member>.from(
-                json["Members"]!.map((x) => Member.fromJson(x))),
-        state: json["State"],
-        previousState: json["PreviousState"],
-        stateTransitionReason: json["StateTransitionReason"],
-        accessibility: json["Accessibility"],
-        customGameData: json["CustomGameData"] == null
+                json['Members']!.map((x) => Member.fromJson(x))),
+        state: json['State'],
+        previousState: json['PreviousState'],
+        stateTransitionReason: json['StateTransitionReason'],
+        accessibility: json['Accessibility'],
+        customGameData: json['CustomGameData'] == null
             ? null
-            : CustomGameData.fromJson(json["CustomGameData"]),
-        matchmakingData: json["MatchmakingData"] == null
+            : CustomGameData.fromJson(json['CustomGameData']),
+        matchmakingData: json['MatchmakingData'] == null
             ? null
-            : MatchmakingData.fromJson(json["MatchmakingData"]),
-        invites: json["Invites"],
-        requests: json["Requests"] == null
+            : MatchmakingData.fromJson(json['MatchmakingData']),
+        invites: json['Invites'],
+        requests: json['Requests'] == null
             ? []
-            : List<dynamic>.from(json["Requests"]!.map((x) => x)),
-        queueEntryTime: json["QueueEntryTime"],
-        errorNotification: json["ErrorNotification"] == null
+            : List<dynamic>.from(json['Requests']!.map((x) => x)),
+        queueEntryTime: json['QueueEntryTime'],
+        errorNotification: json['ErrorNotification'] == null
             ? null
-            : ErrorNotification.fromJson(json["ErrorNotification"]),
-        restrictedSeconds: json["RestrictedSeconds"],
-        eligibleQueues: json["EligibleQueues"] == null
+            : ErrorNotification.fromJson(json['ErrorNotification']),
+        restrictedSeconds: json['RestrictedSeconds'],
+        eligibleQueues: json['EligibleQueues'] == null
             ? []
-            : List<String>.from(json["EligibleQueues"]!.map((x) => x)),
-        queueIneligibilities: json["QueueIneligibilities"] == null
+            : List<String>.from(json['EligibleQueues']!.map((x) => x)),
+        queueIneligibilities: json['QueueIneligibilities'] == null
             ? []
-            : List<String>.from(json["QueueIneligibilities"]!.map((x) => x)),
-        cheatData: json["CheatData"] == null
+            : List<String>.from(json['QueueIneligibilities']!.map((x) => x)),
+        cheatData: json['CheatData'] == null
             ? null
-            : CheatData.fromJson(json["CheatData"]),
-        xpBonuses: json["XPBonuses"] == null
+            : CheatData.fromJson(json['CheatData']),
+        xpBonuses: json['XPBonuses'] == null
             ? []
-            : List<dynamic>.from(json["XPBonuses"]!.map((x) => x)),
-        inviteCode: json["InviteCode"],
+            : List<dynamic>.from(json['XPBonuses']!.map((x) => x)),
+        inviteCode: json['InviteCode'],
       );
 
   Map<String, dynamic> toJson() => {
-        "ID": id,
-        "MUCName": mucName,
-        "VoiceRoomID": voiceRoomId,
-        "Version": version,
-        "ClientVersion": clientVersion,
-        "Members": members == null
+        'ID': id,
+        'MUCName': mucName,
+        'VoiceRoomID': voiceRoomId,
+        'Version': version,
+        'ClientVersion': clientVersion,
+        'Members': members == null
             ? []
             : List<dynamic>.from(members!.map((x) => x.toJson())),
-        "State": state,
-        "PreviousState": previousState,
-        "StateTransitionReason": stateTransitionReason,
-        "Accessibility": accessibility,
-        "CustomGameData": customGameData?.toJson(),
-        "MatchmakingData": matchmakingData?.toJson(),
-        "Invites": invites,
-        "Requests":
+        'State': state,
+        'PreviousState': previousState,
+        'StateTransitionReason': stateTransitionReason,
+        'Accessibility': accessibility,
+        'CustomGameData': customGameData?.toJson(),
+        'MatchmakingData': matchmakingData?.toJson(),
+        'Invites': invites,
+        'Requests':
             requests == null ? [] : List<dynamic>.from(requests!.map((x) => x)),
-        "QueueEntryTime": queueEntryTime,
-        "ErrorNotification": errorNotification?.toJson(),
-        "RestrictedSeconds": restrictedSeconds,
-        "EligibleQueues": eligibleQueues == null
+        'QueueEntryTime': queueEntryTime,
+        'ErrorNotification': errorNotification?.toJson(),
+        'RestrictedSeconds': restrictedSeconds,
+        'EligibleQueues': eligibleQueues == null
             ? []
             : List<dynamic>.from(eligibleQueues!.map((x) => x)),
-        "QueueIneligibilities": queueIneligibilities == null
+        'QueueIneligibilities': queueIneligibilities == null
             ? []
             : List<dynamic>.from(queueIneligibilities!.map((x) => x)),
-        "CheatData": cheatData?.toJson(),
-        "XPBonuses": xpBonuses == null
+        'CheatData': cheatData?.toJson(),
+        'XPBonuses': xpBonuses == null
             ? []
             : List<dynamic>.from(xpBonuses!.map((x) => x)),
-        "InviteCode": inviteCode,
+        'InviteCode': inviteCode,
       };
 }
 
@@ -208,13 +208,13 @@ class CheatData {
   String toRawJson() => json.encode(toJson());
 
   factory CheatData.fromJson(Map<String, dynamic> json) => CheatData(
-        gamePodOverride: json["GamePodOverride"],
-        forcePostGameProcessing: json["ForcePostGameProcessing"],
+        gamePodOverride: json['GamePodOverride'],
+        forcePostGameProcessing: json['ForcePostGameProcessing'],
       );
 
   Map<String, dynamic> toJson() => {
-        "GamePodOverride": gamePodOverride,
-        "ForcePostGameProcessing": forcePostGameProcessing,
+        'GamePodOverride': gamePodOverride,
+        'ForcePostGameProcessing': forcePostGameProcessing,
       };
 }
 
@@ -259,25 +259,25 @@ class CustomGameData {
   String toRawJson() => json.encode(toJson());
 
   factory CustomGameData.fromJson(Map<String, dynamic> json) => CustomGameData(
-        settings: json["Settings"] == null
+        settings: json['Settings'] == null
             ? null
-            : Settings.fromJson(json["Settings"]),
-        membership: json["Membership"] == null
+            : Settings.fromJson(json['Settings']),
+        membership: json['Membership'] == null
             ? null
-            : Membership.fromJson(json["Membership"]),
-        maxPartySize: json["MaxPartySize"],
-        autobalanceEnabled: json["AutobalanceEnabled"],
-        autobalanceMinPlayers: json["AutobalanceMinPlayers"],
-        hasRecoveryData: json["HasRecoveryData"],
+            : Membership.fromJson(json['Membership']),
+        maxPartySize: json['MaxPartySize'],
+        autobalanceEnabled: json['AutobalanceEnabled'],
+        autobalanceMinPlayers: json['AutobalanceMinPlayers'],
+        hasRecoveryData: json['HasRecoveryData'],
       );
 
   Map<String, dynamic> toJson() => {
-        "Settings": settings?.toJson(),
-        "Membership": membership?.toJson(),
-        "MaxPartySize": maxPartySize,
-        "AutobalanceEnabled": autobalanceEnabled,
-        "AutobalanceMinPlayers": autobalanceMinPlayers,
-        "HasRecoveryData": hasRecoveryData,
+        'Settings': settings?.toJson(),
+        'Membership': membership?.toJson(),
+        'MaxPartySize': maxPartySize,
+        'AutobalanceEnabled': autobalanceEnabled,
+        'AutobalanceMinPlayers': autobalanceMinPlayers,
+        'HasRecoveryData': hasRecoveryData,
       };
 }
 
@@ -317,42 +317,42 @@ class Membership {
   String toRawJson() => json.encode(toJson());
 
   factory Membership.fromJson(Map<String, dynamic> json) => Membership(
-        teamOne: json["teamOne"] == null
+        teamOne: json['teamOne'] == null
             ? []
             : List<ErroredPlayer>.from(
-                json["teamOne"]!.map((x) => ErroredPlayer.fromJson(x))),
-        teamTwo: json["teamTwo"] == null
+                json['teamOne']!.map((x) => ErroredPlayer.fromJson(x))),
+        teamTwo: json['teamTwo'] == null
             ? []
             : List<ErroredPlayer>.from(
-                json["teamTwo"]!.map((x) => ErroredPlayer.fromJson(x))),
-        teamSpectate: json["teamSpectate"] == null
+                json['teamTwo']!.map((x) => ErroredPlayer.fromJson(x))),
+        teamSpectate: json['teamSpectate'] == null
             ? []
             : List<ErroredPlayer>.from(
-                json["teamSpectate"]!.map((x) => ErroredPlayer.fromJson(x))),
-        teamOneCoaches: json["teamOneCoaches"] == null
+                json['teamSpectate']!.map((x) => ErroredPlayer.fromJson(x))),
+        teamOneCoaches: json['teamOneCoaches'] == null
             ? []
             : List<ErroredPlayer>.from(
-                json["teamOneCoaches"]!.map((x) => ErroredPlayer.fromJson(x))),
-        teamTwoCoaches: json["teamTwoCoaches"] == null
+                json['teamOneCoaches']!.map((x) => ErroredPlayer.fromJson(x))),
+        teamTwoCoaches: json['teamTwoCoaches'] == null
             ? []
             : List<ErroredPlayer>.from(
-                json["teamTwoCoaches"]!.map((x) => ErroredPlayer.fromJson(x))),
+                json['teamTwoCoaches']!.map((x) => ErroredPlayer.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "teamOne": teamOne == null
+        'teamOne': teamOne == null
             ? []
             : List<dynamic>.from(teamOne!.map((x) => x.toJson())),
-        "teamTwo": teamTwo == null
+        'teamTwo': teamTwo == null
             ? []
             : List<dynamic>.from(teamTwo!.map((x) => x.toJson())),
-        "teamSpectate": teamSpectate == null
+        'teamSpectate': teamSpectate == null
             ? []
             : List<dynamic>.from(teamSpectate!.map((x) => x.toJson())),
-        "teamOneCoaches": teamOneCoaches == null
+        'teamOneCoaches': teamOneCoaches == null
             ? []
             : List<dynamic>.from(teamOneCoaches!.map((x) => x.toJson())),
-        "teamTwoCoaches": teamTwoCoaches == null
+        'teamTwoCoaches': teamTwoCoaches == null
             ? []
             : List<dynamic>.from(teamTwoCoaches!.map((x) => x.toJson())),
       };
@@ -378,11 +378,11 @@ class ErroredPlayer {
   String toRawJson() => json.encode(toJson());
 
   factory ErroredPlayer.fromJson(Map<String, dynamic> json) => ErroredPlayer(
-        subject: json["Subject"],
+        subject: json['Subject'],
       );
 
   Map<String, dynamic> toJson() => {
-        "Subject": subject,
+        'Subject': subject,
       };
 }
 
@@ -422,21 +422,21 @@ class Settings {
   String toRawJson() => json.encode(toJson());
 
   factory Settings.fromJson(Map<String, dynamic> json) => Settings(
-        map: json["Map"],
-        mode: json["Mode"],
-        useBots: json["UseBots"],
-        gamePod: json["GamePod"],
-        gameRules: json["GameRules"] == null
+        map: json['Map'],
+        mode: json['Mode'],
+        useBots: json['UseBots'],
+        gamePod: json['GamePod'],
+        gameRules: json['GameRules'] == null
             ? null
-            : GameRules.fromJson(json["GameRules"]),
+            : GameRules.fromJson(json['GameRules']),
       );
 
   Map<String, dynamic> toJson() => {
-        "Map": map,
-        "Mode": mode,
-        "UseBots": useBots,
-        "GamePod": gamePod,
-        "GameRules": gameRules?.toJson(),
+        'Map': map,
+        'Mode': mode,
+        'UseBots': useBots,
+        'GamePod': gamePod,
+        'GameRules': gameRules?.toJson(),
       };
 }
 
@@ -476,19 +476,19 @@ class GameRules {
   String toRawJson() => json.encode(toJson());
 
   factory GameRules.fromJson(Map<String, dynamic> json) => GameRules(
-        allowGameModifiers: json["AllowGameModifiers"],
-        isOvertimeWinByTwo: json["IsOvertimeWinByTwo"],
-        playOutAllRounds: json["PlayOutAllRounds"],
-        skipMatchHistory: json["SkipMatchHistory"],
-        tournamentMode: json["TournamentMode"],
+        allowGameModifiers: json['AllowGameModifiers'],
+        isOvertimeWinByTwo: json['IsOvertimeWinByTwo'],
+        playOutAllRounds: json['PlayOutAllRounds'],
+        skipMatchHistory: json['SkipMatchHistory'],
+        tournamentMode: json['TournamentMode'],
       );
 
   Map<String, dynamic> toJson() => {
-        "AllowGameModifiers": allowGameModifiers,
-        "IsOvertimeWinByTwo": isOvertimeWinByTwo,
-        "PlayOutAllRounds": playOutAllRounds,
-        "SkipMatchHistory": skipMatchHistory,
-        "TournamentMode": tournamentMode,
+        'AllowGameModifiers': allowGameModifiers,
+        'IsOvertimeWinByTwo': isOvertimeWinByTwo,
+        'PlayOutAllRounds': playOutAllRounds,
+        'SkipMatchHistory': skipMatchHistory,
+        'TournamentMode': tournamentMode,
       };
 }
 
@@ -517,16 +517,16 @@ class ErrorNotification {
 
   factory ErrorNotification.fromJson(Map<String, dynamic> json) =>
       ErrorNotification(
-        errorType: json["ErrorType"],
-        erroredPlayers: json["ErroredPlayers"] == null
+        errorType: json['ErrorType'],
+        erroredPlayers: json['ErroredPlayers'] == null
             ? []
             : List<ErroredPlayer>.from(
-                json["ErroredPlayers"]!.map((x) => ErroredPlayer.fromJson(x))),
+                json['ErroredPlayers']!.map((x) => ErroredPlayer.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "ErrorType": errorType,
-        "ErroredPlayers": erroredPlayers == null
+        'ErrorType': errorType,
+        'ErroredPlayers': erroredPlayers == null
             ? []
             : List<dynamic>.from(erroredPlayers!.map((x) => x.toJson())),
       };
@@ -562,19 +562,19 @@ class MatchmakingData {
 
   factory MatchmakingData.fromJson(Map<String, dynamic> json) =>
       MatchmakingData(
-        queueId: json["QueueID"],
-        preferredGamePods: json["PreferredGamePods"] == null
+        queueId: json['QueueID'],
+        preferredGamePods: json['PreferredGamePods'] == null
             ? []
-            : List<String>.from(json["PreferredGamePods"]!.map((x) => x)),
-        skillDisparityRrPenalty: json["SkillDisparityRRPenalty"],
+            : List<String>.from(json['PreferredGamePods']!.map((x) => x)),
+        skillDisparityRrPenalty: json['SkillDisparityRRPenalty'],
       );
 
   Map<String, dynamic> toJson() => {
-        "QueueID": queueId,
-        "PreferredGamePods": preferredGamePods == null
+        'QueueID': queueId,
+        'PreferredGamePods': preferredGamePods == null
             ? []
             : List<dynamic>.from(preferredGamePods!.map((x) => x)),
-        "SkillDisparityRRPenalty": skillDisparityRrPenalty,
+        'SkillDisparityRRPenalty': skillDisparityRrPenalty,
       };
 }
 
@@ -639,39 +639,39 @@ class Member {
   String toRawJson() => json.encode(toJson());
 
   factory Member.fromJson(Map<String, dynamic> json) => Member(
-        subject: json["Subject"],
-        competitiveTier: json["CompetitiveTier"],
-        playerIdentity: json["PlayerIdentity"] == null
+        subject: json['Subject'],
+        competitiveTier: json['CompetitiveTier'],
+        playerIdentity: json['PlayerIdentity'] == null
             ? null
-            : PlayerIdentity.fromJson(json["PlayerIdentity"]),
-        seasonalBadgeInfo: json["SeasonalBadgeInfo"],
-        isOwner: json["IsOwner"],
+            : PlayerIdentity.fromJson(json['PlayerIdentity']),
+        seasonalBadgeInfo: json['SeasonalBadgeInfo'],
+        isOwner: json['IsOwner'],
         queueEligibleRemainingAccountLevels:
-            json["QueueEligibleRemainingAccountLevels"],
-        pings: json["Pings"] == null
+            json['QueueEligibleRemainingAccountLevels'],
+        pings: json['Pings'] == null
             ? []
-            : List<Ping>.from(json["Pings"]!.map((x) => Ping.fromJson(x))),
-        isReady: json["IsReady"],
-        isModerator: json["IsModerator"],
-        useBroadcastHud: json["UseBroadcastHUD"],
-        platformType: json["PlatformType"],
+            : List<Ping>.from(json['Pings']!.map((x) => Ping.fromJson(x))),
+        isReady: json['IsReady'],
+        isModerator: json['IsModerator'],
+        useBroadcastHud: json['UseBroadcastHUD'],
+        platformType: json['PlatformType'],
       );
 
   Map<String, dynamic> toJson() => {
-        "Subject": subject,
-        "CompetitiveTier": competitiveTier,
-        "PlayerIdentity": playerIdentity?.toJson(),
-        "SeasonalBadgeInfo": seasonalBadgeInfo,
-        "IsOwner": isOwner,
-        "QueueEligibleRemainingAccountLevels":
+        'Subject': subject,
+        'CompetitiveTier': competitiveTier,
+        'PlayerIdentity': playerIdentity?.toJson(),
+        'SeasonalBadgeInfo': seasonalBadgeInfo,
+        'IsOwner': isOwner,
+        'QueueEligibleRemainingAccountLevels':
             queueEligibleRemainingAccountLevels,
-        "Pings": pings == null
+        'Pings': pings == null
             ? []
             : List<dynamic>.from(pings!.map((x) => x.toJson())),
-        "IsReady": isReady,
-        "IsModerator": isModerator,
-        "UseBroadcastHUD": useBroadcastHud,
-        "PlatformType": platformType,
+        'IsReady': isReady,
+        'IsModerator': isModerator,
+        'UseBroadcastHUD': useBroadcastHud,
+        'PlatformType': platformType,
       };
 }
 
@@ -698,13 +698,13 @@ class Ping {
   String toRawJson() => json.encode(toJson());
 
   factory Ping.fromJson(Map<String, dynamic> json) => Ping(
-        ping: json["Ping"],
-        gamePodId: json["GamePodID"],
+        ping: json['Ping'],
+        gamePodId: json['GamePodID'],
       );
 
   Map<String, dynamic> toJson() => {
-        "Ping": ping,
-        "GamePodID": gamePodId,
+        'Ping': ping,
+        'GamePodID': gamePodId,
       };
 }
 
@@ -753,22 +753,22 @@ class PlayerIdentity {
   String toRawJson() => json.encode(toJson());
 
   factory PlayerIdentity.fromJson(Map<String, dynamic> json) => PlayerIdentity(
-        subject: json["Subject"],
-        playerCardId: json["PlayerCardID"],
-        playerTitleId: json["PlayerTitleID"],
-        accountLevel: json["AccountLevel"],
-        preferredLevelBorderId: json["PreferredLevelBorderID"],
-        incognito: json["Incognito"],
-        hideAccountLevel: json["HideAccountLevel"],
+        subject: json['Subject'],
+        playerCardId: json['PlayerCardID'],
+        playerTitleId: json['PlayerTitleID'],
+        accountLevel: json['AccountLevel'],
+        preferredLevelBorderId: json['PreferredLevelBorderID'],
+        incognito: json['Incognito'],
+        hideAccountLevel: json['HideAccountLevel'],
       );
 
   Map<String, dynamic> toJson() => {
-        "Subject": subject,
-        "PlayerCardID": playerCardId,
-        "PlayerTitleID": playerTitleId,
-        "AccountLevel": accountLevel,
-        "PreferredLevelBorderID": preferredLevelBorderId,
-        "Incognito": incognito,
-        "HideAccountLevel": hideAccountLevel,
+        'Subject': subject,
+        'PlayerCardID': playerCardId,
+        'PlayerTitleID': playerTitleId,
+        'AccountLevel': accountLevel,
+        'PreferredLevelBorderID': preferredLevelBorderId,
+        'Incognito': incognito,
+        'HideAccountLevel': hideAccountLevel,
       };
 }

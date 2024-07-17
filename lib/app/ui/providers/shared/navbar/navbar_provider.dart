@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,20 +9,19 @@ final navbarStateNotifierProvider =
 class NavbarNotifier extends StateNotifier<NavbarState> {
   NavbarNotifier() : super(const NavbarState());
 
-  // quedamo
   final tabs = [
     const NavigationDestination(
-      icon: Icon(Icons.access_time_filled),
+      icon: Icon(CupertinoIcons.time),
       tooltip: 'Career',
       label: 'Career',
     ),
     const NavigationDestination(
-      icon: Icon(Icons.play_arrow_rounded),
+      icon: Icon(CupertinoIcons.play_arrow_solid),
       tooltip: 'Live',
       label: 'Live',
     ),
     const NavigationDestination(
-      icon: Icon(Icons.settings),
+      icon: Icon(CupertinoIcons.settings),
       tooltip: 'Settings',
       label: 'Settings',
     ),

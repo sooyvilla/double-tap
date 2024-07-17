@@ -5,6 +5,7 @@ import 'package:double_tap/app/domain/entities/valorant_user.dart';
 ValorantUser mapPlayer(UserV1 user) {
   final prefs = SharedPreferencesConfig.prefs;
   final region = prefs?.getString(KeysAuth.region);
+  final puuid = prefs?.getString(KeysAuth.puuid);
   return ValorantUser(
     country: user.country,
     region: region,
@@ -12,12 +13,12 @@ ValorantUser mapPlayer(UserV1 user) {
     tagLine: user.acct?.tagLine,
     card: Card(
       id: user.identity?.playerCardID,
-      small:
-          'https://media.valorant-api.com/playercards/${user.identity?.playerCardID}/smallart.png',
-      wide:
-          'https://media.valorant-api.com/playercards/${user.identity?.playerCardID}/wideart.png',
-      large:
-          'https://media.valorant-api.com/playercards/${user.identity?.playerCardID}/largeart.png',
+      small: UrlImage.urlCardSmall(user.identity!.playerCardID!),
+      wide: UrlImage.urlCardWide(user.identity!.playerCardID!),
+      large: UrlImage.urlCardLarge(user.identity!.playerCardID!),
     ),
+    puuid: puuid,
+    levelAccount: user.identity!.accountLevel.toString(),
+    playerTitle: user.identity!.playerTitleID,
   );
 }

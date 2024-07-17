@@ -9,7 +9,7 @@ class PlaySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final user = ref.watch(accountProvider);
+    final user = ref.watch(settingsProvider);
     return ContainerGreyColumn(
       titleSection: 'Play',
       children: [
@@ -56,7 +56,7 @@ class PlaySection extends ConsumerWidget {
                 ),
                 const Spacer(),
                 Switch(
-                  value: user.partyPlayer!.members[0].isReady,
+                  value: true,
                   activeColor: Colors.white,
                   activeTrackColor: Colors.greenAccent[400],
                   inactiveThumbColor: Colors.white,

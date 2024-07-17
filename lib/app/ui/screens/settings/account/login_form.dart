@@ -28,21 +28,21 @@ class LoginForm extends ConsumerWidget {
             hintText: 'User',
             // autofocus: true,
             onChanged: (value) =>
-                ref.read(accountProvider.notifier).setUsername(value),
+                ref.read(settingsProvider.notifier).setUsername(value),
           ),
           const SizedBox(height: 20),
           InputCustom(
             hintText: 'Password',
             isPassword: true,
             onChanged: (value) =>
-                ref.read(accountProvider.notifier).setPassword(value),
+                ref.read(settingsProvider.notifier).setPassword(value),
             keyboardType: TextInputType.visiblePassword,
           ),
           const SizedBox(height: 20),
           ButtonCustomBackground(
             text: 'Login',
             onPressed: () async {
-              await ref.read(accountProvider.notifier).login().then((value) {
+              await ref.read(settingsProvider.notifier).login().then((value) {
                 Navigator.of(context).pop();
               });
             },

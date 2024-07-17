@@ -1,17 +1,18 @@
+import 'dart:convert';
 
 class StoreUser {
   final FeaturedBundle? featuredBundle;
   final SkinsPanelLayout? skinsPanelLayout;
   final UpgradeCurrencyStore? upgradeCurrencyStore;
   final AccessoryStore? accessoryStore;
-  final BonusStore? bonusStore;
+  final List<PluginStore>? pluginStores;
 
   StoreUser({
     this.featuredBundle,
     this.skinsPanelLayout,
     this.upgradeCurrencyStore,
     this.accessoryStore,
-    this.bonusStore,
+    this.pluginStores,
   });
 
   StoreUser copyWith({
@@ -19,48 +20,54 @@ class StoreUser {
     SkinsPanelLayout? skinsPanelLayout,
     UpgradeCurrencyStore? upgradeCurrencyStore,
     AccessoryStore? accessoryStore,
-    BonusStore? bonusStore,
+    List<PluginStore>? pluginStores,
   }) =>
       StoreUser(
         featuredBundle: featuredBundle ?? this.featuredBundle,
         skinsPanelLayout: skinsPanelLayout ?? this.skinsPanelLayout,
         upgradeCurrencyStore: upgradeCurrencyStore ?? this.upgradeCurrencyStore,
         accessoryStore: accessoryStore ?? this.accessoryStore,
-        bonusStore: bonusStore ?? this.bonusStore,
+        pluginStores: pluginStores ?? this.pluginStores,
       );
 
+  factory StoreUser.fromRawJson(String str) =>
+      StoreUser.fromJson(json.decode(str));
 
-  factory StoreUser.fromJson(Map<String, dynamic> json) =>
-      StoreUser(
-        featuredBundle: json["FeaturedBundle"] == null
+  String toRawJson() => json.encode(toJson());
+
+  factory StoreUser.fromJson(Map<String, dynamic> json) => StoreUser(
+        featuredBundle: json['FeaturedBundle'] == null
             ? null
-            : FeaturedBundle.fromJson(json["FeaturedBundle"]),
-        skinsPanelLayout: json["SkinsPanelLayout"] == null
+            : FeaturedBundle.fromJson(json['FeaturedBundle']),
+        skinsPanelLayout: json['SkinsPanelLayout'] == null
             ? null
-            : SkinsPanelLayout.fromJson(json["SkinsPanelLayout"]),
-        upgradeCurrencyStore: json["UpgradeCurrencyStore"] == null
+            : SkinsPanelLayout.fromJson(json['SkinsPanelLayout']),
+        upgradeCurrencyStore: json['UpgradeCurrencyStore'] == null
             ? null
-            : UpgradeCurrencyStore.fromJson(json["UpgradeCurrencyStore"]),
-        accessoryStore: json["AccessoryStore"] == null
+            : UpgradeCurrencyStore.fromJson(json['UpgradeCurrencyStore']),
+        accessoryStore: json['AccessoryStore'] == null
             ? null
-            : AccessoryStore.fromJson(json["AccessoryStore"]),
-        bonusStore: json["BonusStore"] == null
-            ? null
-            : BonusStore.fromJson(json["BonusStore"]),
+            : AccessoryStore.fromJson(json['AccessoryStore']),
+        pluginStores: json['PluginStores'] == null
+            ? []
+            : List<PluginStore>.from(
+                json['PluginStores']!.map((x) => PluginStore.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "FeaturedBundle": featuredBundle?.toJson(),
-        "SkinsPanelLayout": skinsPanelLayout?.toJson(),
-        "UpgradeCurrencyStore": upgradeCurrencyStore?.toJson(),
-        "AccessoryStore": accessoryStore?.toJson(),
-        "BonusStore": bonusStore?.toJson(),
+        'FeaturedBundle': featuredBundle?.toJson(),
+        'SkinsPanelLayout': skinsPanelLayout?.toJson(),
+        'UpgradeCurrencyStore': upgradeCurrencyStore?.toJson(),
+        'AccessoryStore': accessoryStore?.toJson(),
+        'PluginStores': pluginStores == null
+            ? []
+            : List<dynamic>.from(pluginStores!.map((x) => x.toJson())),
       };
 }
 
 class AccessoryStore {
   final List<AccessoryStoreOffer>? accessoryStoreOffers;
-  final double? accessoryStoreRemainingDurationInSeconds;
+  final int? accessoryStoreRemainingDurationInSeconds;
   final String? storefrontId;
 
   AccessoryStore({
@@ -71,7 +78,7 @@ class AccessoryStore {
 
   AccessoryStore copyWith({
     List<AccessoryStoreOffer>? accessoryStoreOffers,
-    double? accessoryStoreRemainingDurationInSeconds,
+    int? accessoryStoreRemainingDurationInSeconds,
     String? storefrontId,
   }) =>
       AccessoryStore(
@@ -82,24 +89,28 @@ class AccessoryStore {
         storefrontId: storefrontId ?? this.storefrontId,
       );
 
+  factory AccessoryStore.fromRawJson(String str) =>
+      AccessoryStore.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
 
   factory AccessoryStore.fromJson(Map<String, dynamic> json) => AccessoryStore(
-        accessoryStoreOffers: json["AccessoryStoreOffers"] == null
+        accessoryStoreOffers: json['AccessoryStoreOffers'] == null
             ? []
-            : List<AccessoryStoreOffer>.from(json["AccessoryStoreOffers"]!
+            : List<AccessoryStoreOffer>.from(json['AccessoryStoreOffers']!
                 .map((x) => AccessoryStoreOffer.fromJson(x))),
         accessoryStoreRemainingDurationInSeconds:
-            json["AccessoryStoreRemainingDurationInSeconds"],
-        storefrontId: json["StorefrontID"],
+            json['AccessoryStoreRemainingDurationInSeconds'],
+        storefrontId: json['StorefrontID'],
       );
 
   Map<String, dynamic> toJson() => {
-        "AccessoryStoreOffers": accessoryStoreOffers == null
+        'AccessoryStoreOffers': accessoryStoreOffers == null
             ? []
             : List<dynamic>.from(accessoryStoreOffers!.map((x) => x.toJson())),
-        "AccessoryStoreRemainingDurationInSeconds":
+        'AccessoryStoreRemainingDurationInSeconds':
             accessoryStoreRemainingDurationInSeconds,
-        "StorefrontID": storefrontId,
+        'StorefrontID': storefrontId,
       };
 }
 
@@ -121,24 +132,28 @@ class AccessoryStoreOffer {
         contractId: contractId ?? this.contractId,
       );
 
+  factory AccessoryStoreOffer.fromRawJson(String str) =>
+      AccessoryStoreOffer.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
 
   factory AccessoryStoreOffer.fromJson(Map<String, dynamic> json) =>
       AccessoryStoreOffer(
-        offer: json["Offer"] == null ? null : Offer.fromJson(json["Offer"]),
-        contractId: json["ContractID"],
+        offer: json['Offer'] == null ? null : Offer.fromJson(json['Offer']),
+        contractId: json['ContractID'],
       );
 
   Map<String, dynamic> toJson() => {
-        "Offer": offer?.toJson(),
-        "ContractID": contractId,
+        'Offer': offer?.toJson(),
+        'ContractID': contractId,
       };
 }
 
 class Offer {
   final String? offerId;
   final bool? isDirectPurchase;
-  final String? startDate;
-  final TotalBaseCost? cost;
+  final DateTime? startDate;
+  final Cost? cost;
   final List<Reward>? rewards;
 
   Offer({
@@ -152,8 +167,8 @@ class Offer {
   Offer copyWith({
     String? offerId,
     bool? isDirectPurchase,
-    String? startDate,
-    TotalBaseCost? cost,
+    DateTime? startDate,
+    Cost? cost,
     List<Reward>? rewards,
   }) =>
       Offer(
@@ -164,58 +179,69 @@ class Offer {
         rewards: rewards ?? this.rewards,
       );
 
+  factory Offer.fromRawJson(String str) => Offer.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
 
   factory Offer.fromJson(Map<String, dynamic> json) => Offer(
-        offerId: json["OfferID"],
-        isDirectPurchase: json["IsDirectPurchase"],
-        startDate: json["StartDate"],
-        cost:
-            json["Cost"] == null ? null : TotalBaseCost.fromJson(json["Cost"]),
-        rewards: json["Rewards"] == null
+        offerId: json['OfferID'],
+        isDirectPurchase: json['IsDirectPurchase'],
+        startDate: json['StartDate'] == null
+            ? null
+            : DateTime.parse(json['StartDate']),
+        cost: json['Cost'] == null ? null : Cost.fromJson(json['Cost']),
+        rewards: json['Rewards'] == null
             ? []
             : List<Reward>.from(
-                json["Rewards"]!.map((x) => Reward.fromJson(x))),
+                json['Rewards']!.map((x) => Reward.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "OfferID": offerId,
-        "IsDirectPurchase": isDirectPurchase,
-        "StartDate": startDate,
-        "Cost": cost?.toJson(),
-        "Rewards": rewards == null
+        'OfferID': offerId,
+        'IsDirectPurchase': isDirectPurchase,
+        'StartDate': startDate?.toIso8601String(),
+        'Cost': cost?.toJson(),
+        'Rewards': rewards == null
             ? []
             : List<dynamic>.from(rewards!.map((x) => x.toJson())),
       };
 }
 
-class TotalBaseCost {
-  final int? x;
+class Cost {
+  final int? the85Ca954A41F2Ce949B458Ca3Dd39A00D;
 
-  TotalBaseCost({
-    this.x,
+  Cost({
+    this.the85Ca954A41F2Ce949B458Ca3Dd39A00D,
   });
 
-  TotalBaseCost copyWith({
-    int? x,
+  Cost copyWith({
+    int? the85Ca954A41F2Ce949B458Ca3Dd39A00D,
   }) =>
-      TotalBaseCost(
-        x: x ?? this.x,
+      Cost(
+        the85Ca954A41F2Ce949B458Ca3Dd39A00D:
+            the85Ca954A41F2Ce949B458Ca3Dd39A00D ??
+                this.the85Ca954A41F2Ce949B458Ca3Dd39A00D,
       );
 
+  factory Cost.fromRawJson(String str) => Cost.fromJson(json.decode(str));
 
-  factory TotalBaseCost.fromJson(Map<String, dynamic> json) => TotalBaseCost(
-        x: json["x"],
+  String toRawJson() => json.encode(toJson());
+
+  factory Cost.fromJson(Map<String, dynamic> json) => Cost(
+        the85Ca954A41F2Ce949B458Ca3Dd39A00D:
+            json['85ca954a-41f2-ce94-9b45-8ca3dd39a00d'],
       );
 
   Map<String, dynamic> toJson() => {
-        "x": x,
+        '85ca954a-41f2-ce94-9b45-8ca3dd39a00d':
+            the85Ca954A41F2Ce949B458Ca3Dd39A00D,
       };
 }
 
 class Reward {
   final String? itemTypeId;
   final String? itemId;
-  final double? quantity;
+  final int? quantity;
 
   Reward({
     this.itemTypeId,
@@ -226,7 +252,7 @@ class Reward {
   Reward copyWith({
     String? itemTypeId,
     String? itemId,
-    double? quantity,
+    int? quantity,
   }) =>
       Reward(
         itemTypeId: itemTypeId ?? this.itemTypeId,
@@ -234,114 +260,27 @@ class Reward {
         quantity: quantity ?? this.quantity,
       );
 
+  factory Reward.fromRawJson(String str) => Reward.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
 
   factory Reward.fromJson(Map<String, dynamic> json) => Reward(
-        itemTypeId: json["ItemTypeID"],
-        itemId: json["ItemID"],
-        quantity: json["Quantity"],
+        itemTypeId: json['ItemTypeID'],
+        itemId: json['ItemID'],
+        quantity: json['Quantity'],
       );
 
   Map<String, dynamic> toJson() => {
-        "ItemTypeID": itemTypeId,
-        "ItemID": itemId,
-        "Quantity": quantity,
-      };
-}
-
-class BonusStore {
-  final List<BonusStoreOffer>? bonusStoreOffers;
-  final int? bonusStoreRemainingDurationInSeconds;
-
-  BonusStore({
-    this.bonusStoreOffers,
-    this.bonusStoreRemainingDurationInSeconds,
-  });
-
-  BonusStore copyWith({
-    List<BonusStoreOffer>? bonusStoreOffers,
-    int? bonusStoreRemainingDurationInSeconds,
-  }) =>
-      BonusStore(
-        bonusStoreOffers: bonusStoreOffers ?? this.bonusStoreOffers,
-        bonusStoreRemainingDurationInSeconds:
-            bonusStoreRemainingDurationInSeconds ??
-                this.bonusStoreRemainingDurationInSeconds,
-      );
-
-
-  factory BonusStore.fromJson(Map<String, dynamic> json) => BonusStore(
-        bonusStoreOffers: json["BonusStoreOffers"] == null
-            ? []
-            : List<BonusStoreOffer>.from(json["BonusStoreOffers"]!
-                .map((x) => BonusStoreOffer.fromJson(x))),
-        bonusStoreRemainingDurationInSeconds:
-            json["BonusStoreRemainingDurationInSeconds"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "BonusStoreOffers": bonusStoreOffers == null
-            ? []
-            : List<dynamic>.from(bonusStoreOffers!.map((x) => x.toJson())),
-        "BonusStoreRemainingDurationInSeconds":
-            bonusStoreRemainingDurationInSeconds,
-      };
-}
-
-class BonusStoreOffer {
-  final String? bonusOfferId;
-  final Offer? offer;
-  final int? discountPercent;
-  final TotalBaseCost? discountCosts;
-  final bool? isSeen;
-
-  BonusStoreOffer({
-    this.bonusOfferId,
-    this.offer,
-    this.discountPercent,
-    this.discountCosts,
-    this.isSeen,
-  });
-
-  BonusStoreOffer copyWith({
-    String? bonusOfferId,
-    Offer? offer,
-    int? discountPercent,
-    TotalBaseCost? discountCosts,
-    bool? isSeen,
-  }) =>
-      BonusStoreOffer(
-        bonusOfferId: bonusOfferId ?? this.bonusOfferId,
-        offer: offer ?? this.offer,
-        discountPercent: discountPercent ?? this.discountPercent,
-        discountCosts: discountCosts ?? this.discountCosts,
-        isSeen: isSeen ?? this.isSeen,
-      );
-
-
-  factory BonusStoreOffer.fromJson(Map<String, dynamic> json) =>
-      BonusStoreOffer(
-        bonusOfferId: json["BonusOfferID"],
-        offer: json["Offer"] == null ? null : Offer.fromJson(json["Offer"]),
-        discountPercent: json["DiscountPercent"],
-        discountCosts: json["DiscountCosts"] == null
-            ? null
-            : TotalBaseCost.fromJson(json["DiscountCosts"]),
-        isSeen: json["IsSeen"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "BonusOfferID": bonusOfferId,
-        "Offer": offer?.toJson(),
-        "DiscountPercent": discountPercent,
-        "DiscountCosts": discountCosts?.toJson(),
-        "IsSeen": isSeen,
+        'ItemTypeID': itemTypeId,
+        'ItemID': itemId,
+        'Quantity': quantity,
       };
 }
 
 class FeaturedBundle {
   final Bundle? bundle;
   final List<Bundle>? bundles;
-  final double? bundleRemainingDurationInSeconds;
+  final int? bundleRemainingDurationInSeconds;
 
   FeaturedBundle({
     this.bundle,
@@ -352,7 +291,7 @@ class FeaturedBundle {
   FeaturedBundle copyWith({
     Bundle? bundle,
     List<Bundle>? bundles,
-    double? bundleRemainingDurationInSeconds,
+    int? bundleRemainingDurationInSeconds,
   }) =>
       FeaturedBundle(
         bundle: bundle ?? this.bundle,
@@ -361,23 +300,27 @@ class FeaturedBundle {
             this.bundleRemainingDurationInSeconds,
       );
 
+  factory FeaturedBundle.fromRawJson(String str) =>
+      FeaturedBundle.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
 
   factory FeaturedBundle.fromJson(Map<String, dynamic> json) => FeaturedBundle(
-        bundle: json["Bundle"] == null ? null : Bundle.fromJson(json["Bundle"]),
-        bundles: json["Bundles"] == null
+        bundle: json['Bundle'] == null ? null : Bundle.fromJson(json['Bundle']),
+        bundles: json['Bundles'] == null
             ? []
             : List<Bundle>.from(
-                json["Bundles"]!.map((x) => Bundle.fromJson(x))),
+                json['Bundles']!.map((x) => Bundle.fromJson(x))),
         bundleRemainingDurationInSeconds:
-            json["BundleRemainingDurationInSeconds"],
+            json['BundleRemainingDurationInSeconds'],
       );
 
   Map<String, dynamic> toJson() => {
-        "Bundle": bundle?.toJson(),
-        "Bundles": bundles == null
+        'Bundle': bundle?.toJson(),
+        'Bundles': bundles == null
             ? []
             : List<dynamic>.from(bundles!.map((x) => x.toJson())),
-        "BundleRemainingDurationInSeconds": bundleRemainingDurationInSeconds,
+        'BundleRemainingDurationInSeconds': bundleRemainingDurationInSeconds,
       };
 }
 
@@ -387,10 +330,10 @@ class Bundle {
   final String? currencyId;
   final List<ItemElement>? items;
   final List<ItemOffer>? itemOffers;
-  final TotalBaseCost? totalBaseCost;
-  final TotalBaseCost? totalDiscountedCost;
+  final TotalBaseCostClass? totalBaseCost;
+  final TotalBaseCostClass? totalDiscountedCost;
   final double? totalDiscountPercent;
-  final double? durationRemainingInSeconds;
+  final int? durationRemainingInSeconds;
   final bool? wholesaleOnly;
 
   Bundle({
@@ -412,10 +355,10 @@ class Bundle {
     String? currencyId,
     List<ItemElement>? items,
     List<ItemOffer>? itemOffers,
-    TotalBaseCost? totalBaseCost,
-    TotalBaseCost? totalDiscountedCost,
+    TotalBaseCostClass? totalBaseCost,
+    TotalBaseCostClass? totalDiscountedCost,
     double? totalDiscountPercent,
-    double? durationRemainingInSeconds,
+    int? durationRemainingInSeconds,
     bool? wholesaleOnly,
   }) =>
       Bundle(
@@ -432,53 +375,56 @@ class Bundle {
         wholesaleOnly: wholesaleOnly ?? this.wholesaleOnly,
       );
 
+  factory Bundle.fromRawJson(String str) => Bundle.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
 
   factory Bundle.fromJson(Map<String, dynamic> json) => Bundle(
-        id: json["ID"],
-        dataAssetId: json["DataAssetID"],
-        currencyId: json["CurrencyID"],
-        items: json["Items"] == null
+        id: json['ID'],
+        dataAssetId: json['DataAssetID'],
+        currencyId: json['CurrencyID'],
+        items: json['Items'] == null
             ? []
             : List<ItemElement>.from(
-                json["Items"]!.map((x) => ItemElement.fromJson(x))),
-        itemOffers: json["ItemOffers"] == null
+                json['Items']!.map((x) => ItemElement.fromJson(x))),
+        itemOffers: json['ItemOffers'] == null
             ? []
             : List<ItemOffer>.from(
-                json["ItemOffers"]!.map((x) => ItemOffer.fromJson(x))),
-        totalBaseCost: json["TotalBaseCost"] == null
+                json['ItemOffers']!.map((x) => ItemOffer.fromJson(x))),
+        totalBaseCost: json['TotalBaseCost'] == null
             ? null
-            : TotalBaseCost.fromJson(json["TotalBaseCost"]),
-        totalDiscountedCost: json["TotalDiscountedCost"] == null
+            : TotalBaseCostClass.fromJson(json['TotalBaseCost']),
+        totalDiscountedCost: json['TotalDiscountedCost'] == null
             ? null
-            : TotalBaseCost.fromJson(json["TotalDiscountedCost"]),
-        totalDiscountPercent: json["TotalDiscountPercent"],
-        durationRemainingInSeconds: json["DurationRemainingInSeconds"],
-        wholesaleOnly: json["WholesaleOnly"],
+            : TotalBaseCostClass.fromJson(json['TotalDiscountedCost']),
+        totalDiscountPercent: json['TotalDiscountPercent']?.toDouble(),
+        durationRemainingInSeconds: json['DurationRemainingInSeconds'],
+        wholesaleOnly: json['WholesaleOnly'],
       );
 
   Map<String, dynamic> toJson() => {
-        "ID": id,
-        "DataAssetID": dataAssetId,
-        "CurrencyID": currencyId,
-        "Items": items == null
+        'ID': id,
+        'DataAssetID': dataAssetId,
+        'CurrencyID': currencyId,
+        'Items': items == null
             ? []
             : List<dynamic>.from(items!.map((x) => x.toJson())),
-        "ItemOffers": itemOffers == null
+        'ItemOffers': itemOffers == null
             ? []
             : List<dynamic>.from(itemOffers!.map((x) => x.toJson())),
-        "TotalBaseCost": totalBaseCost?.toJson(),
-        "TotalDiscountedCost": totalDiscountedCost?.toJson(),
-        "TotalDiscountPercent": totalDiscountPercent,
-        "DurationRemainingInSeconds": durationRemainingInSeconds,
-        "WholesaleOnly": wholesaleOnly,
+        'TotalBaseCost': totalBaseCost?.toJson(),
+        'TotalDiscountedCost': totalDiscountedCost?.toJson(),
+        'TotalDiscountPercent': totalDiscountPercent,
+        'DurationRemainingInSeconds': durationRemainingInSeconds,
+        'WholesaleOnly': wholesaleOnly,
       };
 }
 
 class ItemOffer {
   final String? bundleItemOfferId;
-  final Offer? offer;
-  final int? discountPercent;
-  final TotalBaseCost? discountedCost;
+  final SingleItemStoreOfferElement? offer;
+  final double? discountPercent;
+  final TotalBaseCostClass? discountedCost;
 
   ItemOffer({
     this.bundleItemOfferId,
@@ -489,9 +435,9 @@ class ItemOffer {
 
   ItemOffer copyWith({
     String? bundleItemOfferId,
-    Offer? offer,
-    int? discountPercent,
-    TotalBaseCost? discountedCost,
+    SingleItemStoreOfferElement? offer,
+    double? discountPercent,
+    TotalBaseCostClass? discountedCost,
   }) =>
       ItemOffer(
         bundleItemOfferId: bundleItemOfferId ?? this.bundleItemOfferId,
@@ -500,21 +446,122 @@ class ItemOffer {
         discountedCost: discountedCost ?? this.discountedCost,
       );
 
+  factory ItemOffer.fromRawJson(String str) =>
+      ItemOffer.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
 
   factory ItemOffer.fromJson(Map<String, dynamic> json) => ItemOffer(
-        bundleItemOfferId: json["BundleItemOfferID"],
-        offer: json["Offer"] == null ? null : Offer.fromJson(json["Offer"]),
-        discountPercent: json["DiscountPercent"],
-        discountedCost: json["DiscountedCost"] == null
+        bundleItemOfferId: json['BundleItemOfferID'],
+        offer: json['Offer'] == null
             ? null
-            : TotalBaseCost.fromJson(json["DiscountedCost"]),
+            : SingleItemStoreOfferElement.fromJson(json['Offer']),
+        discountPercent: json['DiscountPercent']?.toDouble(),
+        discountedCost: json['DiscountedCost'] == null
+            ? null
+            : TotalBaseCostClass.fromJson(json['DiscountedCost']),
       );
 
   Map<String, dynamic> toJson() => {
-        "BundleItemOfferID": bundleItemOfferId,
-        "Offer": offer?.toJson(),
-        "DiscountPercent": discountPercent,
-        "DiscountedCost": discountedCost?.toJson(),
+        'BundleItemOfferID': bundleItemOfferId,
+        'Offer': offer?.toJson(),
+        'DiscountPercent': discountPercent,
+        'DiscountedCost': discountedCost?.toJson(),
+      };
+}
+
+class TotalBaseCostClass {
+  final int? the85Ad13F73D1B51289Eb27Cd8Ee0B5741;
+
+  TotalBaseCostClass({
+    this.the85Ad13F73D1B51289Eb27Cd8Ee0B5741,
+  });
+
+  TotalBaseCostClass copyWith({
+    int? the85Ad13F73D1B51289Eb27Cd8Ee0B5741,
+  }) =>
+      TotalBaseCostClass(
+        the85Ad13F73D1B51289Eb27Cd8Ee0B5741:
+            the85Ad13F73D1B51289Eb27Cd8Ee0B5741 ??
+                this.the85Ad13F73D1B51289Eb27Cd8Ee0B5741,
+      );
+
+  factory TotalBaseCostClass.fromRawJson(String str) =>
+      TotalBaseCostClass.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory TotalBaseCostClass.fromJson(Map<String, dynamic> json) =>
+      TotalBaseCostClass(
+        the85Ad13F73D1B51289Eb27Cd8Ee0B5741:
+            json['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741':
+            the85Ad13F73D1B51289Eb27Cd8Ee0B5741,
+      };
+}
+
+class SingleItemStoreOfferElement {
+  final String? offerId;
+  final bool? isDirectPurchase;
+  final DateTime? startDate;
+  final TotalBaseCostClass? cost;
+  final List<Reward>? rewards;
+
+  SingleItemStoreOfferElement({
+    this.offerId,
+    this.isDirectPurchase,
+    this.startDate,
+    this.cost,
+    this.rewards,
+  });
+
+  SingleItemStoreOfferElement copyWith({
+    String? offerId,
+    bool? isDirectPurchase,
+    DateTime? startDate,
+    TotalBaseCostClass? cost,
+    List<Reward>? rewards,
+  }) =>
+      SingleItemStoreOfferElement(
+        offerId: offerId ?? this.offerId,
+        isDirectPurchase: isDirectPurchase ?? this.isDirectPurchase,
+        startDate: startDate ?? this.startDate,
+        cost: cost ?? this.cost,
+        rewards: rewards ?? this.rewards,
+      );
+
+  factory SingleItemStoreOfferElement.fromRawJson(String str) =>
+      SingleItemStoreOfferElement.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory SingleItemStoreOfferElement.fromJson(Map<String, dynamic> json) =>
+      SingleItemStoreOfferElement(
+        offerId: json['OfferID'],
+        isDirectPurchase: json['IsDirectPurchase'],
+        startDate: json['StartDate'] == null
+            ? null
+            : DateTime.parse(json['StartDate']),
+        cost: json['Cost'] == null
+            ? null
+            : TotalBaseCostClass.fromJson(json['Cost']),
+        rewards: json['Rewards'] == null
+            ? []
+            : List<Reward>.from(
+                json['Rewards']!.map((x) => Reward.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'OfferID': offerId,
+        'IsDirectPurchase': isDirectPurchase,
+        'StartDate': startDate?.toIso8601String(),
+        'Cost': cost?.toJson(),
+        'Rewards': rewards == null
+            ? []
+            : List<dynamic>.from(rewards!.map((x) => x.toJson())),
       };
 }
 
@@ -522,7 +569,7 @@ class ItemElement {
   final ItemItem? item;
   final int? basePrice;
   final String? currencyId;
-  final int? discountPercent;
+  final double? discountPercent;
   final int? discountedPrice;
   final bool? isPromoItem;
 
@@ -539,7 +586,7 @@ class ItemElement {
     ItemItem? item,
     int? basePrice,
     String? currencyId,
-    int? discountPercent,
+    double? discountPercent,
     int? discountedPrice,
     bool? isPromoItem,
   }) =>
@@ -552,23 +599,27 @@ class ItemElement {
         isPromoItem: isPromoItem ?? this.isPromoItem,
       );
 
+  factory ItemElement.fromRawJson(String str) =>
+      ItemElement.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
 
   factory ItemElement.fromJson(Map<String, dynamic> json) => ItemElement(
-        item: json["Item"] == null ? null : ItemItem.fromJson(json["Item"]),
-        basePrice: json["BasePrice"],
-        currencyId: json["CurrencyID"],
-        discountPercent: json["DiscountPercent"],
-        discountedPrice: json["DiscountedPrice"],
-        isPromoItem: json["IsPromoItem"],
+        item: json['Item'] == null ? null : ItemItem.fromJson(json['Item']),
+        basePrice: json['BasePrice'],
+        currencyId: json['CurrencyID'],
+        discountPercent: json['DiscountPercent']?.toDouble(),
+        discountedPrice: json['DiscountedPrice'],
+        isPromoItem: json['IsPromoItem'],
       );
 
   Map<String, dynamic> toJson() => {
-        "Item": item?.toJson(),
-        "BasePrice": basePrice,
-        "CurrencyID": currencyId,
-        "DiscountPercent": discountPercent,
-        "DiscountedPrice": discountedPrice,
-        "IsPromoItem": isPromoItem,
+        'Item': item?.toJson(),
+        'BasePrice': basePrice,
+        'CurrencyID': currencyId,
+        'DiscountPercent': discountPercent,
+        'DiscountedPrice': discountedPrice,
+        'IsPromoItem': isPromoItem,
       };
 }
 
@@ -594,23 +645,272 @@ class ItemItem {
         amount: amount ?? this.amount,
       );
 
+  factory ItemItem.fromRawJson(String str) =>
+      ItemItem.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
 
   factory ItemItem.fromJson(Map<String, dynamic> json) => ItemItem(
-        itemTypeId: json["ItemTypeID"],
-        itemId: json["ItemID"],
-        amount: json["Amount"],
+        itemTypeId: json['ItemTypeID'],
+        itemId: json['ItemID'],
+        amount: json['Amount'],
       );
 
   Map<String, dynamic> toJson() => {
-        "ItemTypeID": itemTypeId,
-        "ItemID": itemId,
-        "Amount": amount,
+        'ItemTypeID': itemTypeId,
+        'ItemID': itemId,
+        'Amount': amount,
+      };
+}
+
+class PluginStore {
+  final String? pluginId;
+  final PluginOffers? pluginOffers;
+
+  PluginStore({
+    this.pluginId,
+    this.pluginOffers,
+  });
+
+  PluginStore copyWith({
+    String? pluginId,
+    PluginOffers? pluginOffers,
+  }) =>
+      PluginStore(
+        pluginId: pluginId ?? this.pluginId,
+        pluginOffers: pluginOffers ?? this.pluginOffers,
+      );
+
+  factory PluginStore.fromRawJson(String str) =>
+      PluginStore.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory PluginStore.fromJson(Map<String, dynamic> json) => PluginStore(
+        pluginId: json['PluginID'],
+        pluginOffers: json['PluginOffers'] == null
+            ? null
+            : PluginOffers.fromJson(json['PluginOffers']),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'PluginID': pluginId,
+        'PluginOffers': pluginOffers?.toJson(),
+      };
+}
+
+class PluginOffers {
+  final List<StoreOffer>? storeOffers;
+  final int? remainingDurationInSeconds;
+
+  PluginOffers({
+    this.storeOffers,
+    this.remainingDurationInSeconds,
+  });
+
+  PluginOffers copyWith({
+    List<StoreOffer>? storeOffers,
+    int? remainingDurationInSeconds,
+  }) =>
+      PluginOffers(
+        storeOffers: storeOffers ?? this.storeOffers,
+        remainingDurationInSeconds:
+            remainingDurationInSeconds ?? this.remainingDurationInSeconds,
+      );
+
+  factory PluginOffers.fromRawJson(String str) =>
+      PluginOffers.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory PluginOffers.fromJson(Map<String, dynamic> json) => PluginOffers(
+        storeOffers: json['StoreOffers'] == null
+            ? []
+            : List<StoreOffer>.from(
+                json['StoreOffers']!.map((x) => StoreOffer.fromJson(x))),
+        remainingDurationInSeconds: json['RemainingDurationInSeconds'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'StoreOffers': storeOffers == null
+            ? []
+            : List<dynamic>.from(storeOffers!.map((x) => x.toJson())),
+        'RemainingDurationInSeconds': remainingDurationInSeconds,
+      };
+}
+
+class StoreOffer {
+  final PurchaseInformation? purchaseInformation;
+  final List<SubOffer>? subOffers;
+
+  StoreOffer({
+    this.purchaseInformation,
+    this.subOffers,
+  });
+
+  StoreOffer copyWith({
+    PurchaseInformation? purchaseInformation,
+    List<SubOffer>? subOffers,
+  }) =>
+      StoreOffer(
+        purchaseInformation: purchaseInformation ?? this.purchaseInformation,
+        subOffers: subOffers ?? this.subOffers,
+      );
+
+  factory StoreOffer.fromRawJson(String str) =>
+      StoreOffer.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory StoreOffer.fromJson(Map<String, dynamic> json) => StoreOffer(
+        purchaseInformation: json['PurchaseInformation'] == null
+            ? null
+            : PurchaseInformation.fromJson(json['PurchaseInformation']),
+        subOffers: json['SubOffers'] == null
+            ? []
+            : List<SubOffer>.from(
+                json['SubOffers']!.map((x) => SubOffer.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'PurchaseInformation': purchaseInformation?.toJson(),
+        'SubOffers': subOffers == null
+            ? []
+            : List<dynamic>.from(subOffers!.map((x) => x.toJson())),
+      };
+}
+
+class PurchaseInformation {
+  final String? dataAssetId;
+  final String? offerId;
+  final DateTime? startDate;
+  final String? primaryCurrencyId;
+  final TotalBaseCostClass? cost;
+  final TotalBaseCostClass? discountedCost;
+  final int? discountedPercentage;
+  final List<Reward>? rewards;
+  final List<dynamic>? additionalContext;
+  final bool? wholesaleOnly;
+
+  PurchaseInformation({
+    this.dataAssetId,
+    this.offerId,
+    this.startDate,
+    this.primaryCurrencyId,
+    this.cost,
+    this.discountedCost,
+    this.discountedPercentage,
+    this.rewards,
+    this.additionalContext,
+    this.wholesaleOnly,
+  });
+
+  PurchaseInformation copyWith({
+    String? dataAssetId,
+    String? offerId,
+    DateTime? startDate,
+    String? primaryCurrencyId,
+    TotalBaseCostClass? cost,
+    TotalBaseCostClass? discountedCost,
+    int? discountedPercentage,
+    List<Reward>? rewards,
+    List<dynamic>? additionalContext,
+    bool? wholesaleOnly,
+  }) =>
+      PurchaseInformation(
+        dataAssetId: dataAssetId ?? this.dataAssetId,
+        offerId: offerId ?? this.offerId,
+        startDate: startDate ?? this.startDate,
+        primaryCurrencyId: primaryCurrencyId ?? this.primaryCurrencyId,
+        cost: cost ?? this.cost,
+        discountedCost: discountedCost ?? this.discountedCost,
+        discountedPercentage: discountedPercentage ?? this.discountedPercentage,
+        rewards: rewards ?? this.rewards,
+        additionalContext: additionalContext ?? this.additionalContext,
+        wholesaleOnly: wholesaleOnly ?? this.wholesaleOnly,
+      );
+
+  factory PurchaseInformation.fromRawJson(String str) =>
+      PurchaseInformation.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory PurchaseInformation.fromJson(Map<String, dynamic> json) =>
+      PurchaseInformation(
+        dataAssetId: json['DataAssetID'],
+        offerId: json['OfferID'],
+        startDate: json['StartDate'] == null
+            ? null
+            : DateTime.parse(json['StartDate']),
+        primaryCurrencyId: json['PrimaryCurrencyID'],
+        cost: json['Cost'] == null
+            ? null
+            : TotalBaseCostClass.fromJson(json['Cost']),
+        discountedCost: json['DiscountedCost'] == null
+            ? null
+            : TotalBaseCostClass.fromJson(json['DiscountedCost']),
+        discountedPercentage: json['DiscountedPercentage'],
+        rewards: json['Rewards'] == null
+            ? []
+            : List<Reward>.from(
+                json['Rewards']!.map((x) => Reward.fromJson(x))),
+        additionalContext: json['AdditionalContext'] == null
+            ? []
+            : List<dynamic>.from(json['AdditionalContext']!.map((x) => x)),
+        wholesaleOnly: json['WholesaleOnly'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'DataAssetID': dataAssetId,
+        'OfferID': offerId,
+        'StartDate': startDate?.toIso8601String(),
+        'PrimaryCurrencyID': primaryCurrencyId,
+        'Cost': cost?.toJson(),
+        'DiscountedCost': discountedCost?.toJson(),
+        'DiscountedPercentage': discountedPercentage,
+        'Rewards': rewards == null
+            ? []
+            : List<dynamic>.from(rewards!.map((x) => x.toJson())),
+        'AdditionalContext': additionalContext == null
+            ? []
+            : List<dynamic>.from(additionalContext!.map((x) => x)),
+        'WholesaleOnly': wholesaleOnly,
+      };
+}
+
+class SubOffer {
+  final PurchaseInformation? purchaseInformation;
+
+  SubOffer({
+    this.purchaseInformation,
+  });
+
+  SubOffer copyWith({
+    PurchaseInformation? purchaseInformation,
+  }) =>
+      SubOffer(
+        purchaseInformation: purchaseInformation ?? this.purchaseInformation,
+      );
+
+  factory SubOffer.fromRawJson(String str) =>
+      SubOffer.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory SubOffer.fromJson(Map<String, dynamic> json) => SubOffer(
+        purchaseInformation: json['PurchaseInformation'] == null
+            ? null
+            : PurchaseInformation.fromJson(json['PurchaseInformation']),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'PurchaseInformation': purchaseInformation?.toJson(),
       };
 }
 
 class SkinsPanelLayout {
   final List<String>? singleItemOffers;
-  final List<Offer>? singleItemStoreOffers;
+  final List<SingleItemStoreOfferElement>? singleItemStoreOffers;
   final int? singleItemOffersRemainingDurationInSeconds;
 
   SkinsPanelLayout({
@@ -621,7 +921,7 @@ class SkinsPanelLayout {
 
   SkinsPanelLayout copyWith({
     List<String>? singleItemOffers,
-    List<Offer>? singleItemStoreOffers,
+    List<SingleItemStoreOfferElement>? singleItemStoreOffers,
     int? singleItemOffersRemainingDurationInSeconds,
   }) =>
       SkinsPanelLayout(
@@ -633,28 +933,33 @@ class SkinsPanelLayout {
                 this.singleItemOffersRemainingDurationInSeconds,
       );
 
+  factory SkinsPanelLayout.fromRawJson(String str) =>
+      SkinsPanelLayout.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
 
   factory SkinsPanelLayout.fromJson(Map<String, dynamic> json) =>
       SkinsPanelLayout(
-        singleItemOffers: json["SingleItemOffers"] == null
+        singleItemOffers: json['SingleItemOffers'] == null
             ? []
-            : List<String>.from(json["SingleItemOffers"]!.map((x) => x)),
-        singleItemStoreOffers: json["SingleItemStoreOffers"] == null
+            : List<String>.from(json['SingleItemOffers']!.map((x) => x)),
+        singleItemStoreOffers: json['SingleItemStoreOffers'] == null
             ? []
-            : List<Offer>.from(
-                json["SingleItemStoreOffers"]!.map((x) => Offer.fromJson(x))),
+            : List<SingleItemStoreOfferElement>.from(
+                json['SingleItemStoreOffers']!
+                    .map((x) => SingleItemStoreOfferElement.fromJson(x))),
         singleItemOffersRemainingDurationInSeconds:
-            json["SingleItemOffersRemainingDurationInSeconds"],
+            json['SingleItemOffersRemainingDurationInSeconds'],
       );
 
   Map<String, dynamic> toJson() => {
-        "SingleItemOffers": singleItemOffers == null
+        'SingleItemOffers': singleItemOffers == null
             ? []
             : List<dynamic>.from(singleItemOffers!.map((x) => x)),
-        "SingleItemStoreOffers": singleItemStoreOffers == null
+        'SingleItemStoreOffers': singleItemStoreOffers == null
             ? []
             : List<dynamic>.from(singleItemStoreOffers!.map((x) => x.toJson())),
-        "SingleItemOffersRemainingDurationInSeconds":
+        'SingleItemOffersRemainingDurationInSeconds':
             singleItemOffersRemainingDurationInSeconds,
       };
 }
@@ -674,16 +979,21 @@ class UpgradeCurrencyStore {
             upgradeCurrencyOffers ?? this.upgradeCurrencyOffers,
       );
 
+  factory UpgradeCurrencyStore.fromRawJson(String str) =>
+      UpgradeCurrencyStore.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
   factory UpgradeCurrencyStore.fromJson(Map<String, dynamic> json) =>
       UpgradeCurrencyStore(
-        upgradeCurrencyOffers: json["UpgradeCurrencyOffers"] == null
+        upgradeCurrencyOffers: json['UpgradeCurrencyOffers'] == null
             ? []
-            : List<UpgradeCurrencyOffer>.from(json["UpgradeCurrencyOffers"]!
+            : List<UpgradeCurrencyOffer>.from(json['UpgradeCurrencyOffers']!
                 .map((x) => UpgradeCurrencyOffer.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "UpgradeCurrencyOffers": upgradeCurrencyOffers == null
+        'UpgradeCurrencyOffers': upgradeCurrencyOffers == null
             ? []
             : List<dynamic>.from(upgradeCurrencyOffers!.map((x) => x.toJson())),
       };
@@ -692,8 +1002,8 @@ class UpgradeCurrencyStore {
 class UpgradeCurrencyOffer {
   final String? offerId;
   final String? storefrontItemId;
-  final Offer? offer;
-  final int? discountedPercent;
+  final SingleItemStoreOfferElement? offer;
+  final double? discountedPercent;
 
   UpgradeCurrencyOffer({
     this.offerId,
@@ -705,8 +1015,8 @@ class UpgradeCurrencyOffer {
   UpgradeCurrencyOffer copyWith({
     String? offerId,
     String? storefrontItemId,
-    Offer? offer,
-    int? discountedPercent,
+    SingleItemStoreOfferElement? offer,
+    double? discountedPercent,
   }) =>
       UpgradeCurrencyOffer(
         offerId: offerId ?? this.offerId,
@@ -715,19 +1025,25 @@ class UpgradeCurrencyOffer {
         discountedPercent: discountedPercent ?? this.discountedPercent,
       );
 
+  factory UpgradeCurrencyOffer.fromRawJson(String str) =>
+      UpgradeCurrencyOffer.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
 
   factory UpgradeCurrencyOffer.fromJson(Map<String, dynamic> json) =>
       UpgradeCurrencyOffer(
-        offerId: json["OfferID"],
-        storefrontItemId: json["StorefrontItemID"],
-        offer: json["Offer"] == null ? null : Offer.fromJson(json["Offer"]),
-        discountedPercent: json["DiscountedPercent"],
+        offerId: json['OfferID'],
+        storefrontItemId: json['StorefrontItemID'],
+        offer: json['Offer'] == null
+            ? null
+            : SingleItemStoreOfferElement.fromJson(json['Offer']),
+        discountedPercent: json['DiscountedPercent']?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
-        "OfferID": offerId,
-        "StorefrontItemID": storefrontItemId,
-        "Offer": offer?.toJson(),
-        "DiscountedPercent": discountedPercent,
+        'OfferID': offerId,
+        'StorefrontItemID': storefrontItemId,
+        'Offer': offer?.toJson(),
+        'DiscountedPercent': discountedPercent,
       };
 }

@@ -1,4 +1,4 @@
-class PartyResponse {
+class PartyResponsePriv {
   String id;
   String mucName;
   String voiceRoomID;
@@ -22,7 +22,7 @@ class PartyResponse {
   List<dynamic> xpBonuses;
   String inviteCode;
 
-  PartyResponse({
+  PartyResponsePriv({
     required this.id,
     required this.mucName,
     required this.voiceRoomID,
@@ -47,8 +47,8 @@ class PartyResponse {
     required this.inviteCode,
   });
 
-  factory PartyResponse.fromJson(Map<String, dynamic> json) {
-    return PartyResponse(
+  factory PartyResponsePriv.fromJson(Map<String, dynamic> json) {
+    return PartyResponsePriv(
       id: json['ID'],
       mucName: json['MUCName'],
       voiceRoomID: json['VoiceRoomID'],
@@ -626,5 +626,3 @@ class PlatformInfo {
     };
   }
 }
-
-

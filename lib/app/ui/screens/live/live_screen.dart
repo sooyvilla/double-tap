@@ -1,29 +1,28 @@
-import 'package:double_tap/app/ui/screens/live/play/play_section.dart';
+import 'package:double_tap/app/ui/providers/providers.dart';
 import 'package:double_tap/app/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LiveScreen extends ConsumerStatefulWidget {
+import 'inventory/inventory_section.dart';
+import 'play/play_section.dart';
+import 'store/store_section.dart';
+
+class LiveScreen extends ConsumerWidget {
   const LiveScreen({super.key});
 
   @override
-  ConsumerState<LiveScreen> createState() => _LiveScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    final live = ref.watch(liveProvider);
 
-class _LiveScreenState extends ConsumerState<LiveScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
+ 
     return const ScaffoldPrimary(
       appBarText: 'Live',
       body: WidgetBody(
         children: [
           PlaySection(),
+          StoreSection(),
+          InventorySection(),
         ],
       ),
     );
