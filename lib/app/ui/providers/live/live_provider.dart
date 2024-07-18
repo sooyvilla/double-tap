@@ -32,7 +32,6 @@ class LiveProvider extends StateNotifier<LiveState> {
   }
 
   Future<void> getStore() async {
-    if (state.storeUser != null) return;
     try {
       final response = await datasource.getStore();
       state = state.copyWith(storeUser: response);
@@ -60,20 +59,20 @@ class LiveProvider extends StateNotifier<LiveState> {
   }
 
   void setIsLoading(bool isLoading) {
-    state = state.copyWith(isLoading: isLoading);
+    state = state.copyWith(loading: isLoading);
   }
 }
 
 class LiveState {
   final PartyUser? partyUser;
-  final bool isLoading;
+  final bool loading;
   final int? coldDown;
   final StoreUser? storeUser;
   final Wallet? wallet;
 
   LiveState({
     this.partyUser,
-    this.isLoading = false,
+    this.loading = false,
     this.coldDown,
     this.storeUser,
     this.wallet,
@@ -81,14 +80,14 @@ class LiveState {
 
   LiveState copyWith({
     PartyUser? partyUser,
-    bool? isLoading,
+    bool? loading,
     int? coldDown,
     StoreUser? storeUser,
     Wallet? wallet,
   }) {
     return LiveState(
       partyUser: partyUser,
-      isLoading: isLoading ?? this.isLoading,
+      loading: loading ?? this.loading,
       coldDown: coldDown ?? this.coldDown,
       storeUser: storeUser ?? this.storeUser,
       wallet: wallet ?? this.wallet,
@@ -97,6 +96,6 @@ class LiveState {
 
   @override
   String toString() {
-    return 'LiveState(partyUser: $partyUser, isLoading: $isLoading, coldDown: $coldDown, storeUser: $storeUser, wallet: $wallet)';
+    return 'LiveState(partyUser: $partyUser, isLoading: $loading, coldDown: $coldDown, storeUser: $storeUser, wallet: $wallet)';
   }
 }

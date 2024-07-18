@@ -58,12 +58,20 @@ class ValorantApiLiveDatasource extends ValorantLiveDatasource
     final puuid = _prefs?.getString(KeysAuth.puuid) ?? '';
 
     try {
-      final response = await dio.get(ValorantUrls.urlStore(shard, puuid),
+      final response = await dio.post(ValorantUrls.urlStore(shard, puuid),
+          data: {},
           options: Options(
             headers: getHeaders(),
           ));
       if (response.statusCode == 200) {
-        final storeUser = StoreUser.fromJson(response.data);
+        StoreUser storeUser = StoreUser.fromJson(response.data);
+        final List<InfoItemStore> itemsStore = [];
+        for (var item in storeUser.skinsPanelLayout!.singleItemStoreOffers!) {
+          final responseSingleItem = await dio.get(
+              'https://valorant-api.com/v1/weapons/skinlevels/${item.rewards![0].itemId}');
+          itemsStore.add(InfoItemStore.fromJson(responseSingleItem.data));
+        }
+        storeUser = storeUser.copyWith(infoItemStore: itemsStore);
         return storeUser;
       }
       throw Exception('No store found');
@@ -79,7 +87,7 @@ class ValorantApiLiveDatasource extends ValorantLiveDatasource
     final puuid = _prefs?.getString(KeysAuth.puuid) ?? '';
     try {
       final response = await dio.get(
-          '${ValorantUrls.urlBaseStore(shard)}/wallet/$puuid',
+          '${ValorantUrls.urlBaseStore(shard)}wallet/$puuid',
           options: Options(headers: getHeaders()));
 
       return WalletResponse.fromJson(response.data);

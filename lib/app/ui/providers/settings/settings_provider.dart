@@ -107,6 +107,7 @@ class AccountNotifier extends StateNotifier<SettingsState> {
   }
 
   void setIsLoggedIn(bool isLoggedIn) {
+    prefs?.setBool(KeysAuth.isLogged, isLoggedIn);
     state = state.copyWith(isLoggedIn: isLoggedIn);
   }
 }

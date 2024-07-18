@@ -22,5 +22,5 @@ class ValorantUrls {
   static String urlPersonalization(String shard, String puuid) =>
       'https://pd.$shard.a.pvp.net/personalization/v2/players/$puuid/playerloadout';
   static String urlStore(String shard, String puuid) =>
-      'https://pd.$shard.a.pvp.net/store/v2/storefront/$puuid';
+      'https://pd.$shard.a.pvp.net/store/v3/storefront/$puuid';
 }

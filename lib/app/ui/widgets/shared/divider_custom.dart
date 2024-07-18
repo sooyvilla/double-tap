@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../../ui.dart';
 
 class DividerCustom extends StatelessWidget {
-  const DividerCustom({super.key});
+  const DividerCustom({super.key, this.ident});
+
+  final double? ident;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +14,7 @@ class DividerCustom extends StatelessWidget {
       child: Divider(
         color: dividerGrey,
         thickness: 1.5,
-        indent: 12,
+        indent: ident ?? 12,
         height: 0,
       ),
     );

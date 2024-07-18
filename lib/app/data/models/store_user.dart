@@ -6,6 +6,7 @@ class StoreUser {
   final UpgradeCurrencyStore? upgradeCurrencyStore;
   final AccessoryStore? accessoryStore;
   final List<PluginStore>? pluginStores;
+  final List<InfoItemStore>? infoItemStores;
 
   StoreUser({
     this.featuredBundle,
@@ -13,6 +14,7 @@ class StoreUser {
     this.upgradeCurrencyStore,
     this.accessoryStore,
     this.pluginStores,
+    this.infoItemStores,
   });
 
   StoreUser copyWith({
@@ -21,6 +23,7 @@ class StoreUser {
     UpgradeCurrencyStore? upgradeCurrencyStore,
     AccessoryStore? accessoryStore,
     List<PluginStore>? pluginStores,
+    List<InfoItemStore>? infoItemStore,
   }) =>
       StoreUser(
         featuredBundle: featuredBundle ?? this.featuredBundle,
@@ -28,6 +31,7 @@ class StoreUser {
         upgradeCurrencyStore: upgradeCurrencyStore ?? this.upgradeCurrencyStore,
         accessoryStore: accessoryStore ?? this.accessoryStore,
         pluginStores: pluginStores ?? this.pluginStores,
+        infoItemStores: infoItemStore ?? infoItemStores,
       );
 
   factory StoreUser.fromRawJson(String str) =>
@@ -471,19 +475,17 @@ class ItemOffer {
 }
 
 class TotalBaseCostClass {
-  final int? the85Ad13F73D1B51289Eb27Cd8Ee0B5741;
+  final int? cost;
 
   TotalBaseCostClass({
-    this.the85Ad13F73D1B51289Eb27Cd8Ee0B5741,
+    this.cost,
   });
 
   TotalBaseCostClass copyWith({
     int? the85Ad13F73D1B51289Eb27Cd8Ee0B5741,
   }) =>
       TotalBaseCostClass(
-        the85Ad13F73D1B51289Eb27Cd8Ee0B5741:
-            the85Ad13F73D1B51289Eb27Cd8Ee0B5741 ??
-                this.the85Ad13F73D1B51289Eb27Cd8Ee0B5741,
+        cost: the85Ad13F73D1B51289Eb27Cd8Ee0B5741 ?? cost,
       );
 
   factory TotalBaseCostClass.fromRawJson(String str) =>
@@ -493,13 +495,11 @@ class TotalBaseCostClass {
 
   factory TotalBaseCostClass.fromJson(Map<String, dynamic> json) =>
       TotalBaseCostClass(
-        the85Ad13F73D1B51289Eb27Cd8Ee0B5741:
-            json['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'],
+        cost: json['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'],
       );
 
   Map<String, dynamic> toJson() => {
-        '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741':
-            the85Ad13F73D1B51289Eb27Cd8Ee0B5741,
+        '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': cost,
       };
 }
 
@@ -1045,5 +1045,98 @@ class UpgradeCurrencyOffer {
         'StorefrontItemID': storefrontItemId,
         'Offer': offer?.toJson(),
         'DiscountedPercent': discountedPercent,
+      };
+}
+
+InfoItemStore infoItemStoreFromJson(String str) =>
+    InfoItemStore.fromJson(json.decode(str));
+
+String infoItemStoreToJson(InfoItemStore data) => json.encode(data.toJson());
+
+class InfoItemStore {
+  final int? status;
+  final Data? data;
+
+  InfoItemStore({
+    this.status,
+    this.data,
+  });
+
+  InfoItemStore copyWith({
+    int? status,
+    Data? data,
+  }) =>
+      InfoItemStore(
+        status: status ?? this.status,
+        data: data ?? this.data,
+      );
+
+  factory InfoItemStore.fromJson(Map<String, dynamic> json) => InfoItemStore(
+        status: json['status'],
+        data: json['data'] == null ? null : Data.fromJson(json['data']),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'status': status,
+        'data': data?.toJson(),
+      };
+}
+
+class Data {
+  final String? uuid;
+  final String? displayName;
+  final dynamic levelItem;
+  final String? displayIcon;
+  final String? streamedVideo;
+  final String? assetPath;
+  final int? cost;
+
+  Data({
+    this.uuid,
+    this.displayName,
+    this.levelItem,
+    this.displayIcon,
+    this.streamedVideo,
+    this.assetPath,
+    this.cost,
+  });
+
+  Data copyWith({
+    String? uuid,
+    String? displayName,
+    dynamic levelItem,
+    String? displayIcon,
+    String? streamedVideo,
+    String? assetPath,
+    int? cost,
+  }) =>
+      Data(
+        uuid: uuid ?? this.uuid,
+        displayName: displayName ?? this.displayName,
+        levelItem: levelItem ?? this.levelItem,
+        displayIcon: displayIcon ?? this.displayIcon,
+        streamedVideo: streamedVideo ?? this.streamedVideo,
+        assetPath: assetPath ?? this.assetPath,
+        cost: cost ?? this.cost,
+      );
+
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+        uuid: json['uuid'],
+        displayName: json['displayName'],
+        levelItem: json['levelItem'],
+        displayIcon: json['displayIcon'],
+        streamedVideo: json['streamedVideo'],
+        assetPath: json['assetPath'],
+        cost: json['cost'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'uuid': uuid,
+        'displayName': displayName,
+        'levelItem': levelItem,
+        'displayIcon': displayIcon,
+        'streamedVideo': streamedVideo,
+        'assetPath': assetPath,
+        'cost': cost,
       };
 }
