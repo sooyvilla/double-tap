@@ -1,4 +1,4 @@
-# insane_bolt
+# double-tap
 
 A new Flutter project.
 
