@@ -1,4 +1,4 @@
-package com.example.valomatch_app
+package com.example.insane_bolt
 
 import io.flutter.embedding.android.FlutterActivity
 
