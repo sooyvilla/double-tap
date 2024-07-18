@@ -13,27 +13,59 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
   final _prefs = SharedPreferencesConfig.prefs;
   final _requestPrivateAuth = _RequestPrivateAuth();
 
-  //todo: falta fixear el reauth
+  // Future<void> reauthentication() async {
+  //   final cookie = _prefs?.getString(KeysAuth.cookie) ?? '';
+  //   final versionApi = _prefs?.getString(KeysAuth.versionApi);
+
+  //   final asid = cookie.split(';')[1].split('=')[1];
+
+  //   try {
+  //     final response = await dio.get(ValorantUrls.urlCookieReAuth,
+  //         options: Options(headers: {
+  //           'Cookie': asid,
+  //         }));
+  //     final url = Uri.decodeFull(response.realUri.toString());
+  //     // _saveToken(response.data['response']['parameters']['uri']);
+  //     await _requestPrivateAuth.getEntitlement();
+  //   } catch (e) {
+  //     log('reauthentication error: $e', name: 'reauthentication error');
+  //     rethrow;
+  //   }
+  // }
 
   @override
   Future<void> reauthentication() async {
     final cookie = _prefs?.getString(KeysAuth.cookie) ?? '';
     final versionApi = _prefs?.getString(KeysAuth.versionApi);
+    final accessToken = _prefs?.getString(KeysAuth.accessToken);
 
     final asid = cookie.split(';')[1].split('=')[1];
-
     try {
-      final response = await dio.get(ValorantUrls.urlLoginWebView,
-          options: Options(headers: {
+      var response = await dio.get(
+        'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
             'Cookie': asid,
-          }));
-      final url = Uri.decodeFull(response.realUri.toString());
-      log(url);
-      // _saveToken(response.data['response']['parameters']['uri']);
-      await _requestPrivateAuth.getEntitlement();
-    } catch (e) {
-      log('reauthentication error: $e', name: 'reauthentication error');
-      rethrow;
+          },
+        ),
+      );
+      log(response.toString());
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 303) {
+        var redirectUrl = e.response?.headers['location']![0];
+        var setCookieHeader = e.response?.headers['set-cookie'];
+        var ssidCookie =
+            setCookieHeader?.firstWhere((cookie) => cookie.startsWith('ssid='));
+
+        var params = Uri.splitQueryString(Uri.parse(redirectUrl!).query);
+        var newAccessToken = params['access_token'];
+
+        newAccessToken;
+        ssidCookie;
+      } else {
+        throw Exception(e.toString());
+      }
     }
   }
 

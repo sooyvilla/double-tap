@@ -1,6 +1,8 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:double_tap/app/ui/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:slide_countdown/slide_countdown.dart';
 
 import '../../../providers/providers.dart';
 import '../../../ui.dart';
@@ -21,52 +23,56 @@ class StoreSection extends ConsumerWidget {
       }
     });
 
-    if (!settings.isLoggedIn) {
-      return const ContainerGreyColumn(
-        titleSection: 'Store',
-        children: [
-          Column(
+    return ContainerGreyColumn(
+      titleSection: 'Store',
+      children: [
+        if (!settings.isLoggedIn)
+          const Column(
             children: [
               Icon(Icons.storefront_rounded, size: 80),
-              // SizedBox(height: 10),
               TextWithPadding(
                 text: 'No store found',
                 style: textTitle,
               ),
             ],
-          )
-        ],
-      );
-    }
-
-    if (live.loading) {
-      return const CircularLoad();
-    }
-
-    return ContainerGreyColumn(
-      titleSection: 'Store',
-      children: [
-        _WalletWidget(live: live),
-        SizedBox(
-          height: 200,
-          child: ListView.builder(
-            itemCount: live.storeUser!.featuredBundle!.bundles!.length,
-            padding: EdgeInsets.zero,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemBuilder: (_, index) {
-              final item = live.storeUser!.featuredBundle!.bundles![index];
-              return Container(
-                padding: const EdgeInsets.all(8),
-                child: Image.network(
-                  'https://media.valorant-api.com/bundles/${item.dataAssetId}/displayicon.png',
-                ),
-              );
-            },
           ),
-        ),
-        _ItemsStoreWidget(live: live),
+        if (live.storeUser != null && !live.loading) ...[
+          _WalletWidget(live: live),
+          _PacksStoreWidget(live: live),
+          _ItemsStoreWidget(live: live),
+        ],
+        if (live.loading) const CircularLoad(),
       ],
+    );
+  }
+}
+
+class _PacksStoreWidget extends StatelessWidget {
+  const _PacksStoreWidget({
+    required this.live,
+  });
+
+  final LiveState live;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 200,
+      child: ListView.builder(
+        itemCount: live.storeUser!.featuredBundle!.bundles!.length,
+        padding: EdgeInsets.zero,
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        itemBuilder: (_, index) {
+          final item = live.storeUser!.featuredBundle!.bundles![index];
+          return Container(
+            padding: const EdgeInsets.all(8),
+            child: Image.network(
+              'https://media.valorant-api.com/bundles/${item.dataAssetId}/displayicon.png',
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -135,49 +141,82 @@ class _WalletWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (live.wallet != null) ...[
-          const Spacer(),
-          Row(
-            children: [
-              Image.asset(
-                'assets/valorant/wallet/vp-modified.png',
-                width: 25,
+        Row(
+          children: [
+            if (live.wallet != null) ...[
+              SpinPerfect(
+                infinite: live.loading,
+                child: IconButton(
+                  color: primaryRed,
+                  onPressed: () async {
+                    await ref.read(liveProvider.notifier).init();
+                  },
+                  icon: const Icon(Icons.refresh_rounded),
+                ),
+              ),
+              const Spacer(),
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/valorant/wallet/vp-modified.png',
+                    width: 25,
+                  ),
+                  TextWithPadding(
+                    text: live.wallet!.valorantPoints!.formatNumber(),
+                    style: textNormal,
+                    left: 5,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/valorant/wallet/rp-modified.png',
+                    width: 25,
+                  ),
+                  TextWithPadding(
+                    text: live.wallet!.radianitePoints!.formatNumber(),
+                    style: textNormal,
+                    left: 5,
+                  ),
+                ],
               ),
               TextWithPadding(
-                text: live.wallet!.valorantPoints!.formatNumber(),
-                style: textNormal,
-                left: 5,
+                text: live.wallet!.money!.formatNumber(),
+                style: textNormal.copyWith(
+                    color: live.wallet!.money == 10000 ? Colors.pink : null),
               ),
-            ],
-          ),
-          Row(
-            children: [
-              Image.asset(
-                'assets/valorant/wallet/rp-modified.png',
-                width: 25,
+            ]
+          ],
+        ),
+        Row(
+          children: [
+            const TextWithPadding(
+              text: 'Refresh:',
+              top: 5,
+              style: textNormal,
+            ),
+            const Spacer(),
+            SlideCountdown(
+              style: subTitleGrey,
+              decoration: const BoxDecoration(
+                color: Colors.transparent,
               ),
-              TextWithPadding(
-                text: live.wallet!.radianitePoints!.formatNumber(),
-                style: textNormal,
-                left: 5,
-              ),
-            ],
-          ),
-          TextWithPadding(
-            text: live.wallet!.money!.formatNumber(),
-            style: textNormal.copyWith(
-                color: live.wallet!.money == 10000 ? Colors.pink : null),
-          ),
-          IconButton(
-            color: primaryRed,
-            onPressed: () async {
-              await ref.read(liveProvider.notifier).init();
-            },
-            icon: const Icon(Icons.refresh_rounded),
-          ),
-        ]
+              duration: Duration(
+                  seconds: live.storeUser!.skinsPanelLayout!
+                      .singleItemOffersRemainingDurationInSeconds!),
+              padding: const EdgeInsets.fromLTRB(12, 5, 12, 12),
+              separatorStyle: subTitleGrey,
+              separatorPadding: const EdgeInsets.all(0),
+              onDone: () async {
+                await ref.read(liveProvider.notifier).init();
+              },
+            ),
+          ],
+        )
       ],
     );
   }

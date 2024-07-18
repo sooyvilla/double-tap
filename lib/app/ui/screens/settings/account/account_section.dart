@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../providers/providers.dart';
 import '../../../ui.dart';
 import '../../../util/util.dart';
-import 'login_form.dart';
+import 'account_modal.dart';
 
 class AccountSection extends ConsumerWidget {
   const AccountSection({super.key});
@@ -43,7 +43,7 @@ class AccountSection extends ConsumerWidget {
                           ref.read(settingsProvider.notifier).logout(),
                           ref.read(liveProvider.notifier).cleanAll(),
                         }
-                      : showModal(context, const LoginForm());
+                      : showModal(context, const AccountModal());
                   // ValorantApiMatchHistoryDatasource().getMatchHistory();
                 },
               ),

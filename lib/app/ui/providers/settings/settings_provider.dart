@@ -27,28 +27,12 @@ class AccountNotifier extends StateNotifier<SettingsState> {
 
   final prefs = SharedPreferencesConfig.prefs;
 
-  Future<void> login() async {
-    setIsLoading(true);
-    try {
-      final response = await datasource.login(state.username!, state.password!);
-
-      if (!response) {
-        return;
-      }
-      await setUser();
-    } catch (e) {
-      log('login error: $e', name: 'login error provider');
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
   Future<void> validateSession() async {
     setIsLoading(true);
     final accessToken = prefs?.getString(KeysAuth.accessToken);
     if (accessToken != null) {
       try {
-        // await datasource.reauthentication();
+        await datasource.reauthentication();
         await setUser();
         setIsLoggedIn(true);
       } catch (e) {
@@ -75,8 +59,6 @@ class AccountNotifier extends StateNotifier<SettingsState> {
       prefs?.remove(element);
     }
     state = state.copyWith(
-      username: null,
-      password: null,
       isLoggedIn: false,
       user: null,
     );
@@ -92,50 +74,31 @@ class AccountNotifier extends StateNotifier<SettingsState> {
     }
   }
 
-  void setUsername(String username) {
-    if (state.username == username) return;
-    state = state.copyWith(username: username);
-  }
-
-  void setPassword(String password) {
-    if (state.password == password) return;
-    state = state.copyWith(password: password);
-  }
-
   void setIsLoading(bool isLoading) {
     state = state.copyWith(isLoading: isLoading);
   }
 
   void setIsLoggedIn(bool isLoggedIn) {
-    prefs?.setBool(KeysAuth.isLogged, isLoggedIn);
     state = state.copyWith(isLoggedIn: isLoggedIn);
   }
 }
 
 class SettingsState {
-  String? username;
-  String? password;
   ValorantUser? user;
   bool isLoggedIn;
   bool isLoading;
   SettingsState({
-    this.username,
-    this.password,
     this.isLoggedIn = false,
     this.isLoading = false,
     this.user,
   });
 
   SettingsState copyWith({
-    String? username,
-    String? password,
     bool? isLoggedIn,
     bool? isLoading,
     ValorantUser? user,
   }) {
     return SettingsState(
-      username: username ?? this.username,
-      password: password ?? this.password,
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       isLoading: isLoading ?? this.isLoading,
       user: user ?? this.user,

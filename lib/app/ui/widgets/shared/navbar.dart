@@ -8,7 +8,7 @@ class NavigationbarCustom extends ConsumerStatefulWidget {
   const NavigationbarCustom({super.key});
 
   static final List<Widget> _buildScreens = [
-    const CareerScreen(),
+    // const CareerScreen(),
     const LiveScreen(),
     const SettingsScreen()
   ];

@@ -24,7 +24,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return const ScaffoldPrimary(
-      appBarText: 'Account',
+      appBarText: 'Settings',
       body: WidgetBody(
         children: [
           AccountSection(),

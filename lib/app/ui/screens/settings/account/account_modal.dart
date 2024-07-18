@@ -1,13 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../providers/providers.dart';
 import '../../../ui.dart';
 import 'login_webview.dart';
 
-class LoginForm extends ConsumerWidget {
-  const LoginForm({super.key});
+class AccountModal extends ConsumerWidget {
+  const AccountModal({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -22,39 +20,15 @@ class LoginForm extends ConsumerWidget {
             text: 'Login Riot Account',
             style: textTitle,
             top: 0,
+            bottom: 0,
           ),
-          const SizedBox(height: 10),
-          InputCustom(
-            hintText: 'User',
-            // autofocus: true,
-            onChanged: (value) =>
-                ref.read(settingsProvider.notifier).setUsername(value),
-          ),
-          const SizedBox(height: 20),
-          InputCustom(
-            hintText: 'Password',
-            isPassword: true,
-            onChanged: (value) =>
-                ref.read(settingsProvider.notifier).setPassword(value),
-            keyboardType: TextInputType.visiblePassword,
-          ),
-          const SizedBox(height: 20),
-          ButtonCustomBackground(
-            text: 'Login',
-            onPressed: () async {
-              await ref.read(settingsProvider.notifier).login().then((value) {
-                Navigator.of(context).pop();
-              });
-            },
-          ),
-          const SizedBox(height: 5),
-          TextWithPadding(
+          const TextWithPadding(
             text:
-                'Your account have a multifactor authentication or other method to login? ',
-            style: subTitleGrey,
+                'You will be redirected to the official Riot Games website 😀',
+            style: textNormal,
           ),
-          CupertinoButton(
-              child: Text('Try here', style: buttonWithoutBackground),
+          ButtonCustomBackground(
+              text: 'Login',
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'inventory/inventory_section.dart';
-import 'play/play_section.dart';
+import 'user/user_section.dart';
 import 'store/store_section.dart';
 
 class LiveScreen extends ConsumerWidget {

@@ -18,6 +18,8 @@ dependencies:
   jwt_decode: ^0.3.1
   flutter_riverpod: ^2.5.1
   shared_preferences: ^2.2.3
+  slide_countdown: ^1.6.1
+  animate_do: ^3.3.4
 
 dev_dependencies:
   flutter_test:

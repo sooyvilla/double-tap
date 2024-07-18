@@ -8,7 +8,6 @@ class KeysAuth {
   static const String puuid = 'puuid';
   static const String region = 'region';
   static const String shard = 'shard';
-  static const String isLogged = 'Logged';
 
   static List<String> get allKeys => [
         cookie,
@@ -20,6 +19,5 @@ class KeysAuth {
         puuid,
         region,
         shard,
-        isLogged,
       ];
 }
