@@ -1,4 +1,4 @@
-package com.example.insane_bolt
+package com.villa.doubletap
 
 import io.flutter.embedding.android.FlutterActivity
 
