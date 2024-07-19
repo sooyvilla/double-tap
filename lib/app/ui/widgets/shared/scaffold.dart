@@ -46,25 +46,30 @@ class _ScaffoldPrimaryState extends State<ScaffoldPrimary> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      child: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          CupertinoSliverNavigationBar(
-            largeTitle: ValueListenableBuilder<double>(
-              valueListenable: _fontSizeNotifier,
-              builder: (context, fontSize, child) {
-                return Text(
-                  widget.appBarText,
-                  style: textTitle.copyWith(fontSize: fontSize),
-                );
-              },
+    return GestureDetector(
+      onTap: () {
+        FocusNode().unfocus();
+      },
+      child: CupertinoPageScaffold(
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            CupertinoSliverNavigationBar(
+              largeTitle: ValueListenableBuilder<double>(
+                valueListenable: _fontSizeNotifier,
+                builder: (context, fontSize, child) {
+                  return Text(
+                    widget.appBarText,
+                    style: textTitle.copyWith(fontSize: fontSize),
+                  );
+                },
+              ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: widget.body,
-          ),
-        ],
+            SliverToBoxAdapter(
+              child: widget.body,
+            ),
+          ],
+        ),
       ),
     );
   }

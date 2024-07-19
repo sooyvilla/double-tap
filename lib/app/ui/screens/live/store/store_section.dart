@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:double_tap/app/ui/screens/live/store/video_player.dart';
 import 'package:double_tap/app/ui/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,18 +16,14 @@ class StoreSection extends ConsumerWidget {
     final live = ref.watch(liveProvider);
     final settings = ref.watch(settingsProvider);
 
-    ref.listen<SettingsState>(settingsProvider, (previous, next) {
-      if (next != previous) {
-        if (next.isLoggedIn) {
-          ref.read(liveProvider.notifier).init();
-        }
-      }
-    });
-
     return ContainerGreyColumn(
       titleSection: 'Store',
       children: [
-        if (!settings.isLoggedIn)
+        if (live.loading || settings.isLoading) const CircularLoad(),
+        if (!settings.isLoggedIn &&
+            live.storeUser == null &&
+            !live.loading &&
+            !settings.isLoading)
           const Column(
             children: [
               Icon(Icons.storefront_rounded, size: 80),
@@ -36,12 +33,11 @@ class StoreSection extends ConsumerWidget {
               ),
             ],
           ),
-        if (live.storeUser != null && !live.loading) ...[
+        if (live.storeUser != null && !live.loading && !settings.isLoading) ...[
           _WalletWidget(live: live),
           _PacksStoreWidget(live: live),
           _ItemsStoreWidget(live: live),
         ],
-        if (live.loading) const CircularLoad(),
       ],
     );
   }
@@ -93,39 +89,53 @@ class _ItemsStoreWidget extends StatelessWidget {
       shrinkWrap: true,
       itemBuilder: (_, index) {
         final item = live.storeUser!.infoItemStores![index];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Image.asset(
-                  'assets/valorant/wallet/vp-modified.png',
-                  width: 25,
+        return GestureDetector(
+          onTap: item.data!.streamedVideo == null
+              ? null
+              : () {
+                  showModal(
+                    context,
+                    VideoPlayerWidget(
+                      url: item.data!.streamedVideo!,
+                      text: item.data!.displayName!,
+                    ),
+                  );
+                },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Image.asset(
+                    'assets/valorant/wallet/vp-modified.png',
+                    width: 25,
+                  ),
+                  TextWithPadding(
+                    text: live.storeUser!.skinsPanelLayout!
+                        .singleItemStoreOffers![index].cost!.cost!
+                        .formatNumber(),
+                    style: textNormal,
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Image.network(
+                  item.data!.displayIcon!,
+                  width: double.infinity,
+                  height: 70,
                 ),
-                TextWithPadding(
-                  text: live.storeUser!.skinsPanelLayout!
-                      .singleItemStoreOffers![index].cost!.cost!
-                      .formatNumber(),
-                  style: textNormal,
-                ),
-              ],
-            ),
-            Image.network(
-              item.data!.displayIcon!,
-              width: double.infinity,
-              height: 80,
-            ),
-            TextWithPadding(
-              text: item.data!.displayName!,
-              style: textTitle,
-            ),
-            if (index != live.storeUser!.infoItemStores!.length - 1)
-              const DividerCustom(
-                ident: 0,
-              )
-          ],
+              ),
+              TextWithPadding(
+                text: item.data!.displayName!,
+                style: textTitle,
+              ),
+              if (index != live.storeUser!.infoItemStores!.length - 1)
+                const DividerCustom()
+            ],
+          ),
         );
       },
     );
@@ -184,10 +194,20 @@ class _WalletWidget extends ConsumerWidget {
                   ),
                 ],
               ),
-              TextWithPadding(
-                text: live.wallet!.money!.formatNumber(),
-                style: textNormal.copyWith(
-                    color: live.wallet!.money == 10000 ? Colors.pink : null),
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/valorant/wallet/kc.png',
+                    width: 25,
+                  ),
+                  TextWithPadding(
+                    text: live.wallet!.money!.formatNumber(),
+                    left: 5,
+                    style: textNormal.copyWith(
+                        color:
+                            live.wallet!.money == 10000 ? Colors.pink : null),
+                  ),
+                ],
               ),
             ]
           ],

@@ -16,6 +16,11 @@ final liveProvider = StateNotifierProvider<LiveProvider, LiveState>((ref) {
   return LiveProvider(datasource);
 });
 
+final liveInitialData = FutureProvider<void>((ref) async {
+  final live = ref.read(liveProvider.notifier);
+  await live.init();
+});
+
 class LiveProvider extends StateNotifier<LiveState> {
   LiveProvider(this.datasource) : super(LiveState());
 

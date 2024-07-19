@@ -12,42 +12,117 @@ class AccountSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final user = ref.watch(settingsProvider);
+
     return ContainerGreyColumn(
       titleSection: 'Accounts',
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: user.isLoading
-          ? [const CircularLoad()]
-          : [
-              if (!user.isLoggedIn)
-                const TextWithPadding(text: 'Not signed in yet'),
-              if (user.isLoggedIn)
-                Row(
+      children: [
+        if (user.isLoading) const CircularLoad(),
+        if (!user.isLoggedIn &&
+            !user.isLoading &&
+            (user.accounts?.isEmpty ?? true))
+          const TextWithPadding(text: 'Not signed in yet'),
+        if (!user.isLoading && (user.accounts?.isNotEmpty ?? false))
+          ListView.builder(
+            itemCount: user.accounts!.length,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            itemBuilder: (context, index) {
+              final account = user.accounts![index];
+              return GestureDetector(
+                onTap: () async {
+                  if (account.isLoggedIn) {
+                    return;
+                  }
+                  await ref
+                      .read(settingsProvider.notifier)
+                      .switchAccount(account.isarId!);
+                },
+                child: Column(
                   children: [
-                    TextWithPadding(
-                      text: user.user!.username!,
-                      right: 0,
-                      style: textNormal,
+                    Row(
+                      children: [
+                        if (account.isLoggedIn)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12),
+                            child: Icon(
+                              Icons.check,
+                              color: primaryRed,
+                              size: 20,
+                            ),
+                          ),
+                        TextWithPadding(
+                          text: account.showName,
+                          right: 0,
+                          left: account.isLoggedIn ? 4 : 12,
+                          style: textNormal,
+                        ),
+                        Expanded(
+                          child: TextWithPadding(
+                            text: ' #${account.tagLine}',
+                            left: 0,
+                            style: textNormalGrey,
+                          ),
+                        ),
+                        // if (!account.isLoggedIn)
+                        //   Padding(
+                        //     padding: const EdgeInsets.all(12),
+                        //     child: GestureDetector(
+                        //       onTap: () async {
+                        //         showModalCupertino(context, () async {
+                        //           await ref
+                        //               .read(settingsProvider.notifier)
+                        //               .logout();
+                        //           ref.read(liveProvider.notifier).cleanAll();
+                        //         });
+                        //       },
+                        //       child: Icon(
+                        //         Icons.exit_to_app,
+                        //         color: primaryRed,
+                        //         size: 20,
+                        //       ),
+                        //     ),
+                        //   ),
+                      ],
                     ),
-                    TextWithPadding(
-                      text: ' #${user.user!.tagLine}',
-                      left: 0,
-                      style: textNormalGrey,
-                    ),
+                    if (index != user.accounts!.length - 1)
+                      const DividerCustom(),
                   ],
                 ),
-              ButtonPrimary(
-                text: user.isLoggedIn ? 'Logout' : 'Login',
-                onPressed: () {
-                  user.isLoggedIn
-                      ? {
-                          ref.read(settingsProvider.notifier).logout(),
-                          ref.read(liveProvider.notifier).cleanAll(),
-                        }
-                      : showModal(context, const AccountModal());
-                  // ValorantApiMatchHistoryDatasource().getMatchHistory();
-                },
+              );
+            },
+          ),
+        if (!user.isLoading)
+          Row(
+            children: [
+              Expanded(
+                child: ButtonPrimary(
+                  text: user.isLoggedIn ? 'Add account' : 'Login',
+                  onPressed: () {
+                    showModal(context, const AccountModal());
+                  },
+                ),
               ),
+              const Spacer(),
+              if (user.isLoggedIn)
+                Expanded(
+                  child: ButtonPrimary(
+                    text: (user.accounts?.length ?? 0) > 1
+                        ? 'Logout all'
+                        : 'Logout',
+                    ceroPadding: true,
+                    onPressed: () async {
+                      showModalCupertino(context, () async {
+                        await ref.read(settingsProvider.notifier).logoutAll();
+                        ref.read(liveProvider.notifier).cleanAll();
+                      });
+                    },
+                  ),
+                ),
             ],
+          ),
+      ],
     );
   }
 }
