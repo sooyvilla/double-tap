@@ -5,6 +5,7 @@ class TextWithPadding extends StatelessWidget {
     super.key,
     required this.text,
     this.style,
+    this.textAlign,
     this.top = 12,
     this.bottom = 12,
     this.left = 12,
@@ -17,6 +18,7 @@ class TextWithPadding extends StatelessWidget {
   final double bottom;
   final double left;
   final double right;
+  final TextAlign? textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,7 @@ class TextWithPadding extends StatelessWidget {
       child: Text(
         text,
         style: style,
+        textAlign: textAlign,
       ),
     );
   }

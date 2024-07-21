@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:double_tap/app/data/models/weapons.dart';
 import 'package:double_tap/app/ui/screens/live/store/video_player.dart';
 import 'package:double_tap/app/ui/util/util.dart';
 import 'package:flutter/material.dart';
@@ -61,62 +62,135 @@ class _PacksStoreWidget extends StatelessWidget {
         shrinkWrap: true,
         itemBuilder: (_, index) {
           final item = live.storeUser!.featuredBundle!.bundles![index];
-          return Container(
-            padding: const EdgeInsets.all(8),
-            child: Stack(
-              children: [
-                Image.network(
-                  'https://media.valorant-api.com/bundles/${item.dataAssetId}/displayicon.png',
-                ),
-                const GradientWidget(),
-                Positioned(
-                  left: 12,
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Image.asset(
-                            'assets/valorant/wallet/vp-modified.png',
-                            width: 25,
-                            color: Colors.white,
-                          ),
-                          TextWithPadding(
-                            text: live.storeUser!.featuredBundle!
-                                .bundles![index].totalDiscountedCost!.cost!
-                                .formatNumber(),
-                            style: textNormal,
-                          ),
-                        ],
-                      ),
-                      SlideCountdown(
-                        style: subTitleGrey,
-                        decoration: const BoxDecoration(
-                          color: Colors.transparent,
+          final weapons = live.storeUser!.bundleItems;
+          return GestureDetector(
+            onTap: () {
+              showModal(
+                context,
+                _ShowItemsBundle(weapons: weapons, live: live),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              child: Stack(
+                children: [
+                  Image.network(
+                    'https://media.valorant-api.com/bundles/${item.dataAssetId}/displayicon.png',
+                  ),
+                  const GradientWidget(),
+                  Positioned(
+                    left: 12,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Image.asset(
+                              'assets/valorant/wallet/vp-modified.png',
+                              width: 25,
+                              color: Colors.white,
+                            ),
+                            TextWithPadding(
+                              text: live.storeUser!.featuredBundle!
+                                  .bundles![index].totalDiscountedCost!.cost!
+                                  .formatNumber(),
+                              style: textNormal,
+                            ),
+                          ],
                         ),
-                        duration:
-                            Duration(seconds: item.durationRemainingInSeconds!),
-                        padding: const EdgeInsets.fromLTRB(0, 0, 12, 12),
-                        separatorStyle: subTitleGrey,
-                        separatorPadding: const EdgeInsets.all(0),
-                      ),
-                    ],
+                        SlideCountdown(
+                          style: subTitleGrey,
+                          decoration: const BoxDecoration(
+                            color: Colors.transparent,
+                          ),
+                          duration: Duration(
+                              seconds: item.durationRemainingInSeconds!),
+                          padding: const EdgeInsets.fromLTRB(0, 0, 12, 12),
+                          separatorStyle: subTitleGrey,
+                          separatorPadding: const EdgeInsets.all(0),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Positioned(
-                  right: 12,
-                  child: TextWithPadding(
-                    text:
-                        live.storeUser!.bundleInfos![index].data!.displayName!,
-                    style: textTitle,
-                    right: 0,
+                  Positioned(
+                    right: 12,
+                    child: TextWithPadding(
+                      text: live
+                          .storeUser!.bundleInfos![index].data!.displayName!,
+                      style: textTitle,
+                      right: 0,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
       ),
+    );
+  }
+}
+
+class _ShowItemsBundle extends StatelessWidget {
+  const _ShowItemsBundle({
+    required this.weapons,
+    required this.live,
+  });
+
+  final List<Weapon>? weapons;
+  final LiveState live;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const TextWithPadding(
+          text: 'Items',
+          style: textTitle,
+        ),
+        ListView.builder(
+          itemCount: weapons!.length,
+          shrinkWrap: true,
+          itemBuilder: (_, index) {
+            final item = weapons![index];
+            return GestureDetector(
+              onTap: () {
+                if (item.levels!.last.streamedVideo == null) return;
+
+                showModal(
+                  context,
+                  VideoPlayerWidget(
+                    url: item.levels!.last.streamedVideo!,
+                    text: item.displayName!,
+                  ),
+                );
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    child: Image.network(
+                      item.displayIcon!,
+                      width: double.infinity,
+                      height: 70,
+                    ),
+                  ),
+                  TextWithPadding(
+                    text: item.displayName!,
+                    style: textTitle,
+                    textAlign: TextAlign.right,
+                  ),
+                  if (index != live.storeUser!.infoItemStores!.length - 1)
+                    const DividerCustom()
+                ],
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }
@@ -138,14 +212,14 @@ class _ItemsStoreWidget extends StatelessWidget {
       itemBuilder: (_, index) {
         final item = live.storeUser!.infoItemStores![index];
         return GestureDetector(
-          onTap: item.data!.streamedVideo == null
+          onTap: item.levels!.last.streamedVideo == null
               ? null
               : () {
                   showModal(
                     context,
                     VideoPlayerWidget(
-                      url: item.data!.streamedVideo!,
-                      text: item.data!.displayName!,
+                      url: item.levels!.last.streamedVideo!,
+                      text: item.displayName!,
                     ),
                   );
                 },
@@ -171,14 +245,15 @@ class _ItemsStoreWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Image.network(
-                  item.data!.displayIcon!,
+                  item.displayIcon!,
                   width: double.infinity,
                   height: 70,
                 ),
               ),
               TextWithPadding(
-                text: item.data!.displayName!,
+                text: item.displayName!,
                 style: textTitle,
+                textAlign: TextAlign.right,
               ),
               if (index != live.storeUser!.infoItemStores!.length - 1)
                 const DividerCustom()

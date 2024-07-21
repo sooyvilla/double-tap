@@ -1,13 +1,16 @@
 import 'dart:convert';
 
+import 'package:double_tap/app/data/models/weapons.dart';
+
 class StoreUser {
   final FeaturedBundle? featuredBundle;
   final SkinsPanelLayout? skinsPanelLayout;
   final UpgradeCurrencyStore? upgradeCurrencyStore;
   final AccessoryStore? accessoryStore;
   final List<PluginStore>? pluginStores;
-  final List<InfoItemStore>? infoItemStores;
+  final List<Weapon>? infoItemStores;
   final List<BundleInfo>? bundleInfos;
+  final List<Weapon>? bundleItems;
 
   StoreUser({
     this.featuredBundle,
@@ -17,6 +20,7 @@ class StoreUser {
     this.pluginStores,
     this.infoItemStores,
     this.bundleInfos,
+    this.bundleItems,
   });
 
   StoreUser copyWith({
@@ -25,8 +29,9 @@ class StoreUser {
     UpgradeCurrencyStore? upgradeCurrencyStore,
     AccessoryStore? accessoryStore,
     List<PluginStore>? pluginStores,
-    List<InfoItemStore>? infoItemStore,
+    List<Weapon>? infoItemStore,
     List<BundleInfo>? bundleInfo,
+    List<Weapon>? bundleItems,
   }) =>
       StoreUser(
         featuredBundle: featuredBundle ?? this.featuredBundle,
@@ -36,6 +41,7 @@ class StoreUser {
         pluginStores: pluginStores ?? this.pluginStores,
         infoItemStores: infoItemStore ?? infoItemStores,
         bundleInfos: bundleInfo ?? bundleInfos,
+        bundleItems: bundleItems ?? this.bundleItems,
       );
 
   factory StoreUser.fromRawJson(String str) =>

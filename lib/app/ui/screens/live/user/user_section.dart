@@ -13,7 +13,8 @@ class PlaySection extends ConsumerWidget {
     return ContainerGreyColumn(
       titleSection: 'User',
       children: [
-        if (user.isLoggedIn)
+        if (user.isLoading) const CircularLoad(),
+        if (user.isLoggedIn && !user.isLoading)
           Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -48,7 +49,7 @@ class PlaySection extends ConsumerWidget {
               ],
             ),
           ),
-        if (!user.isLoggedIn)
+        if (!user.isLoggedIn && !user.isLoading)
           const Column(
             children: [
               Icon(Icons.person, size: 80),
