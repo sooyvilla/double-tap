@@ -25,7 +25,7 @@ class PlaySection extends ConsumerWidget {
                       Image.network(
                         user.user!.card!.wide!,
                       ),
-                      _ImageWithGradient(),
+                      const GradientWidget(),
                       Row(
                         children: [
                           TextWithPadding(
@@ -60,31 +60,6 @@ class PlaySection extends ConsumerWidget {
             ],
           )
       ],
-    );
-  }
-}
-
-class _ImageWithGradient extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Container(
-          height: MediaQuery.of(context).size.height /
-              2, // Ajusta esto según el tamaño de la imagen
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.black87,
-                Colors.transparent,
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

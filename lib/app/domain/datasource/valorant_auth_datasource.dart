@@ -4,5 +4,5 @@ abstract class ValorantAuthDatasource {
   Future<bool> login(String username, String password);
   Future<void> loginWebView(String url);
   Future<UserV1> getInfoPlayer();
-  Future<void> reauthentication();
+  Future<void> validateToken();
 }

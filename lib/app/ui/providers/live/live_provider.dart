@@ -1,19 +1,17 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
 import 'package:double_tap/app/data/models/store_user.dart';
 import 'package:double_tap/app/data/repositories/valorant_api_live_repository.dart';
-import 'package:double_tap/app/domain/entities/party_user.dart';
 import 'package:double_tap/app/domain/entities/wallet.dart';
 import 'package:double_tap/app/ui/providers/live/live_provider_imp.dart';
+import 'package:double_tap/app/ui/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../config/config.dart';
 import '../../../domain/mappers/vallet_mapper.dart';
 
 final liveProvider = StateNotifierProvider<LiveProvider, LiveState>((ref) {
   final datasource = ref.watch(liveProviderImp);
-  return LiveProvider(datasource);
+  return LiveProvider(datasource, ref);
 });
 
 final liveInitialData = FutureProvider<void>((ref) async {
@@ -22,10 +20,10 @@ final liveInitialData = FutureProvider<void>((ref) async {
 });
 
 class LiveProvider extends StateNotifier<LiveState> {
-  LiveProvider(this.datasource) : super(LiveState());
+  LiveProvider(this.datasource, this.ref) : super(LiveState());
 
-  final _prefs = SharedPreferencesConfig.prefs;
   final ValorantApiLiveRepository datasource;
+  final Ref ref;
 
   Future<void> init() async {
     setIsLoading(true);
@@ -41,6 +39,7 @@ class LiveProvider extends StateNotifier<LiveState> {
       final response = await datasource.getStore();
       state = state.copyWith(storeUser: response);
     } catch (e) {
+      ref.read(settingsProvider.notifier).validateSession();
       log('getStore error: $e', name: 'getStore error');
     }
   }
@@ -59,7 +58,6 @@ class LiveProvider extends StateNotifier<LiveState> {
     state = state.copyWith(
       storeUser: null,
       wallet: null,
-      partyUser: null,
     );
   }
 
@@ -69,14 +67,12 @@ class LiveProvider extends StateNotifier<LiveState> {
 }
 
 class LiveState {
-  final PartyUser? partyUser;
   final bool loading;
   final int? coldDown;
   final StoreUser? storeUser;
   final Wallet? wallet;
 
   LiveState({
-    this.partyUser,
     this.loading = false,
     this.coldDown,
     this.storeUser,
@@ -84,14 +80,12 @@ class LiveState {
   });
 
   LiveState copyWith({
-    PartyUser? partyUser,
     bool? loading,
     int? coldDown,
     StoreUser? storeUser,
     Wallet? wallet,
   }) {
     return LiveState(
-      partyUser: partyUser,
       loading: loading ?? this.loading,
       coldDown: coldDown ?? this.coldDown,
       storeUser: storeUser ?? this.storeUser,
@@ -101,6 +95,6 @@ class LiveState {
 
   @override
   String toString() {
-    return 'LiveState(partyUser: $partyUser, isLoading: $loading, coldDown: $coldDown, storeUser: $storeUser, wallet: $wallet)';
+    return 'LiveState(partyUser: isLoading: $loading, coldDown: $coldDown, storeUser: $storeUser, wallet: $wallet)';
   }
 }

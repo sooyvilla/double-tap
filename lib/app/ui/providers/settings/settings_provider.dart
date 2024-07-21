@@ -51,7 +51,7 @@ class AccountNotifier extends StateNotifier<SettingsState> {
       setIsLoggedIn(true);
     } catch (e) {
       log('login error: $e', name: 'login error provider');
-      await logout();
+      await logoutAll();
     } finally {
       setIsLoading(false);
     }
@@ -63,26 +63,16 @@ class AccountNotifier extends StateNotifier<SettingsState> {
     final isar = IsarInstance();
     final oldId = state.id;
     try {
-      // final response = await datasource.login(state.username!, state.password!);
-
-      // if (!response) {
-      //   setDoubleFactor(true);
-      //   return;
-      // }
-      // await setUser();
-      // await saveAccount();
       final oldAccount = await isar.getAccount(oldId!);
       oldAccount!.isLoggedIn = false;
       isar.updateAccount(oldAccount);
+
       await login();
 
-      // await getAllAccounts();
-      // ref.read(liveProvider.notifier).cleanAll();
-      // await ref.read(liveProvider.notifier).init();
       setIsLoggedIn(true);
     } catch (e) {
       log('addAccount error: $e', name: 'addAccount error provider');
-      await logout();
+      await logoutAll();
     } finally {
       setIsLoading(false);
     }
@@ -111,7 +101,7 @@ class AccountNotifier extends StateNotifier<SettingsState> {
       await login();
     } catch (e) {
       log('validateSession error: $e', name: 'validateSession error provider');
-      logout();
+      logoutAll();
     } finally {
       setIsLoading(false);
     }
@@ -169,7 +159,6 @@ class AccountNotifier extends StateNotifier<SettingsState> {
   Future<void> loginWebView(String token) async {
     setIsLoading(true);
     setEnableAddMultiCounts(false);
-    //todo: delete all accounts
     try {
       await datasource.loginWebView(token);
 
@@ -186,7 +175,7 @@ class AccountNotifier extends StateNotifier<SettingsState> {
       state = state.copyWith(user: mapPlayer(user));
       setIsLoggedIn(true);
     } catch (e) {
-      logout();
+      logoutAll();
     }
   }
 
@@ -210,16 +199,33 @@ class AccountNotifier extends StateNotifier<SettingsState> {
     setId(account.isarId!);
   }
 
-  Future<void> logout() async {
+  Future<void> activeNextAccount() async {
+    final accounts = state.accounts;
+    final account = accounts?.first;
+    if (account == null) {
+      logoutAll();
+      return;
+    }
+    await switchAccount(account.isarId!);
+  }
+
+  Future<void> logout(Id id) async {
+    setIsLoading(true);
     final isar = IsarInstance();
-    final tempId = state.id;
 
     try {
-      isar.deleteAccount(tempId!);
-      await updateAllAccounts(tempId);
-      setIsLoggedIn(false);
+      if (id == state.id) {
+        deleteAllKeys();
+        cleanStateCurrentUser();
+        await activeNextAccount();
+      }
+      isar.deleteAccount(id);
+      await updateAllAccounts(id);
+      setIsLoggedIn(state.isLoggedIn);
     } catch (e) {
       log('logout error: $e', name: 'logout error provider');
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -230,17 +236,9 @@ class AccountNotifier extends StateNotifier<SettingsState> {
     for (var account in accounts) {
       ids.add(account.isarId!);
     }
-    state = state.copyWith(
-      username: null,
-      password: null,
-      isLoggedIn: false,
-      user: null,
-      id: null,
-    );
+    cleanStateCurrentUser();
     try {
-      for (var element in KeysAuth.allKeys) {
-        prefs?.remove(element);
-      }
+      deleteAllKeys();
       await isar.deleteAllAccounts(ids);
       await getAllAccounts();
       ref.read(liveProvider.notifier).cleanAll();
@@ -248,6 +246,22 @@ class AccountNotifier extends StateNotifier<SettingsState> {
     } catch (e) {
       log('logoutAll error: $e', name: 'logoutAll error provider');
     }
+  }
+
+  void deleteAllKeys() {
+    for (var element in KeysAuth.allKeys) {
+      prefs?.remove(element);
+    }
+  }
+
+  void cleanStateCurrentUser() {
+    state = state.copyWith(
+      username: null,
+      password: null,
+      isLoggedIn: false,
+      user: null,
+      id: null,
+    );
   }
 
   void setId(Id id) {

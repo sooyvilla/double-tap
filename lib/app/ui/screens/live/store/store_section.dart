@@ -63,8 +63,56 @@ class _PacksStoreWidget extends StatelessWidget {
           final item = live.storeUser!.featuredBundle!.bundles![index];
           return Container(
             padding: const EdgeInsets.all(8),
-            child: Image.network(
-              'https://media.valorant-api.com/bundles/${item.dataAssetId}/displayicon.png',
+            child: Stack(
+              children: [
+                Image.network(
+                  'https://media.valorant-api.com/bundles/${item.dataAssetId}/displayicon.png',
+                ),
+                const GradientWidget(),
+                Positioned(
+                  left: 12,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Image.asset(
+                            'assets/valorant/wallet/vp-modified.png',
+                            width: 25,
+                            color: Colors.white,
+                          ),
+                          TextWithPadding(
+                            text: live.storeUser!.featuredBundle!
+                                .bundles![index].totalDiscountedCost!.cost!
+                                .formatNumber(),
+                            style: textNormal,
+                          ),
+                        ],
+                      ),
+                      SlideCountdown(
+                        style: subTitleGrey,
+                        decoration: const BoxDecoration(
+                          color: Colors.transparent,
+                        ),
+                        duration:
+                            Duration(seconds: item.durationRemainingInSeconds!),
+                        padding: const EdgeInsets.fromLTRB(0, 0, 12, 12),
+                        separatorStyle: subTitleGrey,
+                        separatorPadding: const EdgeInsets.all(0),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  right: 12,
+                  child: TextWithPadding(
+                    text:
+                        live.storeUser!.bundleInfos![index].data!.displayName!,
+                    style: textTitle,
+                    right: 0,
+                  ),
+                ),
+              ],
             ),
           );
         },
@@ -241,13 +289,3 @@ class _WalletWidget extends ConsumerWidget {
     );
   }
 }
-
-//todo: url para los packs
-//'https://media.valorant-api.com/bundles/${id}/displayicon.png'
-
-//todo: url para armas de la tienda
-//
-
-//todo: url para los accessoriews
-//
-

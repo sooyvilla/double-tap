@@ -65,25 +65,24 @@ class AccountSection extends ConsumerWidget {
                             style: textNormalGrey,
                           ),
                         ),
-                        // if (!account.isLoggedIn)
-                        //   Padding(
-                        //     padding: const EdgeInsets.all(12),
-                        //     child: GestureDetector(
-                        //       onTap: () async {
-                        //         showModalCupertino(context, () async {
-                        //           await ref
-                        //               .read(settingsProvider.notifier)
-                        //               .logout();
-                        //           ref.read(liveProvider.notifier).cleanAll();
-                        //         });
-                        //       },
-                        //       child: Icon(
-                        //         Icons.exit_to_app,
-                        //         color: primaryRed,
-                        //         size: 20,
-                        //       ),
-                        //     ),
-                        //   ),
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: GestureDetector(
+                            onTap: () async {
+                              showModalCupertino(context, account.showName,
+                                  () async {
+                                await ref
+                                    .read(settingsProvider.notifier)
+                                    .logout(account.isarId!);
+                              });
+                            },
+                            child: Icon(
+                              Icons.exit_to_app,
+                              color: primaryRed,
+                              size: 20,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     if (index != user.accounts!.length - 1)
@@ -113,7 +112,7 @@ class AccountSection extends ConsumerWidget {
                         : 'Logout',
                     ceroPadding: true,
                     onPressed: () async {
-                      showModalCupertino(context, () async {
+                      showModalCupertino(context, 'all', () async {
                         await ref.read(settingsProvider.notifier).logoutAll();
                         ref.read(liveProvider.notifier).cleanAll();
                       });

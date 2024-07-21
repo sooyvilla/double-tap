@@ -10,11 +10,6 @@ class NavbarNotifier extends StateNotifier<NavbarState> {
   NavbarNotifier() : super(const NavbarState());
 
   final tabs = [
-    // const NavigationDestination(
-    //   icon: Icon(CupertinoIcons.time),
-    //   tooltip: 'Career',
-    //   label: 'Career',
-    // ),
     const NavigationDestination(
       icon: Icon(CupertinoIcons.play_arrow_solid),
       tooltip: 'Live',
@@ -28,12 +23,9 @@ class NavbarNotifier extends StateNotifier<NavbarState> {
   ];
 
   final navigatorKeys = [
-    // GlobalKey<NavigatorState>(debugLabel: 'Career tab'),
     GlobalKey<NavigatorState>(debugLabel: 'Live tab'),
     GlobalKey<NavigatorState>(debugLabel: 'Settings tab'),
   ];
-
-  // todo: solucionar error al darle tab mas de una vez a cualquier seccion
 
   NavigatorState get currentNavigator =>
       navigatorKeys[state.currentTab].currentState!;

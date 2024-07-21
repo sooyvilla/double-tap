@@ -7,6 +7,7 @@ class StoreUser {
   final AccessoryStore? accessoryStore;
   final List<PluginStore>? pluginStores;
   final List<InfoItemStore>? infoItemStores;
+  final List<BundleInfo>? bundleInfos;
 
   StoreUser({
     this.featuredBundle,
@@ -15,6 +16,7 @@ class StoreUser {
     this.accessoryStore,
     this.pluginStores,
     this.infoItemStores,
+    this.bundleInfos,
   });
 
   StoreUser copyWith({
@@ -24,6 +26,7 @@ class StoreUser {
     AccessoryStore? accessoryStore,
     List<PluginStore>? pluginStores,
     List<InfoItemStore>? infoItemStore,
+    List<BundleInfo>? bundleInfo,
   }) =>
       StoreUser(
         featuredBundle: featuredBundle ?? this.featuredBundle,
@@ -32,6 +35,7 @@ class StoreUser {
         accessoryStore: accessoryStore ?? this.accessoryStore,
         pluginStores: pluginStores ?? this.pluginStores,
         infoItemStores: infoItemStore ?? infoItemStores,
+        bundleInfos: bundleInfo ?? bundleInfos,
       );
 
   factory StoreUser.fromRawJson(String str) =>
@@ -1138,5 +1142,95 @@ class Data {
         'streamedVideo': streamedVideo,
         'assetPath': assetPath,
         'cost': cost,
+      };
+}
+
+class BundleInfo {
+  final int? status;
+  final Data? data;
+
+  BundleInfo({
+    this.status,
+    this.data,
+  });
+
+  factory BundleInfo.fromRawJson(String str) =>
+      BundleInfo.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory BundleInfo.fromJson(Map<String, dynamic> json) => BundleInfo(
+        status: json['status'],
+        data: json['data'] == null ? null : Data.fromJson(json['data']),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'status': status,
+        'data': data?.toJson(),
+      };
+}
+
+class DataBundle {
+  final String? uuid;
+  final String? displayName;
+  final dynamic displayNameSubText;
+  final String? description;
+  final dynamic extraDescription;
+  final dynamic promoDescription;
+  final bool? useAdditionalContext;
+  final String? displayIcon;
+  final String? displayIcon2;
+  final dynamic logoIcon;
+  final String? verticalPromoImage;
+  final String? assetPath;
+
+  DataBundle({
+    this.uuid,
+    this.displayName,
+    this.displayNameSubText,
+    this.description,
+    this.extraDescription,
+    this.promoDescription,
+    this.useAdditionalContext,
+    this.displayIcon,
+    this.displayIcon2,
+    this.logoIcon,
+    this.verticalPromoImage,
+    this.assetPath,
+  });
+
+  factory DataBundle.fromRawJson(String str) =>
+      DataBundle.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory DataBundle.fromJson(Map<String, dynamic> json) => DataBundle(
+        uuid: json['uuid'],
+        displayName: json['displayName'],
+        displayNameSubText: json['displayNameSubText'],
+        description: json['description'],
+        extraDescription: json['extraDescription'],
+        promoDescription: json['promoDescription'],
+        useAdditionalContext: json['useAdditionalContext'],
+        displayIcon: json['displayIcon'],
+        displayIcon2: json['displayIcon2'],
+        logoIcon: json['logoIcon'],
+        verticalPromoImage: json['verticalPromoImage'],
+        assetPath: json['assetPath'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'uuid': uuid,
+        'displayName': displayName,
+        'displayNameSubText': displayNameSubText,
+        'description': description,
+        'extraDescription': extraDescription,
+        'promoDescription': promoDescription,
+        'useAdditionalContext': useAdditionalContext,
+        'displayIcon': displayIcon,
+        'displayIcon2': displayIcon2,
+        'logoIcon': logoIcon,
+        'verticalPromoImage': verticalPromoImage,
+        'assetPath': assetPath,
       };
 }

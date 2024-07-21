@@ -14,8 +14,8 @@ class ValorantApiAuthRepository extends ValorantAuthRepository {
   }
 
   @override
-  Future<void> reauthentication() {
-    return datasource.reauthentication();
+  Future<void> validateToken() {
+    return datasource.validateToken();
   }
 
   @override

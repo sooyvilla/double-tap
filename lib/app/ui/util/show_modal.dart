@@ -27,13 +27,13 @@ void showModal(
       });
 }
 
-void showModalCupertino(BuildContext context, Function onPressed) {
+void showModalCupertino(BuildContext context, String name, Function onPressed) {
   showCupertinoModalPopup<void>(
     context: context,
     builder: (BuildContext context) {
       return CupertinoActionSheet(
-        title: const Text(
-          'Are you sure?',
+        title: Text(
+          'You are logout from $name',
           style: textNormal,
         ),
         actions: [

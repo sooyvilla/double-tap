@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class PlayerLoadoutResponse {
   String subject;
   int version;

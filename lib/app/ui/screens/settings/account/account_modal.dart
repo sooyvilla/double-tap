@@ -31,7 +31,6 @@ class AccountModal extends ConsumerWidget {
                 right: 0,
                 style: textNormal,
               ),
-
               InputCustom(
                 hintText: 'User',
                 // autofocus: true,
@@ -73,25 +72,8 @@ class AccountModal extends ConsumerWidget {
                 text: 'YOUR ACCOUNT SHOULD NOT ASK FOR A CODE FOR THIS METHOD.',
                 left: 0,
                 right: 0,
-                // top: 0,
                 style: textNormalGrey,
               ),
-              // TextWithPadding(
-              //   text:
-              //       'Your account have a multifactor authentication or other method to login?',
-              //   left: 0,
-              //   right: 0,
-              //   style: subTitleGrey,
-              // ),
-              // CupertinoButton(
-              //     child: Text('Try here', style: buttonWithoutBackground),
-              //     onPressed: () {
-              //       Navigator.of(context).push(
-              //         MaterialPageRoute(
-              //           builder: (context) => const LoginWebView(),
-              //         ),
-              //       );
-              //     }),
             ],
           ),
         ),

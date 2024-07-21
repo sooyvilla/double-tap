@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 class UserV1 {
   final String? country;
   final String? sub;
