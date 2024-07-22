@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:double_tap/app/ui/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,7 +43,27 @@ class _MyAppState extends State<MyApp> {
         await shorebirdCodePush.isNewPatchAvailableForDownload();
 
     if (isUpdateAvailable) {
-      await shorebirdCodePush.downloadUpdateIfAvailable();
+      await shorebirdCodePush.downloadUpdateIfAvailable().then((value) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Actualización disponible'),
+              content: const Text(
+                  'Una nueva actualización está disponible. Reinicia la aplicación para aplicar los cambios.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    SystemNavigator.pop();
+                  },
+                  child: const Text('Reiniciar'),
+                ),
+              ],
+            );
+          },
+        );
+      });
     }
   }
 
