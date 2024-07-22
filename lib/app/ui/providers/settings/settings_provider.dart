@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
 import 'package:double_tap/app/config/config.dart';
@@ -6,14 +7,15 @@ import 'package:double_tap/app/ui/providers/providers.dart';
 import 'package:double_tap/app/ui/providers/settings/settings_provider_imp.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:shorebird_code_push/shorebird_code_push.dart';
 
 import '../../../config/isar/isar_instance.dart';
 import '../../../data/repositories/valorant_api_auth_repository.dart';
 import '../../../domain/entities/account.dart';
 import '../../../domain/mappers/players_mapper.dart';
 
-final settingsProvider =
-    StateNotifierProvider<AccountNotifier, SettingsState>((ref) {
+final settingsAccountProvider =
+    StateNotifierProvider<AccountNotifier, SettingsAccountState>((ref) {
   final datasource = ref.watch(settingsProviderImp);
   return AccountNotifier(
     datasource: datasource,
@@ -21,14 +23,19 @@ final settingsProvider =
   );
 });
 
-class AccountNotifier extends StateNotifier<SettingsState> {
+final settingsCheckerProvider =
+    StateNotifierProvider<CheckerNotifier, SettingsCheckerState>((ref) {
+  return CheckerNotifier();
+});
+
+class AccountNotifier extends StateNotifier<SettingsAccountState> {
   AccountNotifier({
     required this.datasource,
     required this.ref,
-  }) : super(SettingsState());
+  }) : super(SettingsAccountState());
 
   final ValorantApiAuthRepository datasource;
-  final StateNotifierProviderRef<AccountNotifier, SettingsState> ref;
+  final StateNotifierProviderRef<AccountNotifier, SettingsAccountState> ref;
 
   final prefs = SharedPreferencesConfig.prefs;
 
@@ -295,7 +302,39 @@ class AccountNotifier extends StateNotifier<SettingsState> {
   }
 }
 
-class SettingsState {
+class CheckerNotifier extends StateNotifier<SettingsCheckerState> {
+  CheckerNotifier() : super(SettingsCheckerState());
+
+  final shorebirdCodePush = ShorebirdCodePush();
+
+  Future<void> checkUpdates() async {
+    final isUpdateAvailable =
+        await shorebirdCodePush.isNewPatchAvailableForDownload();
+
+    final currentVersion = await shorebirdCodePush.currentPatchNumber();
+    final newVersion = await shorebirdCodePush.nextPatchNumber();
+
+    state = state.copyWith(
+      currentVersion: currentVersion?.toString(),
+      newVersion: newVersion?.toString(),
+      isUpdateAvailable: isUpdateAvailable,
+    );
+  }
+
+  Future<void> downloadUpdate() async {
+    await shorebirdCodePush.downloadUpdateIfAvailable();
+    try {
+      final canInstallUpdate =
+          await shorebirdCodePush.isNewPatchReadyToInstall();
+      if (!canInstallUpdate) throw Exception('Update not ready to install');
+      state = state.copyWith(isUpdateDownloaded: true);
+    } catch (e) {
+      log('downloadUpdate error: $e', name: 'downloadUpdate error provider');
+    }
+  }
+}
+
+class SettingsAccountState {
   String? username;
   String? password;
   ValorantUser? user;
@@ -305,7 +344,7 @@ class SettingsState {
   bool isLoading;
   List<Account>? accounts;
   Id? id;
-  SettingsState({
+  SettingsAccountState({
     this.username,
     this.password,
     this.isLoggedIn = false,
@@ -317,7 +356,7 @@ class SettingsState {
     this.user,
   });
 
-  SettingsState copyWith({
+  SettingsAccountState copyWith({
     String? username,
     String? password,
     bool? isLoggedIn,
@@ -328,7 +367,7 @@ class SettingsState {
     List<Account>? accounts,
     ValorantUser? user,
   }) {
-    return SettingsState(
+    return SettingsAccountState(
       username: username ?? this.username,
       password: password ?? this.password,
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
@@ -338,6 +377,37 @@ class SettingsState {
       id: id ?? this.id,
       accounts: accounts ?? this.accounts,
       user: user ?? this.user,
+    );
+  }
+}
+
+class SettingsCheckerState {
+  final String? currentVersion;
+  final String? newVersion;
+  final bool isLoading;
+  final bool isUpdateAvailable;
+  final bool isUpdateDownloaded;
+  SettingsCheckerState({
+    this.currentVersion,
+    this.newVersion,
+    this.isLoading = false,
+    this.isUpdateAvailable = false,
+    this.isUpdateDownloaded = false,
+  });
+
+  SettingsCheckerState copyWith({
+    String? currentVersion,
+    String? newVersion,
+    bool? isLoading,
+    bool? isUpdateAvailable,
+    bool? isUpdateDownloaded,
+  }) {
+    return SettingsCheckerState(
+      currentVersion: currentVersion ?? this.currentVersion,
+      newVersion: newVersion ?? this.newVersion,
+      isLoading: isLoading ?? this.isLoading,
+      isUpdateAvailable: isUpdateAvailable ?? this.isUpdateAvailable,
+      isUpdateDownloaded: isUpdateDownloaded ?? this.isUpdateDownloaded,
     );
   }
 }

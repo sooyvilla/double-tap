@@ -1,3 +1,4 @@
+import 'package:double_tap/app/ui/screens/settings/check_update/check_update_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,7 +18,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(settingsProvider.notifier).validateSession();
+      ref.read(settingsAccountProvider.notifier).validateSession();
     });
   }
 
@@ -28,6 +29,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       body: WidgetBody(
         children: [
           AccountSection(),
+          CheckUpdateSection(),
         ],
       ),
     );

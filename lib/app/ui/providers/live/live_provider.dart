@@ -14,11 +14,6 @@ final liveProvider = StateNotifierProvider<LiveProvider, LiveState>((ref) {
   return LiveProvider(datasource, ref);
 });
 
-final liveInitialData = FutureProvider<void>((ref) async {
-  final live = ref.read(liveProvider.notifier);
-  await live.init();
-});
-
 class LiveProvider extends StateNotifier<LiveState> {
   LiveProvider(this.datasource, this.ref) : super(LiveState());
 
@@ -39,7 +34,7 @@ class LiveProvider extends StateNotifier<LiveState> {
       final response = await datasource.getStore();
       state = state.copyWith(storeUser: response);
     } catch (e) {
-      ref.read(settingsProvider.notifier).validateSession();
+      ref.read(settingsAccountProvider.notifier).validateSession();
       log('getStore error: $e', name: 'getStore error');
     }
   }
@@ -62,32 +57,29 @@ class LiveProvider extends StateNotifier<LiveState> {
   }
 
   void setIsLoading(bool isLoading) {
-    state = state.copyWith(loading: isLoading);
+    state = state.copyWith(isLoading: isLoading);
   }
 }
 
 class LiveState {
-  final bool loading;
-  final int? coldDown;
+  final bool isLoading;
   final StoreUser? storeUser;
   final Wallet? wallet;
 
   LiveState({
-    this.loading = false,
-    this.coldDown,
+    this.isLoading = false,
     this.storeUser,
     this.wallet,
   });
 
   LiveState copyWith({
-    bool? loading,
+    bool? isLoading,
     int? coldDown,
     StoreUser? storeUser,
     Wallet? wallet,
   }) {
     return LiveState(
-      loading: loading ?? this.loading,
-      coldDown: coldDown ?? this.coldDown,
+      isLoading: isLoading ?? this.isLoading,
       storeUser: storeUser ?? this.storeUser,
       wallet: wallet ?? this.wallet,
     );
@@ -95,6 +87,6 @@ class LiveState {
 
   @override
   String toString() {
-    return 'LiveState(partyUser: isLoading: $loading, coldDown: $coldDown, storeUser: $storeUser, wallet: $wallet)';
+    return 'LiveState(partyUser: isLoading: $isLoading, storeUser: $storeUser, wallet: $wallet)';
   }
 }

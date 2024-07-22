@@ -30,7 +30,7 @@ class _LoginWebViewState extends ConsumerState<LoginWebView> {
             return NavigationDecision.navigate;
           }
           await ref
-              .read(settingsProvider.notifier)
+              .read(settingsAccountProvider.notifier)
               .loginWebView(request.url)
               .then((value) {
             Navigator.of(context).pop();

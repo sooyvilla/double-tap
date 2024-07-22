@@ -9,7 +9,7 @@ class PlaySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final user = ref.watch(settingsProvider);
+    final user = ref.watch(settingsAccountProvider);
     return ContainerGreyColumn(
       titleSection: 'User',
       children: [

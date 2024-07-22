@@ -1,14 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shorebird_code_push/shorebird_code_push.dart';
 
 import 'app/config/config.dart';
 import 'app/ui/widgets/widgets.dart';
-
-final shorebirdCodePush = ShorebirdCodePush();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,74 +65,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const MainApp(),
-    );
-  }
-}
-
-class MainApp extends StatefulWidget {
-  const MainApp({super.key});
-
-  @override
-  State<MainApp> createState() => _MainAppState();
-}
-
-class _MainAppState extends State<MainApp> {
-  @override
-  void initState() {
-    shorebirdCodePush
-        .currentPatchNumber()
-        .then((value) => log('current patch number is $value'));
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _checkForUpdates();
-    });
-    super.initState();
-  }
-
-  Future<void> _checkForUpdates() async {
-    final isUpdateAvailable =
-        await shorebirdCodePush.isNewPatchAvailableForDownload();
-
-    if (isUpdateAvailable) {
-      await shorebirdCodePush.downloadUpdateIfAvailable().then((value) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Actualización disponible'),
-              content: const Text(
-                  'Una nueva actualización está disponible. Reinicia la aplicación para aplicar los cambios.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    SystemNavigator.pop();
-                  },
-                  child: const Text('Reiniciar'),
-                ),
-              ],
-            );
-          },
-        );
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _checkForUpdates(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(
-              child: CircularLoad(),
-            ),
-          );
-        }
-        return const NavigationbarCustom();
-      },
+      home: const NavigationbarCustom(),
     );
   }
 }

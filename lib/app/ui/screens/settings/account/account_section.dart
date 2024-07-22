@@ -11,7 +11,7 @@ class AccountSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final user = ref.watch(settingsProvider);
+    final user = ref.watch(settingsAccountProvider);
 
     return ContainerGreyColumn(
       titleSection: 'Accounts',
@@ -36,7 +36,7 @@ class AccountSection extends ConsumerWidget {
                     return;
                   }
                   await ref
-                      .read(settingsProvider.notifier)
+                      .read(settingsAccountProvider.notifier)
                       .switchAccount(account.isarId!);
                 },
                 child: Column(
@@ -72,7 +72,7 @@ class AccountSection extends ConsumerWidget {
                               showModalCupertino(context, account.showName,
                                   () async {
                                 await ref
-                                    .read(settingsProvider.notifier)
+                                    .read(settingsAccountProvider.notifier)
                                     .logout(account.isarId!);
                               });
                             },
@@ -113,7 +113,9 @@ class AccountSection extends ConsumerWidget {
                     ceroPadding: true,
                     onPressed: () async {
                       showModalCupertino(context, 'all', () async {
-                        await ref.read(settingsProvider.notifier).logoutAll();
+                        await ref
+                            .read(settingsAccountProvider.notifier)
+                            .logoutAll();
                         ref.read(liveProvider.notifier).cleanAll();
                       });
                     },

@@ -12,6 +12,7 @@ class ButtonPrimary extends StatelessWidget {
     this.left = 12,
     this.right = 12,
     this.ceroPadding = false,
+    this.textAlign = TextAlign.left,
   });
 
   final void Function()? onPressed;
@@ -21,6 +22,7 @@ class ButtonPrimary extends StatelessWidget {
   final double left;
   final double right;
   final bool ceroPadding;
+  final TextAlign? textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -33,33 +35,11 @@ class ButtonPrimary extends StatelessWidget {
         width: double.infinity,
         child: Text(
           text,
-          textAlign: TextAlign.left,
+          textAlign: textAlign,
           style: buttonWithoutBackground,
         ),
       ),
     );
-
-    // return TextButton(
-    //   onPressed: onPressed,
-    //   style: ButtonStyle(
-    //     splashFactory: NoSplash.splashFactory,
-    //     backgroundColor: MaterialStateProperty.all<Color?>(Colors.transparent),
-    //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-    //       RoundedRectangleBorder(
-    //         borderRadius: BorderRadius.circular(8.0),
-    //       ),
-    //     ),
-    //     alignment: Alignment.centerRight,
-    //   ),
-    //   child: SizedBox(
-    //     width: double.infinity,
-    //     child: Text(
-    //       text,
-    //       textAlign: TextAlign.left,
-    //       style: buttonWithoutBackground,
-    //     ),
-    //   ),
-    // );
   }
 }
 

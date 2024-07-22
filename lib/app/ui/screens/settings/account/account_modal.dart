@@ -9,7 +9,7 @@ class AccountModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final settingsState = ref.watch(settingsProvider);
+    final settingsState = ref.watch(settingsAccountProvider);
     return Stack(
       children: [
         Container(
@@ -34,15 +34,17 @@ class AccountModal extends ConsumerWidget {
               InputCustom(
                 hintText: 'User',
                 // autofocus: true,
-                onChanged: (value) =>
-                    ref.read(settingsProvider.notifier).setUsername(value),
+                onChanged: (value) => ref
+                    .read(settingsAccountProvider.notifier)
+                    .setUsername(value),
               ),
               const SizedBox(height: 20),
               InputCustom(
                 hintText: 'Password',
                 isPassword: true,
-                onChanged: (value) =>
-                    ref.read(settingsProvider.notifier).setPassword(value),
+                onChanged: (value) => ref
+                    .read(settingsAccountProvider.notifier)
+                    .setPassword(value),
                 keyboardType: TextInputType.visiblePassword,
               ),
               const SizedBox(height: 20),
@@ -51,7 +53,7 @@ class AccountModal extends ConsumerWidget {
                 onPressed: () async {
                   if (settingsState.accounts?.isEmpty ?? true) {
                     await ref
-                        .read(settingsProvider.notifier)
+                        .read(settingsAccountProvider.notifier)
                         .login()
                         .then((value) {
                       Navigator.of(context).pop();
@@ -59,7 +61,7 @@ class AccountModal extends ConsumerWidget {
                     return;
                   }
                   await ref
-                      .read(settingsProvider.notifier)
+                      .read(settingsAccountProvider.notifier)
                       .addAccount()
                       .then((value) {
                     Navigator.of(context).pop();

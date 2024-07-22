@@ -15,15 +15,15 @@ class StoreSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final live = ref.watch(liveProvider);
-    final settings = ref.watch(settingsProvider);
+    final settings = ref.watch(settingsAccountProvider);
 
     return ContainerGreyColumn(
       titleSection: 'Store',
       children: [
-        if (live.loading || settings.isLoading) const CircularLoad(),
+        if (live.isLoading || settings.isLoading) const CircularLoad(),
         if (!settings.isLoggedIn &&
             live.storeUser == null &&
-            !live.loading &&
+            !live.isLoading &&
             !settings.isLoading)
           const Column(
             children: [
@@ -34,7 +34,9 @@ class StoreSection extends ConsumerWidget {
               ),
             ],
           ),
-        if (live.storeUser != null && !live.loading && !settings.isLoading) ...[
+        if (live.storeUser != null &&
+            !live.isLoading &&
+            !settings.isLoading) ...[
           _WalletWidget(live: live),
           _PacksStoreWidget(live: live),
           _ItemsStoreWidget(live: live),
@@ -281,7 +283,7 @@ class _WalletWidget extends ConsumerWidget {
           children: [
             if (live.wallet != null) ...[
               SpinPerfect(
-                infinite: live.loading,
+                infinite: live.isLoading,
                 child: IconButton(
                   color: primaryRed,
                   onPressed: () async {
