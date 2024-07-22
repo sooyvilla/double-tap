@@ -126,6 +126,18 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    return const NavigationbarCustom();
+    return FutureBuilder(
+      future: _checkForUpdates(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(
+              child: CircularLoad(),
+            ),
+          );
+        }
+        return const NavigationbarCustom();
+      },
+    );
   }
 }
