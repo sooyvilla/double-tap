@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shorebird_code_push/shorebird_code_push.dart';
 
 import 'app/config/config.dart';
 import 'app/ui/widgets/widgets.dart';
+
+final shorebirdCodePush = ShorebirdCodePush();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,8 +18,33 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    shorebirdCodePush
+        .currentPatchNumber()
+        .then((value) => log('current patch number is $value'));
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _checkForUpdates();
+    });
+    super.initState();
+  }
+
+  Future<void> _checkForUpdates() async {
+    final isUpdateAvailable =
+        await shorebirdCodePush.isNewPatchAvailableForDownload();
+
+    if (isUpdateAvailable) {
+      await shorebirdCodePush.downloadUpdateIfAvailable();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
