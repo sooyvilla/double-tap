@@ -51,7 +51,6 @@ class AccountNotifier extends StateNotifier<SettingsState> {
       setIsLoggedIn(true);
     } catch (e) {
       log('login error: $e', name: 'login error provider');
-      await logoutAll();
     } finally {
       setIsLoading(false);
     }
@@ -81,15 +80,15 @@ class AccountNotifier extends StateNotifier<SettingsState> {
   Future<void> validateSession() async {
     setIsLoading(true);
     final isar = IsarInstance();
+    final accounts = await isar.getAllAccounts();
+    if (accounts.isEmpty) {
+      setIsLoading(false);
+      setIsLoggedIn(false);
+      return;
+    }
+    final accountLogged =
+        accounts.where((element) => element.isLoggedIn).toList();
     try {
-      final accounts = await isar.getAllAccounts();
-      if (accounts.isEmpty) {
-        setIsLoading(false);
-        setIsLoggedIn(false);
-        return;
-      }
-      final accountLogged =
-          accounts.where((element) => element.isLoggedIn).toList();
       if (accountLogged.isEmpty) {
         state = state.copyWith(accounts: accounts);
         return;
@@ -101,7 +100,8 @@ class AccountNotifier extends StateNotifier<SettingsState> {
       await login();
     } catch (e) {
       log('validateSession error: $e', name: 'validateSession error provider');
-      logoutAll();
+      deleteAllKeys();
+      logout(accountLogged.first.isarId!);
     } finally {
       setIsLoading(false);
     }
