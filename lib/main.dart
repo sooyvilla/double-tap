@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:double_tap/app/ui/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,53 +18,8 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    shorebirdCodePush
-        .currentPatchNumber()
-        .then((value) => log('current patch number is $value'));
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _checkForUpdates();
-    });
-    super.initState();
-  }
-
-  Future<void> _checkForUpdates() async {
-    final isUpdateAvailable =
-        await shorebirdCodePush.isNewPatchAvailableForDownload();
-
-    if (isUpdateAvailable) {
-      await shorebirdCodePush.downloadUpdateIfAvailable().then((value) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Actualización disponible'),
-              content: const Text(
-                  'Una nueva actualización está disponible. Reinicia la aplicación para aplicar los cambios.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    SystemNavigator.pop();
-                  },
-                  child: const Text('Reiniciar'),
-                ),
-              ],
-            );
-          },
-        );
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +70,62 @@ class _MyAppState extends State<MyApp> {
         ),
         useMaterial3: true,
       ),
-      home: const NavigationbarCustom(),
+      home: const MainApp(),
     );
+  }
+}
+
+class MainApp extends StatefulWidget {
+  const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  @override
+  void initState() {
+    shorebirdCodePush
+        .currentPatchNumber()
+        .then((value) => log('current patch number is $value'));
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _checkForUpdates();
+    });
+    super.initState();
+  }
+
+  Future<void> _checkForUpdates() async {
+    final isUpdateAvailable =
+        await shorebirdCodePush.isNewPatchAvailableForDownload();
+
+    if (isUpdateAvailable) {
+      await shorebirdCodePush.downloadUpdateIfAvailable().then((value) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Actualización disponible'),
+              content: const Text(
+                  'Una nueva actualización está disponible. Reinicia la aplicación para aplicar los cambios.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    SystemNavigator.pop();
+                  },
+                  child: const Text('Reiniciar'),
+                ),
+              ],
+            );
+          },
+        );
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const NavigationbarCustom();
   }
 }
