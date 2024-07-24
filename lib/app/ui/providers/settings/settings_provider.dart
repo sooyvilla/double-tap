@@ -63,15 +63,25 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
     }
   }
 
+  Future<void> changeLoggedAccount(Id id, [bool logged = false]) async {
+    final isar = IsarInstance();
+
+    final oldAccount = await isar.getAccount(id);
+    oldAccount!.isLoggedIn = logged;
+    isar.updateAccount(oldAccount);
+  }
+
   Future<void> addAccount() async {
     setIsLoading(true);
     setEnableAddMultiCounts(true);
-    final isar = IsarInstance();
     final oldId = state.id;
     try {
-      final oldAccount = await isar.getAccount(oldId!);
-      oldAccount!.isLoggedIn = false;
-      isar.updateAccount(oldAccount);
+      if (state.isLoggedIn) {
+        await changeLoggedAccount(oldId!);
+        setIsLoggedIn(false);
+      }
+
+      deleteAllKeys();
 
       await login();
 
@@ -116,6 +126,9 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
 
   Future<void> getAllAccounts() async {
     setIsLoading(true);
+    if (state.accounts != null) {
+      state = state.copyWith(accounts: null);
+    }
     final isar = IsarInstance();
 
     final accounts = await isar.getAllAccounts();
@@ -138,24 +151,23 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
 
     final isar = IsarInstance();
     try {
-      if (state.id != null) {
-        final oldAccount = await isar.getAccount(state.id!);
-        oldAccount!.isLoggedIn = false;
-        isar.updateAccount(oldAccount);
+      if (state.id != null && state.id != id) {
+        await changeLoggedAccount(state.id!);
       }
       final account = await isar.getAccount(id);
-      state = state.copyWith(
-        username: account!.username,
-        password: account.password,
-        isLoggedIn: false,
-        id: null,
-        user: null,
-      );
-
-      await login();
-      final newAccount = await isar.getAccount(state.id!);
-      newAccount!.isLoggedIn = true;
-      isar.updateAccount(newAccount);
+      if (state.id == null || state.id != id) {
+        state = state.copyWith(
+          username: account!.username,
+          password: account.password,
+          isLoggedIn: false,
+          id: null,
+          user: null,
+        );
+        deleteAllKeys();
+        await login();
+      }
+      setIsLoggedIn(true);
+      await changeLoggedAccount(id, true);
       await getAllAccounts();
     } catch (e) {
       log('switchAccount error: $e', name: 'switchAccount error provider');
@@ -236,6 +248,26 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
     }
   }
 
+  Future<void> logoutAndRemember(Id id) async {
+    setIsLoading(true);
+
+    try {
+      if (id == state.id) {
+        deleteAllKeys();
+        cleanStateCurrentUser();
+        setIsLoggedIn(false);
+      }
+      await changeLoggedAccount(id);
+      await getAllAccounts();
+      ref.read(liveProvider.notifier).cleanAll();
+    } catch (e) {
+      log('logoutAndRemember error: $e',
+          name: 'logoutAndRemember error provider');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   Future<void> logoutAll() async {
     final isar = IsarInstance();
     final accounts = state.accounts!;
@@ -308,20 +340,21 @@ class CheckerNotifier extends StateNotifier<SettingsCheckerState> {
   final shorebirdCodePush = ShorebirdCodePush();
 
   Future<void> checkUpdates() async {
+    setIsLoading(true);
     final isUpdateAvailable =
         await shorebirdCodePush.isNewPatchAvailableForDownload();
 
-    final currentVersion = await shorebirdCodePush.currentPatchNumber();
-    final newVersion = await shorebirdCodePush.nextPatchNumber();
+    final currentVersion = await shorebirdCodePush.currentPatchNumber() ?? 0;
 
     state = state.copyWith(
-      currentVersion: currentVersion?.toString(),
-      newVersion: newVersion?.toString(),
+      currentVersion: currentVersion.toString(),
       isUpdateAvailable: isUpdateAvailable,
+      isLoading: false,
     );
   }
 
   Future<void> downloadUpdate() async {
+    setIsLoading(true);
     await shorebirdCodePush.downloadUpdateIfAvailable();
     try {
       final canInstallUpdate =
@@ -330,7 +363,13 @@ class CheckerNotifier extends StateNotifier<SettingsCheckerState> {
       state = state.copyWith(isUpdateDownloaded: true);
     } catch (e) {
       log('downloadUpdate error: $e', name: 'downloadUpdate error provider');
+    } finally {
+      setIsLoading(false);
     }
+  }
+
+  void setIsLoading(bool isLoading) {
+    state = state.copyWith(isLoading: isLoading);
   }
 }
 
@@ -382,13 +421,13 @@ class SettingsAccountState {
 }
 
 class SettingsCheckerState {
-  final String? currentVersion;
+  final String currentVersion;
   final String? newVersion;
   final bool isLoading;
   final bool isUpdateAvailable;
   final bool isUpdateDownloaded;
   SettingsCheckerState({
-    this.currentVersion,
+    this.currentVersion = '0',
     this.newVersion,
     this.isLoading = false,
     this.isUpdateAvailable = false,

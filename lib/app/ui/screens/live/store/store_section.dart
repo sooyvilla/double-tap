@@ -21,10 +21,7 @@ class StoreSection extends ConsumerWidget {
       titleSection: 'Store',
       children: [
         if (live.isLoading || settings.isLoading) const CircularLoad(),
-        if (!settings.isLoggedIn &&
-            live.storeUser == null &&
-            !live.isLoading &&
-            !settings.isLoading)
+        if (!settings.isLoggedIn && !live.isLoading && !settings.isLoading)
           const Column(
             children: [
               Icon(Icons.storefront_rounded, size: 80),
@@ -36,7 +33,8 @@ class StoreSection extends ConsumerWidget {
           ),
         if (live.storeUser != null &&
             !live.isLoading &&
-            !settings.isLoading) ...[
+            !settings.isLoading &&
+            settings.isLoggedIn) ...[
           _WalletWidget(live: live),
           _PacksStoreWidget(live: live),
           _ItemsStoreWidget(live: live),
@@ -247,7 +245,7 @@ class _ItemsStoreWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Image.network(
-                  item.displayIcon!,
+                  item.displayIcon ?? item.levels!.last.displayIcon!,
                   width: double.infinity,
                   height: 70,
                 ),

@@ -27,7 +27,13 @@ void showModal(
       });
 }
 
-void showModalCupertino(BuildContext context, String name, Function onPressed) {
+void showModalCupertino(
+  BuildContext context,
+  String name, {
+  bool rememberAccount = false,
+  Function? onPressedSecondary,
+  required Function onPressedPrimary,
+}) {
   showCupertinoModalPopup<void>(
     context: context,
     builder: (BuildContext context) {
@@ -39,7 +45,7 @@ void showModalCupertino(BuildContext context, String name, Function onPressed) {
         actions: [
           CupertinoActionSheetAction(
             onPressed: () {
-              onPressed();
+              onPressedPrimary();
               Navigator.pop(context);
             },
             child: Text(
@@ -49,6 +55,19 @@ void showModalCupertino(BuildContext context, String name, Function onPressed) {
               ),
             ),
           ),
+          if (rememberAccount)
+            CupertinoActionSheetAction(
+              onPressed: () {
+                onPressedSecondary!();
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Logout and remember',
+                style: textTitle.copyWith(
+                  color: Colors.blue[400],
+                ),
+              ),
+            ),
         ],
         cancelButton: CupertinoActionSheetAction(
           isDefaultAction: true,

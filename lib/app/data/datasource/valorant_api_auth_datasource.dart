@@ -19,6 +19,8 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
   @override
   Future<bool> login(String username, String password) async {
     try {
+      final validateSession = await _requestPrivateAuth.validateToken();
+      if (validateSession) return true;
       await _requestPrivateAuth.getCookies();
       final needOtp =
           await _requestPrivateAuth.getToken(username, password) ?? false;
@@ -78,6 +80,31 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
 
 class _RequestPrivateAuth with DioConfigService {
   final _prefs = SharedPreferencesConfig.prefs;
+
+  Future<bool> validateToken() async {
+    final accessToken = _prefs?.getString(KeysAuth.accessToken);
+
+    try {
+      if (accessToken == null) return false;
+      final response = await dio.post(
+        ValorantUrls.urlEntitlement,
+        options: Options(headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Authorization': 'Bearer $accessToken',
+        }),
+        data: {},
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      log('getEntitlement error: $e', name: 'getEntitlement error');
+      return false;
+    }
+  }
 
   Future<void> getVersionApi() async {
     final versionApi = _prefs?.getString(KeysAuth.versionApi);
