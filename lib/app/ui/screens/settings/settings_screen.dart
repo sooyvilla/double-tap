@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:double_tap/app/ui/screens/settings/check_update/check_update_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,12 +26,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const ScaffoldPrimary(
+    return ScaffoldPrimary(
       appBarText: 'Settings',
       body: WidgetBody(
         children: [
-          AccountSection(),
-          CheckUpdateSection(),
+          const AccountSection(),
+          if (Platform.isAndroid) const CheckUpdateSection(),
         ],
       ),
     );

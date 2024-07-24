@@ -8,6 +8,11 @@ import 'app/ui/widgets/widgets.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   await SharedPreferencesConfig.init();
 
   runApp(const ProviderScope(child: MyApp()));
@@ -18,10 +23,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
     return MaterialApp(
       title: 'Double Tap',
       debugShowCheckedModeBanner: false,
