@@ -5,6 +5,7 @@ class ResumePatch {
   final String desc;
   final String date;
   final String version;
+  final bool isImportant;
   final List<String> descriptions;
 
   ResumePatch({
@@ -12,6 +13,7 @@ class ResumePatch {
     required this.desc,
     required this.date,
     required this.version,
+    required this.isImportant,
     this.descriptions = const [],
   });
 }
@@ -23,6 +25,7 @@ Future<List<ResumePatch>> getNotesPatch() async {
       title: 'Arreglo de rendimiento',
       desc: 'Se pintaba las pantallas muchas veces',
       date: _extractDate(DateTime.now().toString()),
+      isImportant: true,
       version: packageInfo.version,
     ),
   ];

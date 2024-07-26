@@ -1,7 +1,7 @@
 name: double_tap
 description: "This proyect is a flutter app that uses the valorant api to get the valorant user information and show items in the store"
 
-version: 1.1.1+1
+version: 1.1.2+1
 
 environment:
   sdk: ">=3.3.1 <4.0.0"

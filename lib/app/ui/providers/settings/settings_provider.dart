@@ -8,6 +8,7 @@ import 'package:double_tap/app/ui/providers/settings/settings_provider_imp.dart'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
 import 'package:uuid/uuid.dart';
 
@@ -385,9 +386,9 @@ class CheckerNotifier extends StateNotifier<SettingsCheckerState> {
 
     state = state.copyWith(isChecking: true);
 
-    await checkPatchUpdates();
-    await getCurrentVersion();
     await checkUpdatesNotes();
+    await getCurrentVersion();
+    await checkPatchUpdates();
   }
 
   Future<void> getCurrentVersion() async {
@@ -404,6 +405,8 @@ class CheckerNotifier extends StateNotifier<SettingsCheckerState> {
     state = state.copyWith(
       updates: updates,
     );
+
+    setIsLoading(false);
   }
 
   Future<void> checkPatchUpdates() async {
@@ -413,6 +416,14 @@ class CheckerNotifier extends StateNotifier<SettingsCheckerState> {
         await shorebirdCodePush.isNewPatchAvailableForDownload();
 
     final currentVersion = await shorebirdCodePush.currentPatchNumber() ?? 0;
+
+    if (isUpdateAvailable) {
+      if (state.updates.first.isImportant &&
+          state.updates.first.version == state.currentVersion) {
+        await downloadUpdate();
+        Restart.restartApp();
+      }
+    }
 
     state = state.copyWith(
       currentVersion: currentVersion.toString(),
@@ -504,7 +515,7 @@ class SettingsCheckerState {
   SettingsCheckerState({
     this.currentVersionPatch = '0',
     this.currentVersion,
-    this.isLoading = false,
+    this.isLoading = true,
     this.isUpdateAvailable = false,
     this.isUpdateDownloaded = false,
     this.isChecking = false,
