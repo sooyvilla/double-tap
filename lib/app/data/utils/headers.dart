@@ -2,13 +2,13 @@ import 'dart:developer';
 
 import '../../config/config.dart';
 
-Map<String, String> getHeaders() {
+Future<Map<String, String>> getHeaders() async {
   final headers = <String, String>{};
-  final prefs = SharedPreferencesConfig.prefs;
+  final storage = SecureStorageConfig();
   try {
-    final accessToken = prefs?.getString(KeysAuth.accessToken);
-    final versionApi = prefs?.getString(KeysAuth.versionApi);
-    final entitlementsToken = prefs?.getString(KeysAuth.entitlementsToken);
+    final accessToken = await storage.readData(KeysAuth.accessToken);
+    final versionApi = await storage.readData(KeysAuth.versionApi);
+    final entitlementsToken = await storage.readData(KeysAuth.entitlementsToken);
     headers['X-Riot-ClientPlatform'] = ValorantUrls.clientPlatform;
     headers['X-Riot-ClientVersion'] = versionApi!;
     headers['X-Riot-Entitlements-JWT'] = entitlementsToken!;

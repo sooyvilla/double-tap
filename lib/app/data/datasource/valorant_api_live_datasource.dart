@@ -11,20 +11,20 @@ import '../models/store_user.dart';
 
 class ValorantApiLiveDatasource extends ValorantLiveDatasource
     with DioConfigService {
-  final _prefs = SharedPreferencesConfig.prefs;
+  final _storage = SecureStorageConfig();
 
   WeaponsSkins? allSkinsInfo;
 
   @override
   Future<StoreUser> getStore() async {
-    final shard = _prefs?.getString(KeysAuth.shard) ?? '';
-    final puuid = _prefs?.getString(KeysAuth.puuid) ?? '';
+    final shard = await _storage.readData(KeysAuth.shard) ?? '';
+    final puuid = await _storage.readData(KeysAuth.puuid) ?? '';
 
     try {
       final response = await dio.post(ValorantUrls.urlStore(shard, puuid),
           data: {},
           options: Options(
-            headers: getHeaders(),
+            headers: await getHeaders(),
           ));
       if (response.statusCode == 200) {
         StoreUser storeUser = StoreUser.fromJson(response.data);
@@ -66,12 +66,12 @@ class ValorantApiLiveDatasource extends ValorantLiveDatasource
 
   @override
   Future<WalletResponse> wallet() async {
-    final shard = _prefs?.getString(KeysAuth.shard) ?? '';
-    final puuid = _prefs?.getString(KeysAuth.puuid) ?? '';
+    final shard = await _storage.readData(KeysAuth.shard) ?? '';
+    final puuid = await _storage.readData(KeysAuth.puuid) ?? '';
     try {
       final response = await dio.get(
           '${ValorantUrls.urlBaseStore(shard)}wallet/$puuid',
-          options: Options(headers: getHeaders()));
+          options: Options(headers: await getHeaders()));
 
       return WalletResponse.fromJson(response.data);
     } catch (e) {

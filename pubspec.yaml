@@ -1,9 +1,7 @@
 name: double_tap
-description: "A new Flutter project."
+description: "This proyect is a flutter app that uses the valorant api to get the valorant user information and show items in the store"
 
-publish_to: "none"
-
-version: 1.0.0+6
+version: 1.1.1+1
 
 environment:
   sdk: ">=3.3.1 <4.0.0"
@@ -27,17 +25,44 @@ dependencies:
   video_player: ^2.9.1
   shorebird_code_push: ^1.1.3
   restart_app: ^1.2.1
+  flutter_secure_storage: ^9.2.2
+  flutter_native_splash: ^2.4.1
+  simple_floating_bottom_nav_bar: ^0.0.3
+  package_info_plus: ^8.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
   isar_generator: ^3.1.0+1
   build_runner: ^2.4.9
+  flutter_launcher_icons: ^0.13.1
+
+# flutter pub run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  adaptive_icon_background: "#001528"
+  adaptive_icon_foreground: "assets/icon/icon.png"
+  ios: true
+  image_path: "assets/icon/icon.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+
+# dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#001528"
+  image: assets/icon/icon.png
+  color_dark: "#001528"
+
+  android_12:
+    image: assets/icon/icon.png
+    icon_background_color: "#001528"
+
 
 flutter:
   uses-material-design: true
 
   assets:
     - assets/valorant/wallet/
+    - assets/icon/
     - shorebird.yaml

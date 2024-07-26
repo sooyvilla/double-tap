@@ -10,7 +10,7 @@ import '../utils/headers.dart';
 
 class ValorantApiAuthDatasource extends ValorantAuthDatasource
     with DioConfigService {
-  final _prefs = SharedPreferencesConfig.prefs;
+  final _storage = SecureStorageConfig();
   final _requestPrivateAuth = _RequestPrivateAuth();
 
   @override
@@ -38,9 +38,9 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
   @override
   Future<UserV1> getInfoPlayer() async {
     try {
-      final accessToken = _prefs?.getString(KeysAuth.accessToken) ?? '';
+      final accessToken = await _storage.readData(KeysAuth.accessToken) ?? '';
       final entitlementsToken =
-          _prefs?.getString(KeysAuth.entitlementsToken) ?? '';
+          await _storage.readData(KeysAuth.entitlementsToken) ?? '';
 
       final response = await dio.get(
         ValorantUrls.urlUserInfo,
@@ -50,11 +50,10 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
         }),
       );
 
-      final puuid =
-          Jwt.parseJwt(_prefs?.getString(KeysAuth.accessToken) ?? '')['sub']
-              as String;
+      final puuid = Jwt.parseJwt(
+          await _storage.readData(KeysAuth.accessToken) ?? '')['sub'] as String;
 
-      _prefs?.setString(KeysAuth.puuid, puuid);
+      await _storage.writeData(KeysAuth.puuid, puuid);
       await _requestPrivateAuth.getRegionLoginPlayer();
       final Map<String, dynamic> data = response.data;
       data['identity'] = await _requestPrivateAuth.playerLoadout();
@@ -79,10 +78,10 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
 }
 
 class _RequestPrivateAuth with DioConfigService {
-  final _prefs = SharedPreferencesConfig.prefs;
+  final _storage = SecureStorageConfig();
 
   Future<bool> validateToken() async {
-    final accessToken = _prefs?.getString(KeysAuth.accessToken);
+    final accessToken = await _storage.readData(KeysAuth.accessToken);
 
     try {
       if (accessToken == null) return false;
@@ -107,32 +106,32 @@ class _RequestPrivateAuth with DioConfigService {
   }
 
   Future<void> getVersionApi() async {
-    final versionApi = _prefs?.getString(KeysAuth.versionApi);
+    final versionApi = await _storage.readData(KeysAuth.versionApi);
     try {
       final response = await dio.get(ValorantUrls.urlVersionApi);
 
       if (response.statusCode == 200) {
         final versionApiRemote = response.data['data']['version'];
         if (versionApi != versionApiRemote) {
-          _prefs?.setString(KeysAuth.versionApi, versionApiRemote);
+          await _storage.writeData(KeysAuth.versionApi, versionApiRemote);
         }
       }
     } catch (e) {
       log('getVersionApi error: $e', name: 'getVersionApi error');
     } finally {
       if (versionApi == null) {
-        _prefs?.setString(KeysAuth.versionApi, '07.00.00.913116');
+        await _storage.writeData(KeysAuth.versionApi, '07.00.00.913116');
       }
     }
   }
 
   Future<Map<String, dynamic>> playerLoadout() async {
-    final shard = _prefs?.getString(KeysAuth.shard) ?? '';
-    final puuid = _prefs?.getString(KeysAuth.puuid) ?? '';
+    final shard = await _storage.readData(KeysAuth.shard) ?? '';
+    final puuid = await _storage.readData(KeysAuth.puuid) ?? '';
     try {
       final response = await dio.get(
         ValorantUrls.urlPersonalization(shard, puuid),
-        options: Options(headers: getHeaders()),
+        options: Options(headers: await getHeaders()),
       );
 
       return response.data['Identity'];
@@ -143,7 +142,7 @@ class _RequestPrivateAuth with DioConfigService {
   }
 
   Future<void> getEntitlement() async {
-    final accessToken = _prefs?.getString(KeysAuth.accessToken) ?? '';
+    final accessToken = await _storage.readData(KeysAuth.accessToken) ?? '';
 
     try {
       final response = await dio.post(
@@ -160,7 +159,7 @@ class _RequestPrivateAuth with DioConfigService {
         throw Exception('Entitlements token not found');
       }
 
-      await _prefs?.setString(KeysAuth.entitlementsToken, entitlementsToken);
+      await _storage.writeData(KeysAuth.entitlementsToken, entitlementsToken);
     } catch (e) {
       log('getEntitlement error: $e', name: 'getEntitlement error');
       rethrow;
@@ -180,11 +179,11 @@ class _RequestPrivateAuth with DioConfigService {
       final idToken = parsedUri.queryParameters['id_token'];
 
       if (accessToken != null) {
-        await _prefs?.setString(KeysAuth.accessToken, accessToken);
+        await _storage.writeData(KeysAuth.accessToken, accessToken);
       }
 
       if (idToken != null) {
-        await _prefs?.setString(KeysAuth.idToken, idToken);
+        await _storage.writeData(KeysAuth.idToken, idToken);
       }
     } catch (e) {
       throw Exception('saveToken error: $e');
@@ -192,7 +191,7 @@ class _RequestPrivateAuth with DioConfigService {
   }
 
   Future<bool?> getToken(String username, String password) async {
-    final cookie = _prefs?.getString(KeysAuth.cookie) ?? '';
+    final cookie = await _storage.readData(KeysAuth.cookie) ?? '';
 
     try {
       final response = await dio.put(
@@ -227,7 +226,7 @@ class _RequestPrivateAuth with DioConfigService {
   Future<void> getCookies() async {
     try {
       await getVersionApi();
-      final versionApi = _prefs?.getString(KeysAuth.versionApi);
+      final versionApi = await _storage.readData(KeysAuth.versionApi);
       final userAgent =
           'RiotClient/$versionApi rso-auth (Windows; 10;;Professional, x64)';
       final response = await dio.post(
@@ -253,7 +252,7 @@ class _RequestPrivateAuth with DioConfigService {
 
       final cookie = setCookie.map((item) => item.split(';')[0]).join('; ');
 
-      await _prefs?.setString(KeysAuth.cookie, cookie);
+      await _storage.writeData(KeysAuth.cookie, cookie);
     } catch (e) {
       log('getCookie error: $e', name: 'authCookie error');
       rethrow;
@@ -261,8 +260,8 @@ class _RequestPrivateAuth with DioConfigService {
   }
 
   Future<void> getRegionLoginPlayer() async {
-    final idToken = _prefs?.getString(KeysAuth.idToken);
-    final accessToken = _prefs?.getString(KeysAuth.accessToken);
+    final idToken = await _storage.readData(KeysAuth.idToken);
+    final accessToken = await _storage.readData(KeysAuth.accessToken);
     try {
       final response = await dio.put(
         'https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant',
@@ -275,8 +274,8 @@ class _RequestPrivateAuth with DioConfigService {
       if (response.statusCode == 200) {
         final region = response.data['affinities']['live'];
         final shard = response.data['affinities']['pbe'];
-        _prefs?.setString(KeysAuth.region, region);
-        _prefs?.setString(KeysAuth.shard, shard);
+        await _storage.writeData(KeysAuth.region, region);
+        await _storage.writeData(KeysAuth.shard, shard);
       }
     } catch (e) {
       log('getRegionLoginPlayer error: $e', name: 'getRegionLoginPlayer error');

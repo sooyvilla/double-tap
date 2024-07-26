@@ -6,17 +6,17 @@ part 'account.g.dart';
 class Account {
   Id? isarId;
 
-  final String username;
+  final String idUsername;
   final String showName;
   final String tagLine;
-  final String password;
+  final String idPassword;
   bool isLoggedIn;
 
   Account({
-    required this.username,
+    required this.idUsername,
     required this.showName,
     required this.tagLine,
-    required this.password,
+    required this.idPassword,
     required this.isLoggedIn,
   });
 }
