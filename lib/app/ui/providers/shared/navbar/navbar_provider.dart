@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../ui.dart';
 
 final navbarStateNotifierProvider =
     StateNotifierProvider<NavbarNotifier, NavbarState>(
@@ -10,14 +11,26 @@ class NavbarNotifier extends StateNotifier<NavbarState> {
   NavbarNotifier() : super(const NavbarState());
 
   final tabs = [
-    const NavigationDestination(
-      icon: Icon(CupertinoIcons.play_arrow_solid),
-      tooltip: 'Live',
+    const FloatingBottomNavItem(
+      activeIcon: Icon(
+        CupertinoIcons.play_arrow_solid,
+        size: 35,
+      ),
+      inactiveIcon: Icon(
+        CupertinoIcons.play_arrow_solid,
+        size: 30,
+      ),
       label: 'Live',
     ),
-    const NavigationDestination(
-      icon: Icon(CupertinoIcons.settings),
-      tooltip: 'Settings',
+    const FloatingBottomNavItem(
+      activeIcon: Icon(
+        CupertinoIcons.settings,
+        size: 35,
+      ),
+      inactiveIcon: Icon(
+        CupertinoIcons.settings,
+        size: 30,
+      ),
       label: 'Settings',
     ),
   ];

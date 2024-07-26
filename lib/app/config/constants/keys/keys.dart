@@ -8,16 +8,4 @@ class KeysAuth {
   static const String puuid = 'puuid';
   static const String region = 'region';
   static const String shard = 'shard';
-
-  static List<String> get allKeys => [
-        cookie,
-        accessToken,
-        idToken,
-        entitlementsToken,
-        versionApi,
-        ssid,
-        puuid,
-        region,
-        shard,
-      ];
 }

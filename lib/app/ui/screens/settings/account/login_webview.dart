@@ -1,4 +1,4 @@
-import 'package:double_tap/app/config/constants/valorant_urls.dart';
+import 'package:double_tap/app/config/constants/urls/valorant_urls.dart';
 import 'package:double_tap/app/ui/providers/settings/settings_provider.dart';
 import 'package:double_tap/app/ui/ui.dart';
 import 'package:flutter/material.dart';
