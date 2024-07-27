@@ -415,7 +415,6 @@ class CheckerNotifier extends StateNotifier<SettingsCheckerState> {
     final isUpdateAvailable =
         await shorebirdCodePush.isNewPatchAvailableForDownload();
 
-    final currentVersion = await shorebirdCodePush.currentPatchNumber() ?? 0;
 
     if (isUpdateAvailable) {
       if (state.updates.first.isImportant &&
@@ -426,7 +425,6 @@ class CheckerNotifier extends StateNotifier<SettingsCheckerState> {
     }
 
     state = state.copyWith(
-      currentVersion: currentVersion.toString(),
       isUpdateAvailable: isUpdateAvailable,
       isLoading: false,
     );

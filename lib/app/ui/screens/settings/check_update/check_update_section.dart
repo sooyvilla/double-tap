@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restart_app/restart_app.dart';
 
+import '../../../../config/config.dart';
 import '../../../providers/providers.dart';
 import '../../../ui.dart';
+import 'version_patch_widget.dart';
 
 class CheckUpdateSection extends ConsumerStatefulWidget {
   const CheckUpdateSection({super.key});
@@ -84,7 +86,7 @@ class _CheckUpdateSectionState extends ConsumerState<CheckUpdateSection> {
                         style: textNormal,
                       ),
                       TextWithPadding(
-                        text: '1.1.0',
+                        text: settingsCheckerState.currentVersion ?? '',
                         left: 0,
                         style: textNormalGrey,
                       ),
@@ -112,55 +114,8 @@ class _CheckUpdateSectionState extends ConsumerState<CheckUpdateSection> {
           ],
         ),
         if (settingsCheckerState.updates.isNotEmpty)
-          ListView.builder(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(8),
-            itemCount: settingsCheckerState.updates.length,
-            itemBuilder: (context, index) {
-              final update = settingsCheckerState.updates[index];
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      TextWithPadding(
-                        text: update.title,
-                        top: 0,
-                        left: 5,
-                        bottom: 5,
-                        style: textTitle.copyWith(fontSize: 16),
-                      ),
-                      TextWithPadding(
-                        text: update.version,
-                        left: 0,
-                        top: 0,
-                        bottom: 5,
-                        style: textNormalGrey.copyWith(
-                          fontSize: 16,
-                          color: Colors.green[200],
-                        ),
-                      ),
-                    ],
-                  ),
-                  TextWithPadding(
-                    text: update.date,
-                    top: 0,
-                    left: 8,
-                    bottom: 5,
-                    style: textNormalGrey.copyWith(
-                      fontSize: 12,
-                    ),
-                  ),
-                  TextWithPadding(
-                    text: update.desc,
-                    top: 0,
-                    left: 8,
-                    style: textNormalGrey.copyWith(fontSize: 14),
-                  ),
-                ],
-              );
-            },
+          ShowListUpdatesNotesWidget(
+            updates: settingsCheckerState.updates,
           ),
       ],
     );
