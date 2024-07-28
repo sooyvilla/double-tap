@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/providers.dart';
 import '../../ui.dart';
 import 'account/account_section.dart';
+import 'account/account_webview.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -24,14 +25,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const ScaffoldPrimary(
-      appBarText: 'Settings',
-      body: WidgetBody(
-        children: [
-          AccountSection(),
-          CheckUpdateSection(),
-        ],
-      ),
+    final settings = ref.watch(settingsAccountProvider);
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 500),
+      child: settings.showAccountWebView
+          ? const SafeArea(
+              child: AccountWebview(),
+            )
+          : const ScaffoldPrimary(
+              appBarText: 'Settings',
+              body: WidgetBody(
+                children: [
+                  AccountSection(),
+                  CheckUpdateSection(),
+                ],
+              ),
+            ),
     );
   }
 }

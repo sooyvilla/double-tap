@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restart_app/restart_app.dart';
 
-import '../../../../config/config.dart';
 import '../../../providers/providers.dart';
 import '../../../ui.dart';
 import 'version_patch_widget.dart';

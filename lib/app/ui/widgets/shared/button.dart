@@ -61,8 +61,8 @@ class ButtonCustomBackground extends StatelessWidget {
     final secondColor = invertColors ? primaryRed : Colors.white;
     return TextButton(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color?>(firstColor),
-        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+        backgroundColor: WidgetStateProperty.all<Color?>(firstColor),
+        padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
           const EdgeInsets.symmetric(horizontal: 20.0),
         ),
         splashFactory: NoSplash.splashFactory,

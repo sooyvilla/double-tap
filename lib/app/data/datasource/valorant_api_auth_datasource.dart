@@ -14,7 +14,10 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
   final _requestPrivateAuth = _RequestPrivateAuth();
 
   @override
-  Future<void> validateToken() async {}
+  Future<void> validateToken() async {
+    final validateSession = await _requestPrivateAuth.validateToken();
+    if (!validateSession) throw Exception('Invalid session');
+  }
 
   @override
   Future<bool> login(String username, String password) async {

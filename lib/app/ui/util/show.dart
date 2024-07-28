@@ -80,3 +80,34 @@ void showModalCupertino(
     },
   );
 }
+
+Future<void> showAlertCupertino(BuildContext context, String title, String desc,
+    {void Function()? onPressed}) async {
+  await showCupertinoDialog(
+    context: context,
+    builder: (context) {
+      return CupertinoAlertDialog(
+        title: Text(
+          title,
+          style: textTitle,
+        ),
+        content: Text(
+          desc,
+          style: textNormal,
+        ),
+        actions: [
+          CupertinoDialogAction(
+            child: const Text('Ok'),
+            onPressed: () {
+              if (onPressed != null) {
+                onPressed();
+                return;
+              }
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}

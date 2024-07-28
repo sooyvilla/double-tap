@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../providers/providers.dart';
 import '../../../ui.dart';
 
+@Deprecated(
+  'This widget is dead because the services login method is not available anymore.',
+)
 class AccountModal extends ConsumerWidget {
   const AccountModal({super.key});
 

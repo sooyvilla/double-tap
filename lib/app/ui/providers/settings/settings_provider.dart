@@ -10,7 +10,7 @@ import 'package:isar/isar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:uuid/uuid.dart';
 
 import '../../../config/isar/isar_instance.dart';
 import '../../../data/repositories/valorant_api_auth_repository.dart';
@@ -44,7 +44,6 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
 
   Future<void> login() async {
     setIsLoading(true);
-    setEnableAddMultiCounts(true);
 
     try {
       final response = await datasource.login(state.username!, state.password!);
@@ -78,7 +77,6 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
 
   Future<void> addAccount() async {
     setIsLoading(true);
-    setEnableAddMultiCounts(true);
 
     final oldId = state.id;
 
@@ -122,19 +120,29 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
         return;
       }
 
-      final username = await _storage.readData(accountLogged.first.idUsername);
-      final password = await _storage.readData(accountLogged.first.idPassword);
+      // final username = await _storage.readData(accountLogged.first.idUsername);
+      // final password = await _storage.readData(accountLogged.first.idPassword);
 
-      state = state.copyWith(
-        username: username,
-        password: password,
-      );
+      // state = state.copyWith(
+      //   username: username,
+      //   password: password,
+      // );
 
-      await login();
+      // await login();
+
+      await datasource.validateToken();
+      await getAllAccounts();
+      await setUser();
+
+      ref.read(liveProvider.notifier).cleanAll();
+      await ref.read(liveProvider.notifier).init();
+
+      setIsLoggedIn(true);
     } catch (e) {
       log('validateSession error: $e', name: 'validateSession error provider');
-      deleteAllKeys();
-      logout(accountLogged.first.isarId!);
+      // deleteAllKeys();
+      // logout(accountLogged.first.isarId!);
+      setShowAlertStatusSesion(true);
     } finally {
       setIsLoading(false);
     }
@@ -206,12 +214,18 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
 
   Future<void> loginWebView(String token) async {
     setIsLoading(true);
-    setEnableAddMultiCounts(false);
 
     try {
       await datasource.loginWebView(token);
 
       await setUser();
+      await saveAccount();
+      await getAllAccounts();
+
+      ref.read(liveProvider.notifier).cleanAll();
+      await ref.read(liveProvider.notifier).init();
+
+      setIsLoggedIn(true);
     } catch (e) {
       log('loginWebView error: $e', name: 'loginWebView error provider');
     }
@@ -232,27 +246,33 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
 
   Future<void> saveAccount() async {
     final isar = IsarInstance();
-    const uuid = Uuid();
-    final uuidUsername = uuid.v8();
-    final uuidPassword = uuid.v8();
+    // const uuid = Uuid();
+    // final uuidUsername = uuid.v8();
+    // final uuidPassword = uuid.v8();
+
+    final accounts = await isar.getAllAccounts();
+
+    if (accounts.isNotEmpty) {
+      isar.deleteAccount(accounts.first.isarId!);
+    }
 
     final newAccount = Account(
-      idUsername: uuidUsername,
-      idPassword: uuidPassword,
+      idUsername: '',
+      idPassword: '',
       showName: state.user!.username!,
       tagLine: state.user!.tagLine!,
       isLoggedIn: true,
     );
 
-    final validateAccount = await isar.validateIfExists(newAccount);
+    // final validateAccount = await isar.validateIfExists(newAccount);
 
-    if (validateAccount != null) {
-      setId(validateAccount.isarId!);
-      return;
-    }
+    // if (validateAccount != null) {
+    //   setId(validateAccount.isarId!);
+    //   return;
+    // }
 
-    await _storage.writeData(uuidUsername, state.username!);
-    await _storage.writeData(uuidPassword, state.password!);
+    // await _storage.writeData(uuidUsername, state.username!);
+    // await _storage.writeData(uuidPassword, state.password!);
 
     setUsername(null);
     setPassword(null);
@@ -367,12 +387,16 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
     state = state.copyWith(isLoggedIn: isLoggedIn);
   }
 
+  void setIsShowAccountWebView(bool showAccountWebView) {
+    state = state.copyWith(showAccountWebView: showAccountWebView);
+  }
+
   void setDoubleFactor(bool doubleFactor) {
     state = state.copyWith(doubleFactor: doubleFactor);
   }
 
-  void setEnableAddMultiCounts(bool enableAddMultiCounts) {
-    state = state.copyWith(enableAddMultiCounts: enableAddMultiCounts);
+  void setShowAlertStatusSesion(bool showAlertStatusSesion) {
+    state = state.copyWith(showAlertStatusSesion: showAlertStatusSesion);
   }
 }
 
@@ -415,10 +439,10 @@ class CheckerNotifier extends StateNotifier<SettingsCheckerState> {
     final isUpdateAvailable =
         await shorebirdCodePush.isNewPatchAvailableForDownload();
 
-
     if (isUpdateAvailable) {
-      if (state.updates.first.isImportant &&
-          state.updates.first.version == state.currentVersion) {
+      final updateIsImportant =
+          state.updates.where((element) => element.isImportant).first;
+      if (updateIsImportant.isImportant) {
         await downloadUpdate();
         Restart.restartApp();
       }
@@ -459,9 +483,10 @@ class SettingsAccountState {
   String? password;
   ValorantUser? user;
   bool doubleFactor;
-  bool enableAddMultiCounts;
+  bool showAlertStatusSesion;
   bool isLoggedIn;
   bool isLoading;
+  bool showAccountWebView;
   List<Account>? accounts;
   Id? id;
   SettingsAccountState({
@@ -470,7 +495,8 @@ class SettingsAccountState {
     this.isLoggedIn = false,
     this.isLoading = false,
     this.doubleFactor = false,
-    this.enableAddMultiCounts = true,
+    this.showAlertStatusSesion = false,
+    this.showAccountWebView = false,
     this.id,
     this.accounts,
     this.user,
@@ -482,7 +508,8 @@ class SettingsAccountState {
     bool? isLoggedIn,
     bool? isLoading,
     bool? doubleFactor,
-    bool? enableAddMultiCounts,
+    bool? showAlertStatusSesion,
+    bool? showAccountWebView,
     Id? id,
     List<Account>? accounts,
     ValorantUser? user,
@@ -493,7 +520,9 @@ class SettingsAccountState {
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       isLoading: isLoading ?? this.isLoading,
       doubleFactor: doubleFactor ?? this.doubleFactor,
-      enableAddMultiCounts: enableAddMultiCounts ?? this.enableAddMultiCounts,
+      showAlertStatusSesion:
+          showAlertStatusSesion ?? this.showAlertStatusSesion,
+      showAccountWebView: showAccountWebView ?? this.showAccountWebView,
       id: id ?? this.id,
       accounts: accounts ?? this.accounts,
       user: user ?? this.user,

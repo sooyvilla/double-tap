@@ -16,30 +16,34 @@ class StoreSection extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final live = ref.watch(liveProvider);
     final settings = ref.watch(settingsAccountProvider);
+    final height = MediaQuery.of(context).size.height;
 
-    return ContainerGreyColumn(
-      titleSection: 'Store',
-      children: [
-        if (live.isLoading || settings.isLoading) const CircularLoad(),
-        if (!settings.isLoggedIn && !live.isLoading && !settings.isLoading)
-          const Column(
-            children: [
-              Icon(Icons.storefront_rounded, size: 80),
-              TextWithPadding(
-                text: 'No store found',
-                style: textTitle,
-              ),
-            ],
-          ),
-        if (live.storeUser != null &&
-            !live.isLoading &&
-            !settings.isLoading &&
-            settings.isLoggedIn) ...[
-          _WalletWidget(live: live),
-          _PacksStoreWidget(live: live),
-          _ItemsStoreWidget(live: live),
+    return Container(
+      margin: EdgeInsets.only(bottom: height * 0.15),
+      child: ContainerGreyColumn(
+        titleSection: 'Store',
+        children: [
+          if (live.isLoading || settings.isLoading) const CircularLoad(),
+          if (!settings.isLoggedIn && !live.isLoading && !settings.isLoading)
+            const Column(
+              children: [
+                Icon(Icons.storefront_rounded, size: 80),
+                TextWithPadding(
+                  text: 'No store found',
+                  style: textTitle,
+                ),
+              ],
+            ),
+          if (live.storeUser != null &&
+              !live.isLoading &&
+              !settings.isLoading &&
+              settings.isLoggedIn) ...[
+            _WalletWidget(live: live),
+            _PacksStoreWidget(live: live),
+            _ItemsStoreWidget(live: live),
+          ],
         ],
-      ],
+      ),
     );
   }
 }

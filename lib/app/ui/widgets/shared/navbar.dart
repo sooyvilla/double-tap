@@ -21,11 +21,13 @@ class _NavigationbarCustomState extends ConsumerState<NavigationbarCustom> {
   @override
   Widget build(BuildContext context) {
     final navbarNotifier = ref.watch(navbarStateNotifierProvider.notifier);
+    final settings = ref.watch(settingsAccountProvider);
     final width = MediaQuery.of(context).size.width;
 
     return FloatingBottomNavBar(
       pages: NavigationbarCustom._buildScreens,
       items: navbarNotifier.tabs,
+      showNavBarIcons: settings.showAccountWebView,
       initialPageIndex: 0,
       backgroundColor: primaryGrey,
       bottomPadding: 0,
@@ -49,10 +51,12 @@ class FloatingBottomNavBar extends StatefulWidget {
   final List<FloatingBottomNavItem> items;
   final TextStyle? selectedLabelStyle;
   final TextStyle? unselectedLabelStyle;
+  final bool showNavBarIcons;
 
   const FloatingBottomNavBar({
     super.key,
     required this.pages,
+    required this.items,
     this.initialPageIndex,
     this.elevation = 0,
     this.radius = 20,
@@ -60,9 +64,9 @@ class FloatingBottomNavBar extends StatefulWidget {
     this.height = 65,
     this.width = 300,
     this.bottomPadding = 5,
-    required this.items,
     this.selectedLabelStyle,
     this.unselectedLabelStyle,
+    required this.showNavBarIcons,
   });
 
   @override
@@ -92,38 +96,44 @@ class _FloatingBottomNavBarState extends State<FloatingBottomNavBar> {
         children: widget.pages,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Container(
-        width: widget.width,
-        height: widget.height,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(widget.radius!),
-          color: widget.backgroundColor,
-        ),
-        padding: EdgeInsets.only(bottom: widget.bottomPadding!),
-        child: BottomNavigationBar(
-          backgroundColor: Colors.transparent,
-          fixedColor: Colors.white,
-          elevation: widget.elevation,
-          type: BottomNavigationBarType.fixed,
-          currentIndex: selectedIndex,
-          unselectedFontSize:
-              widget.items.any((element) => element.label == null)
-                  ? 0
-                  : widget.unselectedLabelStyle?.fontSize ?? 14,
-          selectedFontSize: widget.items.any((element) => element.label == null)
-              ? 0
-              : widget.selectedLabelStyle?.fontSize ?? 14,
-          selectedLabelStyle: widget.selectedLabelStyle,
-          unselectedLabelStyle: widget.unselectedLabelStyle,
-          onTap: onItemTapped,
-          items: widget.items
-              .map((item) => BottomNavigationBarItem(
-                  icon: item.inactiveIcon,
-                  activeIcon: item.activeIcon,
-                  label: item.label ?? ''))
-              .toList(),
-        ),
-      ),
+      floatingActionButton: widget.showNavBarIcons
+          ? null
+          : Container(
+              width: widget.width,
+              height: widget.height,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(widget.radius!),
+                color: widget.backgroundColor,
+              ),
+              padding: EdgeInsets.only(bottom: widget.bottomPadding!),
+              child: BottomNavigationBar(
+                backgroundColor: Colors.transparent,
+                fixedColor: Colors.white,
+                elevation: widget.elevation,
+                type: BottomNavigationBarType.fixed,
+                currentIndex: selectedIndex,
+                unselectedFontSize:
+                    widget.items.any((element) => element.label == null)
+                        ? 0
+                        : widget.unselectedLabelStyle?.fontSize ?? 14,
+                selectedFontSize:
+                    widget.items.any((element) => element.label == null)
+                        ? 0
+                        : widget.selectedLabelStyle?.fontSize ?? 14,
+                selectedLabelStyle: widget.selectedLabelStyle,
+                unselectedLabelStyle: widget.unselectedLabelStyle,
+                onTap: onItemTapped,
+                items: widget.items
+                    .map(
+                      (item) => BottomNavigationBarItem(
+                        icon: item.inactiveIcon,
+                        activeIcon: item.activeIcon,
+                        label: item.label ?? '',
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
     );
   }
 }
