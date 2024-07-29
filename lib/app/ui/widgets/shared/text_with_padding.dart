@@ -10,6 +10,7 @@ class TextWithPadding extends StatelessWidget {
     this.bottom = 12,
     this.left = 12,
     this.right = 12,
+    this.zeroPadding = false,
   });
 
   final String text;
@@ -18,12 +19,15 @@ class TextWithPadding extends StatelessWidget {
   final double bottom;
   final double left;
   final double right;
+  final bool zeroPadding;
   final TextAlign? textAlign;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(left, top, right, bottom),
+      padding: zeroPadding
+          ? EdgeInsets.zero
+          : EdgeInsets.fromLTRB(left, top, right, bottom),
       child: Text(
         text,
         style: style,

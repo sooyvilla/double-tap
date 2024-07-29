@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../settings/account/account_webview.dart';
 import 'store/store_section.dart';
 import 'user/user_section.dart';
 
@@ -24,6 +25,10 @@ class LiveScreen extends ConsumerWidget {
               .read(settingsAccountProvider.notifier)
               .setShowAlertStatusSesion(false);
           Navigator.of(context).pop();
+          showModal(
+            context,
+            const AccountWebview(),
+          );
         });
       });
     }

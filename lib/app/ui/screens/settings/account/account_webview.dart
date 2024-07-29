@@ -2,11 +2,12 @@
 
 import 'package:double_tap/app/config/config.dart';
 import 'package:double_tap/app/ui/providers/settings/settings_provider.dart';
+import 'package:double_tap/app/ui/ui.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
-import '../../../ui.dart';
 
 String selectedUrl = ValorantUrls.urlLoginWebView;
 const kAndroidUserAgent =
@@ -35,11 +36,10 @@ class _LoginWebViewState extends ConsumerState<AccountWebview>
           if (request.url.contains('https://playvalorant.com/')) {
             await ref
                 .read(settingsAccountProvider.notifier)
-                .loginWebView(request.url);
-
-            ref
-                .read(settingsAccountProvider.notifier)
-                .setIsShowAccountWebView(false);
+                .loginWebView(request.url)
+                .then((value) {
+              Navigator.pop(context);
+            });
 
             return NavigationDecision.prevent;
           }
@@ -54,64 +54,46 @@ class _LoginWebViewState extends ConsumerState<AccountWebview>
       );
   }
 
-//
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Login Riot Games',
-          style: textTitle,
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () async {
-            await controller.clearCache();
-            await controller.clearLocalStorage();
+    final height = MediaQuery.of(context).size.height * 0.85;
+    final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers = {
+      Factory(() => EagerGestureRecognizer())
+    };
 
-            ref
-                .read(settingsAccountProvider.notifier)
-                .setIsShowAccountWebView(false);
-          },
-        ),
-      ),
-      body: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Stack(
           children: [
-            Stack(
-              children: [
-                SizedBox(
-                  height: height * 0.8,
-                  child: WebViewWidget(
-                    controller: controller,
-                  ),
+            IconButton(
+              icon: const Icon(
+                Icons.close,
+                size: 33,
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+            const Positioned(
+              child: Align(
+                alignment: Alignment.center,
+                child: TextWithPadding(
+                  text: 'Login Riot Games',
+                  textAlign: TextAlign.center,
+                  style: textTitle,
                 ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: ValueListenableBuilder<bool>(
-                    valueListenable: isLoading,
-                    builder: (context, loading, child) {
-                      if (loading) {
-                        return const Center(
-                          child: CircularLoad(),
-                        );
-                      }
-                      return Container();
-                    },
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),
-      ),
+        SizedBox(
+          height: height,
+          child: WebViewWidget(
+            gestureRecognizers: gestureRecognizers,
+            controller: controller,
+          ),
+        ),
+      ],
     );
   }
 }

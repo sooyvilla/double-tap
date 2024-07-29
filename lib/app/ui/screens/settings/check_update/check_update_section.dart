@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restart_app/restart_app.dart';
@@ -52,26 +53,17 @@ class _CheckUpdateSectionState extends ConsumerState<CheckUpdateSection> {
                     },
                   ),
                 ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextWithPadding(
-                        text: settingsCheckerState.isUpdateAvailable
-                            ? 'New version available'
-                            : 'Patch version: ',
-                        right: 0,
-                        left: 0,
-                        style: textNormal,
+                if (settingsCheckerState.isUpdateAvailable)
+                  Expanded(
+                    child: Bounce(
+                      infinite: true,
+                      child: TextWithPadding(
+                        text: 'New version available',
+                        zeroPadding: true,
+                        style: textNormal.copyWith(color: Colors.greenAccent),
                       ),
-                      TextWithPadding(
-                        text: settingsCheckerState.currentVersionPatch,
-                        left: 0,
-                        style: subTitleGrey,
-                      ),
-                    ],
+                    ),
                   ),
-                ),
               ],
             ),
             Row(

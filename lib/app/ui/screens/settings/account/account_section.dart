@@ -1,6 +1,6 @@
 import 'package:double_tap/app/config/config.dart';
+import 'package:double_tap/app/ui/screens/settings/account/account_webview.dart';
 import 'package:double_tap/app/ui/util/util.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -119,9 +119,7 @@ class AccountSection extends ConsumerWidget {
                         ? 'Add account'
                         : 'Login',
                     onPressed: () async {
-                      // showModal(context, const AccountModal());
                       final prefs = SharedPreferencesConfig.prefs;
-
                       final showAlert = prefs?.getBool('alert') ?? true;
 
                       if (showAlert) {
@@ -129,9 +127,11 @@ class AccountSection extends ConsumerWidget {
                         await alert();
                       }
 
-                      ref
-                          .read(settingsAccountProvider.notifier)
-                          .setIsShowAccountWebView(true);
+                      showModal(
+                        // ignore: use_build_context_synchronously
+                        context,
+                        const AccountWebview(),
+                      );
                     },
                   ),
                 ),
@@ -164,7 +164,7 @@ class AccountSection extends ConsumerWidget {
                   onPressed: () {
                     alert();
                   },
-                  icon: const Icon(Icons.help),
+                  icon: const Icon(Icons.help_outline_rounded),
                 ),
               ),
             ],

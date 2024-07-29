@@ -71,7 +71,7 @@ class ValorantApiAuthDatasource extends ValorantAuthDatasource
   Future<void> loginWebView(String url) async {
     try {
       await _requestPrivateAuth.getCookies();
-      _requestPrivateAuth.saveToken(url);
+      await _requestPrivateAuth.saveToken(url);
       await _requestPrivateAuth.getEntitlement();
     } catch (e) {
       log('loginWebView error: $e', name: 'loginWebView error datasource');

@@ -10,6 +10,7 @@ import 'package:isar/isar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
+
 // import 'package:uuid/uuid.dart';
 
 import '../../../config/isar/isar_instance.dart';
@@ -140,8 +141,8 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
       setIsLoggedIn(true);
     } catch (e) {
       log('validateSession error: $e', name: 'validateSession error provider');
-      // deleteAllKeys();
-      // logout(accountLogged.first.isarId!);
+      deleteAllKeys();
+      logout(accountLogged.first.isarId!);
       setShowAlertStatusSesion(true);
     } finally {
       setIsLoading(false);
@@ -387,10 +388,6 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
     state = state.copyWith(isLoggedIn: isLoggedIn);
   }
 
-  void setIsShowAccountWebView(bool showAccountWebView) {
-    state = state.copyWith(showAccountWebView: showAccountWebView);
-  }
-
   void setDoubleFactor(bool doubleFactor) {
     state = state.copyWith(doubleFactor: doubleFactor);
   }
@@ -486,7 +483,6 @@ class SettingsAccountState {
   bool showAlertStatusSesion;
   bool isLoggedIn;
   bool isLoading;
-  bool showAccountWebView;
   List<Account>? accounts;
   Id? id;
   SettingsAccountState({
@@ -496,7 +492,6 @@ class SettingsAccountState {
     this.isLoading = false,
     this.doubleFactor = false,
     this.showAlertStatusSesion = false,
-    this.showAccountWebView = false,
     this.id,
     this.accounts,
     this.user,
@@ -509,7 +504,6 @@ class SettingsAccountState {
     bool? isLoading,
     bool? doubleFactor,
     bool? showAlertStatusSesion,
-    bool? showAccountWebView,
     Id? id,
     List<Account>? accounts,
     ValorantUser? user,
@@ -522,7 +516,6 @@ class SettingsAccountState {
       doubleFactor: doubleFactor ?? this.doubleFactor,
       showAlertStatusSesion:
           showAlertStatusSesion ?? this.showAlertStatusSesion,
-      showAccountWebView: showAccountWebView ?? this.showAccountWebView,
       id: id ?? this.id,
       accounts: accounts ?? this.accounts,
       user: user ?? this.user,
