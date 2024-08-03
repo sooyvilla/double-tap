@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/config/config.dart';
+import 'app/config/language/language_config.dart';
 import 'app/ui/widgets/widgets.dart';
 
 void main() async {
@@ -13,8 +14,9 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
   await SharedPreferencesConfig.init();
+
+  await LanguageConfig().initializeLanguage();
 
   runApp(const ProviderScope(child: MyApp()));
 }

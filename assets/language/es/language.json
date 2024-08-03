@@ -1,0 +1,54 @@
+{
+  "nav-bar": {
+    "live": "En vivo",
+    "settings": "Configuración"
+  },
+  "settings": {
+    "app-bar-title": "Configuración",
+    "account-section": {
+      "title": "Cuenta",
+      "not-loggin-account": "Aún no has iniciado sesión",
+      "login-button": "Iniciar sesión",
+      "logout-button": "Cerrar sesión",
+      "logout-all-button": "Cerrar todas las sesiones",
+      "info-button": {
+        "title": "Iniciar sesión con Riot Games",
+        "desc": "No debes marcar 'Recordar' al ingresar tu nombre y contraseña, pero puedes marcar 'Recordar código'. Ten en cuenta que solo puedes consultar la tienda para una sola cuenta cada hora. Una vez que inicies sesión, permanecerás conectado durante 60 minutos y podrás iniciar sesión en otra cuenta.",
+        "button": "Aceptar"
+      }
+    },
+    "checker-section": {
+      "title": "Actualizaciones",
+      "check-updates-button": "Buscar actualizaciones",
+      "version-app": "Versión de la aplicación",
+      "install-button": "Instalar",
+      "notes": {
+        "status-Installation": "Instalación",
+        "status": "Estado",
+        "all-notes-button": "Todas las notas"
+      }
+    },
+    "settings-section": {
+      "title": "Configuración",
+      "change-language-title": "Cambiar idioma"
+    }
+  },
+  "live": {
+    "app-bar-title": "En vivo",
+    "user-section": {
+      "title": "Usuario",
+      "not-loggin-account": "Aún no has iniciado sesión"
+    },
+    "store-section": {
+      "title": "Tienda",
+      "no-data-store": "No hay datos en la tienda",
+      "refresh-title": "Actualizar",
+      "title-modal": "Objetos"
+    }
+  },
+  "alert-session": {
+    "title": "Accion necesaria",
+    "desc": "Debes iniciar sesion",
+    "button": "Aceptar"
+  }
+}

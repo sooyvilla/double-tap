@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:double_tap/app/data/models/weapons.dart';
 import 'package:double_tap/app/ui/screens/live/store/video_player.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 
+import '../../../../config/language/language_config.dart';
 import '../../../providers/providers.dart';
 import '../../../ui.dart';
 
@@ -17,19 +20,20 @@ class StoreSection extends ConsumerWidget {
     final live = ref.watch(liveProvider);
     final settings = ref.watch(settingsAccountProvider);
     final height = MediaQuery.of(context).size.height;
+    final language = LanguageConfig().languageModel;
 
     return Container(
       margin: EdgeInsets.only(bottom: height * 0.15),
       child: ContainerGreyColumn(
-        titleSection: 'Store',
+        titleSection: language.live.storeSection.title,
         children: [
           if (live.isLoading || settings.isLoading) const CircularLoad(),
           if (!settings.isLoggedIn && !live.isLoading && !settings.isLoading)
-            const Column(
+            Column(
               children: [
                 Icon(Icons.storefront_rounded, size: 80),
                 TextWithPadding(
-                  text: 'No store found',
+                  text: language.live.storeSection.noDataStore,
                   style: textTitle,
                 ),
               ],
@@ -146,15 +150,19 @@ class _ShowItemsBundle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final language = LanguageConfig().languageModel;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const TextWithPadding(
-          text: 'Items',
+         TextWithPadding(
+          text: language.live.storeSection.titleModal,
           style: textTitle,
         ),
         ListView.builder(
           itemCount: weapons!.length,
+          physics: weapons!.length > 4
+              ? const AlwaysScrollableScrollPhysics()
+              : const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemBuilder: (_, index) {
             final item = weapons![index];

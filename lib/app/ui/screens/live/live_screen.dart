@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../config/language/language_config.dart';
 import '../settings/account/account_webview.dart';
 import 'store/store_section.dart';
 import 'user/user_section.dart';
@@ -15,16 +16,17 @@ class LiveScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsAccountProvider);
+    final language = LanguageConfig().languageModel;
 
     if (settings.showAlertStatusSesion) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showAlertCupertino(
-            context, 'Accion necesaria', 'Debes ir a iniciar sesion de nuevo.',
+            context, language.alertSession.title, language.alertSession.desc,
             onPressed: () {
+          Navigator.of(context).pop();
           ref
               .read(settingsAccountProvider.notifier)
               .setShowAlertStatusSesion(false);
-          Navigator.of(context).pop();
           showModal(
             context,
             const AccountWebview(),
@@ -33,8 +35,8 @@ class LiveScreen extends ConsumerWidget {
       });
     }
 
-    return const ScaffoldPrimary(
-      appBarText: 'Live',
+    return ScaffoldPrimary(
+      appBarText: language.live.appBarTitle,
       body: WidgetBody(
         children: [
           PlaySection(),

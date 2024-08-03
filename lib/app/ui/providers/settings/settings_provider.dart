@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
 import 'package:double_tap/app/config/config.dart';
@@ -10,8 +9,6 @@ import 'package:isar/isar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
-
-// import 'package:uuid/uuid.dart';
 
 import '../../../config/isar/isar_instance.dart';
 import '../../../data/repositories/valorant_api_auth_repository.dart';
@@ -235,6 +232,7 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
 
   Future<void> setUser() async {
     try {
+      setIsLoading(true);
       final user = await datasource.getInfoPlayer();
 
       state = state.copyWith(user: await mapPlayer(user));
@@ -242,6 +240,8 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
       setIsLoggedIn(true);
     } catch (e) {
       logoutAll();
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -381,6 +381,7 @@ class AccountNotifier extends StateNotifier<SettingsAccountState> {
   }
 
   void setIsLoading(bool isLoading) {
+    if (state.isLoading == isLoading) return;
     state = state.copyWith(isLoading: isLoading);
   }
 

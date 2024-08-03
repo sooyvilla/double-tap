@@ -24,12 +24,21 @@ Future<List<ResumePatch>> getNotesPatch() async {
   final packageInfo = await PackageInfo.fromPlatform();
   final resumeList = <ResumePatch>[
     ResumePatch(
+      title: 'Mejoras en el loading',
+      desc:
+          'Ahora la seccion "live" se queda cargando hasta que recupera la tienda',
+      date: '2024-07-29',
+      isImportant: false,
+      version: packageInfo.version,
+    ),
+    ResumePatch(
       title: 'Cambios en el login',
       desc:
           'Se cambio la manera en la que se muestra el login y validaciones cuando la app se pone en segundo plano',
       date: '2024-07-29',
       isImportant: false,
-      version: packageInfo.version,
+      isInactive: true,
+      version: '2.0.0',
     ),
     ResumePatch(
       title: 'Se implemento login temporal',

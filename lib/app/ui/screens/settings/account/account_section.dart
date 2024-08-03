@@ -1,4 +1,5 @@
 import 'package:double_tap/app/config/config.dart';
+import 'package:double_tap/app/config/language/language_config.dart';
 import 'package:double_tap/app/ui/screens/settings/account/account_webview.dart';
 import 'package:double_tap/app/ui/util/util.dart';
 import 'package:flutter/material.dart';
@@ -13,22 +14,25 @@ class AccountSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final user = ref.watch(settingsAccountProvider);
+    final language = LanguageConfig().languageModel;
 
     Future<void> alert() async => await showAlertCupertino(
           context,
-          'Inicio de sesion con Riot Games',
-          'No debes darle en recordar al momento de darle en el nombre y la password, pero si puedes darle en recordar el codigo. Ten encuenta que solo puedes revisar la tienda de una sola cuenta cada hora, una vez inicies sesion este se quedara iniciado durante 60 minutos y podras iniciar sesion en otra cuenta.',
+          language.settings.accountSection.infoButton.title,
+          language.settings.accountSection.infoButton.desc,
         );
 
     return ContainerGreyColumn(
-      titleSection: 'Accounts',
+      titleSection: language.settings.accountSection.title,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (user.isLoading) const CircularLoad(),
         if (!user.isLoggedIn &&
             !user.isLoading &&
             (user.accounts?.isEmpty ?? true))
-          const TextWithPadding(text: 'Not signed in yet'),
+          TextWithPadding(
+            text: language.settings.accountSection.notLogginAccount,
+          ),
         if (!user.isLoading && (user.accounts?.isNotEmpty ?? false))
           ListView.builder(
             itemCount: 1,
@@ -117,13 +121,13 @@ class AccountSection extends ConsumerWidget {
                   child: ButtonPrimary(
                     text: user.isLoggedIn || user.accounts != null
                         ? 'Add account'
-                        : 'Login',
+                        : language.settings.accountSection.loginButton,
                     onPressed: () async {
-                      final prefs = SharedPreferencesConfig.prefs;
-                      final showAlert = prefs?.getBool('alert') ?? true;
+                      final prefs = SharedPreferencesConfig.prefs!;
+                      final showAlert = prefs.getBool('alert') ?? true;
 
                       if (showAlert) {
-                        prefs?.setBool('alert', false);
+                        prefs.setBool('alert', false);
                         await alert();
                       }
 
