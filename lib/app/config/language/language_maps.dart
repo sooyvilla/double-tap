@@ -71,7 +71,7 @@ const Map<String, dynamic> es = {
   'settings': {
     'app-bar-title': 'Configuración',
     'account-section': {
-      'title': 'Cuenta',
+      'title': 'Cuentas',
       'not-loggin-account': 'Aún no has iniciado sesión',
       'login-button': 'Iniciar sesión',
       'logout-button': 'Cerrar sesión',
