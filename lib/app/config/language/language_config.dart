@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:double_tap/app/config/config.dart';
 import 'package:double_tap/app/config/language/language_model.dart';
-import 'package:flutter/services.dart';
+
+part 'language_maps.dart';
 
 class LanguageConfig {
   static final LanguageConfig _instance = LanguageConfig._internal();
@@ -24,33 +23,35 @@ class LanguageConfig {
   String get currentLanguage => _language;
   LanguageModel get languageModel => _languageModel;
 
-  Future<void> initializeLanguage() async {
+  void initializeLanguage() {
     final lan = _prefs.getString('language') ?? 'en';
     _language = _getLanguageName(lan);
-    await _loadLanguageModel(lan);
+    _loadLanguageModel(lan);
   }
 
-  Future<void> _loadLanguageModel(String language) async {
-    try {
-      final String jsonString = await rootBundle
-          .loadString('assets/language/$language/language.json');
-      _languageModel = LanguageModel.fromRawJson(jsonString);
-    } catch (e) {
-      log('Error loading language model: $e');
-      if (language != 'en') {
-        await _loadLanguageModel('en');
-      } else {
-        throw Exception('Default language file missing or corrupted');
-      }
+  void _loadLanguageModel(String language) {
+    switch (language) {
+      case 'en':
+        _languageModel = LanguageModel.fromJson(en);
+        break;
+      case 'es':
+        _languageModel = LanguageModel.fromJson(es);
+        break;
+    }
+
+    if (language != 'en') {
+      _loadLanguageModel('en');
+    } else {
+      throw Exception('Default language file missing or corrupted');
     }
   }
 
-  Future<void> switchLanguage(String language) async {
+  void switchLanguage(String language) {
     final lan = _getLanguageByName(language);
     if (_supportedLanguages.contains(lan)) {
       _language = _getLanguageName(lan);
       _prefs.setString('language', lan);
-      await _loadLanguageModel(lan);
+      _loadLanguageModel(lan);
     }
   }
 

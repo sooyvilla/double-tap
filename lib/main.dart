@@ -19,7 +19,7 @@ void main() async {
   ]);
   await SharedPreferencesConfig.init();
 
-  await LanguageConfig().initializeLanguage();
+   LanguageConfig().initializeLanguage();
 
   language = LanguageConfig().languageModel;
 

@@ -13,8 +13,8 @@ class LanguageSection extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final languageList = useValueNotifier(LanguageConfig().supportedLanguages);
-    final selectedLanguage = useState<String>(LanguageConfig().currentLanguage);
+    final languageList = LanguageConfig().supportedLanguages;
+    final selectedLanguage = LanguageConfig().currentLanguage;
 
     return ContainerGreyColumn(
       titleSection: language.settings.languageSection.title,
@@ -27,52 +27,43 @@ class LanguageSection extends HookWidget {
               style: textNormal,
             ),
             const Spacer(),
-            ValueListenableBuilder(
-              valueListenable: languageList,
-              builder: (_, list, __) {
-                return GestureDetector(
-                  onTap: () async {
-                    final result = await showCupertinoModalPopup<String>(
-                      context: context,
-                      builder: (context) => CupertinoActionSheet(
-                        title: Text(
-                          language.settings.languageSection.titleModal,
-                          style: textNormalGrey,
-                        ),
-                        actions: list.map<Widget>((String valor) {
-                          return CupertinoActionSheetAction(
-                            child: Text(valor),
-                            onPressed: () async {
-                              await LanguageConfig().switchLanguage(valor);
-                              Restart.restartApp();
-                            },
-                          );
-                        }).toList(),
-                        cancelButton: CupertinoActionSheetAction(
-                          child: Text(
-                            language.settings.languageSection.cancelButton,
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
+            GestureDetector(
+              onTap: () async {
+                await showCupertinoModalPopup<String>(
+                  context: context,
+                  builder: (context) => CupertinoActionSheet(
+                    title: Text(
+                      language.settings.languageSection.titleModal,
+                      style: textNormalGrey,
+                    ),
+                    actions: languageList.map<Widget>((String valor) {
+                      return CupertinoActionSheetAction(
+                        child: Text(valor),
+                        onPressed: () async {
+                          LanguageConfig().switchLanguage(valor);
+                          Restart.restartApp();
+                        },
+                      );
+                    }).toList(),
+                    cancelButton: CupertinoActionSheetAction(
+                      child: Text(
+                        language.settings.languageSection.cancelButton,
                       ),
-                    );
-
-                    if (result != null) {
-                      selectedLanguage.value = result;
-                    }
-                  },
-                  child: TextWithPadding(
-                    text: selectedLanguage.value,
-                    style: textNormal.copyWith(
-                      color: primaryRed,
-                      fontSize: 14,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                     ),
                   ),
                 );
               },
-            )
+              child: TextWithPadding(
+                text: selectedLanguage,
+                style: textNormal.copyWith(
+                  color: primaryRed,
+                  fontSize: 14,
+                ),
+              ),
+            ),
           ],
         ),
       ],

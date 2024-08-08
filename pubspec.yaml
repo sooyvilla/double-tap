@@ -1,7 +1,7 @@
 name: double_tap
 description: "This proyect is a flutter app that uses the valorant api to get the valorant user information and show items in the store"
 
-version: 2.0.0+1
+version: 2.0.0+2
 
 environment:
   sdk: ">=3.3.1 <4.0.0"
@@ -72,6 +72,4 @@ flutter:
   assets:
     - assets/valorant/wallet/
     - assets/icon/
-    - assets/language/es/
-    - assets/language/en/
     - shorebird.yaml
