@@ -20,17 +20,30 @@
     "checker-section": {
       "title": "Actualizaciones",
       "check-updates-button": "Buscar actualizaciones",
-      "version-app": "Versión de la aplicación",
+      "version-app": "Versión de la aplicación: ",
+      "new-version": "Nueva versión disponible",
+      "restar-button": "Reiniciar aplicación",
       "install-button": "Instalar",
       "notes": {
-        "status-Installation": "Instalación",
-        "status": "Estado",
+        "title": "Todas las actualizaciones",
+        "mode-install-auto": "Automatico",
+        "mode-install-manual": "Manual",
+        "status-update-active": "Activo",
+        "status-update-inactive": "Inactivo",
+        "status-installation": "Instalación:",
+        "status": "Estado:",
         "all-notes-button": "Todas las notas"
       }
     },
     "settings-section": {
       "title": "Configuración",
       "change-language-title": "Cambiar idioma"
+    },
+    "language-section": {
+      "title": "Lenguaje",
+      "text": "Lenguaje actual:",
+      "title-modal": "Selecciona un idioma",
+      "cancel-button": "Cancelar"
     }
   },
   "live": {
@@ -42,7 +55,7 @@
     "store-section": {
       "title": "Tienda",
       "no-data-store": "No hay datos en la tienda",
-      "refresh-title": "Actualizar",
+      "refresh-title": "Se actualiza en",
       "title-modal": "Objetos"
     }
   },

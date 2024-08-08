@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:double_tap/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restart_app/restart_app.dart';
@@ -28,9 +29,9 @@ class _CheckUpdateSectionState extends ConsumerState<CheckUpdateSection> {
     final settingsCheckerState = ref.watch(settingsCheckerProvider);
 
     if (settingsCheckerState.isLoading) {
-      return const ContainerGreyColumn(
-        titleSection: 'Updates',
-        children: [
+      return ContainerGreyColumn(
+        titleSection: language.settings.checkerSection.title,
+        children: const [
           CircularLoad(),
         ],
       );
@@ -39,13 +40,13 @@ class _CheckUpdateSectionState extends ConsumerState<CheckUpdateSection> {
     return Column(
       children: [
         ContainerGreyColumn(
-          titleSection: 'Updates',
+          titleSection: language.settings.checkerSection.title,
           children: [
             Row(
               children: [
                 Expanded(
                   child: ButtonPrimary(
-                    text: 'Check updates',
+                    text: language.settings.checkerSection.checkUpdatesButton,
                     onPressed: () {
                       ref
                           .read(settingsCheckerProvider.notifier)
@@ -58,7 +59,7 @@ class _CheckUpdateSectionState extends ConsumerState<CheckUpdateSection> {
                     child: Bounce(
                       infinite: true,
                       child: TextWithPadding(
-                        text: 'New version available',
+                        text: language.settings.checkerSection.newVersion,
                         zeroPadding: true,
                         style: textNormal.copyWith(color: Colors.greenAccent),
                       ),
@@ -68,28 +69,30 @@ class _CheckUpdateSectionState extends ConsumerState<CheckUpdateSection> {
             ),
             Row(
               children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      const TextWithPadding(
-                        text: 'Version app: ',
-                        right: 0,
-                        style: textNormal,
-                      ),
-                      TextWithPadding(
-                        text: settingsCheckerState.currentVersion ?? '',
-                        left: 0,
-                        style: textNormalGrey,
-                      ),
-                    ],
+                if (!settingsCheckerState.isUpdateAvailable)
+                  Expanded(
+                    child: Row(
+                      children: [
+                        TextWithPadding(
+                          text:
+                              '${language.settings.checkerSection.versionApp} ',
+                          right: 0,
+                          style: textNormal,
+                        ),
+                        TextWithPadding(
+                          text: settingsCheckerState.currentVersion ?? '',
+                          left: 0,
+                          style: textNormalGrey,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
                 if (settingsCheckerState.isUpdateAvailable)
                   Expanded(
                     child: ButtonPrimary(
                       text: settingsCheckerState.isUpdateDownloaded
-                          ? 'Restar app'
-                          : 'Install',
+                          ? language.settings.checkerSection.restarButton
+                          : language.settings.checkerSection.installButton,
                       textAlign: TextAlign.right,
                       onPressed: () {
                         settingsCheckerState.isUpdateDownloaded

@@ -2,6 +2,7 @@ import 'package:double_tap/app/config/language/language_config.dart';
 import 'package:double_tap/app/ui/theme/colors.dart';
 import 'package:double_tap/app/ui/theme/text_styles.dart';
 import 'package:double_tap/app/ui/widgets/widgets.dart';
+import 'package:double_tap/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:restart_app/restart_app.dart';
@@ -16,13 +17,13 @@ class LanguageSection extends HookWidget {
     final selectedLanguage = useState<String>(LanguageConfig().currentLanguage);
 
     return ContainerGreyColumn(
-      titleSection: 'Language',
+      titleSection: language.settings.languageSection.title,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            const TextWithPadding(
-              text: 'Language: ',
+            TextWithPadding(
+              text: language.settings.languageSection.text,
               style: textNormal,
             ),
             const Spacer(),
@@ -34,7 +35,10 @@ class LanguageSection extends HookWidget {
                     final result = await showCupertinoModalPopup<String>(
                       context: context,
                       builder: (context) => CupertinoActionSheet(
-                        title: const Text('Selecciona un idioma'),
+                        title: Text(
+                          language.settings.languageSection.titleModal,
+                          style: textNormalGrey,
+                        ),
                         actions: list.map<Widget>((String valor) {
                           return CupertinoActionSheetAction(
                             child: Text(valor),
@@ -45,7 +49,9 @@ class LanguageSection extends HookWidget {
                           );
                         }).toList(),
                         cancelButton: CupertinoActionSheetAction(
-                          child: const Text('Cancelar'),
+                          child: Text(
+                            language.settings.languageSection.cancelButton,
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },

@@ -1,3 +1,4 @@
+import 'package:double_tap/main.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../config/config.dart';
@@ -73,14 +74,19 @@ class ShowListUpdatesNotesWidget extends StatelessWidget {
                     Row(
                       children: [
                         TextWithPadding(
-                          text: 'Instalacion: ',
+                          text:
+                              '${language.settings.checkerSection.notes.statusInstallation} ',
                           top: 0,
                           right: 0,
                           bottom: 0,
                           style: textNormalGrey.copyWith(fontSize: 14),
                         ),
                         TextWithPadding(
-                          text: update.isImportant ? 'Automatica' : 'Manual',
+                          text: update.isImportant
+                              ? language
+                                  .settings.checkerSection.notes.modeInstallAuto
+                              : language.settings.checkerSection.notes
+                                  .modeInstallManual,
                           top: 0,
                           left: 0,
                           bottom: 0,
@@ -95,7 +101,7 @@ class ShowListUpdatesNotesWidget extends StatelessWidget {
                     Row(
                       children: [
                         TextWithPadding(
-                          text: 'Estado: ',
+                          text: language.settings.checkerSection.notes.status,
                           left: 0,
                           top: 0,
                           right: 0,
@@ -103,7 +109,11 @@ class ShowListUpdatesNotesWidget extends StatelessWidget {
                           style: textNormalGrey.copyWith(fontSize: 14),
                         ),
                         TextWithPadding(
-                          text: update.isInactive ? 'Inactivo' : 'Activo',
+                          text: update.isInactive
+                              ? language.settings.checkerSection.notes
+                                  .statusUpdateInactive
+                              : language.settings.checkerSection.notes
+                                  .statusUpdateActive,
                           left: 0,
                           top: 0,
                           bottom: 5,
@@ -128,7 +138,7 @@ class ShowListUpdatesNotesWidget extends StatelessWidget {
             ),
             if (!allUpdates)
               ButtonPrimary(
-                text: 'Motrar todas las actualizaciones',
+                text: language.settings.checkerSection.notes.allNotesButton,
                 top: 0,
                 onPressed: () {
                   showModal(
@@ -139,8 +149,9 @@ class ShowListUpdatesNotesWidget extends StatelessWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const TextWithPadding(
-                              text: 'Todas las actualizaciones',
+                            TextWithPadding(
+                              text:
+                                  language.settings.checkerSection.notes.title,
                               top: 0,
                               left: 0,
                               bottom: 5,

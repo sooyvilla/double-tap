@@ -16,12 +16,21 @@ class LanguageModel {
   factory LanguageModel.fromRawJson(String str) =>
       LanguageModel.fromJson(json.decode(str));
 
+  String toRawJson() => json.encode(toJson());
+
   factory LanguageModel.fromJson(Map<String, dynamic> json) => LanguageModel(
         navBar: NavBar.fromJson(json['nav-bar']),
         settings: Settings.fromJson(json['settings']),
         live: Live.fromJson(json['live']),
         alertSession: AlertSession.fromJson(json['alert-session']),
       );
+
+  Map<String, dynamic> toJson() => {
+        'nav-bar': navBar.toJson(),
+        'settings': settings.toJson(),
+        'live': live.toJson(),
+        'alert-session': alertSession.toJson(),
+      };
 }
 
 class AlertSession {
@@ -38,11 +47,19 @@ class AlertSession {
   factory AlertSession.fromRawJson(String str) =>
       AlertSession.fromJson(json.decode(str));
 
+  String toRawJson() => json.encode(toJson());
+
   factory AlertSession.fromJson(Map<String, dynamic> json) => AlertSession(
         title: json['title'],
         desc: json['desc'],
         button: json['button'],
       );
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'desc': desc,
+        'button': button,
+      };
 }
 
 class Live {
@@ -58,11 +75,19 @@ class Live {
 
   factory Live.fromRawJson(String str) => Live.fromJson(json.decode(str));
 
+  String toRawJson() => json.encode(toJson());
+
   factory Live.fromJson(Map<String, dynamic> json) => Live(
         appBarTitle: json['app-bar-title'],
         userSection: UserSection.fromJson(json['user-section']),
         storeSection: StoreSection.fromJson(json['store-section']),
       );
+
+  Map<String, dynamic> toJson() => {
+        'app-bar-title': appBarTitle,
+        'user-section': userSection.toJson(),
+        'store-section': storeSection.toJson(),
+      };
 }
 
 class StoreSection {
@@ -81,12 +106,21 @@ class StoreSection {
   factory StoreSection.fromRawJson(String str) =>
       StoreSection.fromJson(json.decode(str));
 
+  String toRawJson() => json.encode(toJson());
+
   factory StoreSection.fromJson(Map<String, dynamic> json) => StoreSection(
         title: json['title'],
         noDataStore: json['no-data-store'],
         refreshTitle: json['refresh-title'],
         titleModal: json['title-modal'],
       );
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'no-data-store': noDataStore,
+        'refresh-title': refreshTitle,
+        'title-modal': titleModal,
+      };
 }
 
 class UserSection {
@@ -101,10 +135,17 @@ class UserSection {
   factory UserSection.fromRawJson(String str) =>
       UserSection.fromJson(json.decode(str));
 
+  String toRawJson() => json.encode(toJson());
+
   factory UserSection.fromJson(Map<String, dynamic> json) => UserSection(
         title: json['title'],
         notLogginAccount: json['not-loggin-account'],
       );
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'not-loggin-account': notLogginAccount,
+      };
 }
 
 class NavBar {
@@ -118,10 +159,17 @@ class NavBar {
 
   factory NavBar.fromRawJson(String str) => NavBar.fromJson(json.decode(str));
 
+  String toRawJson() => json.encode(toJson());
+
   factory NavBar.fromJson(Map<String, dynamic> json) => NavBar(
         live: json['live'],
         settings: json['settings'],
       );
+
+  Map<String, dynamic> toJson() => {
+        'live': live,
+        'settings': settings,
+      };
 }
 
 class Settings {
@@ -129,23 +177,36 @@ class Settings {
   final AccountSection accountSection;
   final CheckerSection checkerSection;
   final SettingsSection settingsSection;
+  final LanguageSection languageSection;
 
   Settings({
     required this.appBarTitle,
     required this.accountSection,
     required this.checkerSection,
     required this.settingsSection,
+    required this.languageSection,
   });
 
   factory Settings.fromRawJson(String str) =>
       Settings.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
 
   factory Settings.fromJson(Map<String, dynamic> json) => Settings(
         appBarTitle: json['app-bar-title'],
         accountSection: AccountSection.fromJson(json['account-section']),
         checkerSection: CheckerSection.fromJson(json['checker-section']),
         settingsSection: SettingsSection.fromJson(json['settings-section']),
+        languageSection: LanguageSection.fromJson(json['language-section']),
       );
+
+  Map<String, dynamic> toJson() => {
+        'app-bar-title': appBarTitle,
+        'account-section': accountSection.toJson(),
+        'checker-section': checkerSection.toJson(),
+        'settings-section': settingsSection.toJson(),
+        'language-section': languageSection.toJson(),
+      };
 }
 
 class AccountSection {
@@ -154,7 +215,7 @@ class AccountSection {
   final String loginButton;
   final String logoutButton;
   final String logoutAllButton;
-  final InfoButton infoButton;
+  final AlertSession infoButton;
 
   AccountSection({
     required this.title,
@@ -168,41 +229,33 @@ class AccountSection {
   factory AccountSection.fromRawJson(String str) =>
       AccountSection.fromJson(json.decode(str));
 
+  String toRawJson() => json.encode(toJson());
+
   factory AccountSection.fromJson(Map<String, dynamic> json) => AccountSection(
         title: json['title'],
         notLogginAccount: json['not-loggin-account'],
         loginButton: json['login-button'],
         logoutButton: json['logout-button'],
         logoutAllButton: json['logout-all-button'],
-        infoButton: InfoButton.fromJson(json['info-button']),
+        infoButton: AlertSession.fromJson(json['info-button']),
       );
-}
 
-class InfoButton {
-  final String title;
-  final String desc;
-  final String button;
-
-  InfoButton({
-    required this.title,
-    required this.desc,
-    required this.button,
-  });
-
-  factory InfoButton.fromRawJson(String str) =>
-      InfoButton.fromJson(json.decode(str));
-
-  factory InfoButton.fromJson(Map<String, dynamic> json) => InfoButton(
-        title: json['title'],
-        desc: json['desc'],
-        button: json['button'],
-      );
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'not-loggin-account': notLogginAccount,
+        'login-button': loginButton,
+        'logout-button': logoutButton,
+        'logout-all-button': logoutAllButton,
+        'info-button': infoButton.toJson(),
+      };
 }
 
 class CheckerSection {
   final String title;
   final String checkUpdatesButton;
   final String versionApp;
+  final String newVersion;
+  final String restarButton;
   final String installButton;
   final Notes notes;
 
@@ -210,6 +263,8 @@ class CheckerSection {
     required this.title,
     required this.checkUpdatesButton,
     required this.versionApp,
+    required this.newVersion,
+    required this.restarButton,
     required this.installButton,
     required this.notes,
   });
@@ -217,21 +272,45 @@ class CheckerSection {
   factory CheckerSection.fromRawJson(String str) =>
       CheckerSection.fromJson(json.decode(str));
 
+  String toRawJson() => json.encode(toJson());
+
   factory CheckerSection.fromJson(Map<String, dynamic> json) => CheckerSection(
         title: json['title'],
         checkUpdatesButton: json['check-updates-button'],
         versionApp: json['version-app'],
+        newVersion: json['new-version'],
+        restarButton: json['restar-button'],
         installButton: json['install-button'],
         notes: Notes.fromJson(json['notes']),
       );
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'check-updates-button': checkUpdatesButton,
+        'version-app': versionApp,
+        'new-version': newVersion,
+        'restar-button': restarButton,
+        'install-button': installButton,
+        'notes': notes.toJson(),
+      };
 }
 
 class Notes {
+  final String title;
+  final String modeInstallAuto;
+  final String modeInstallManual;
+  final String statusUpdateActive;
+  final String statusUpdateInactive;
   final String statusInstallation;
   final String status;
   final String allNotesButton;
 
   Notes({
+    required this.title,
+    required this.modeInstallAuto,
+    required this.modeInstallManual,
+    required this.statusUpdateActive,
+    required this.statusUpdateInactive,
     required this.statusInstallation,
     required this.status,
     required this.allNotesButton,
@@ -239,11 +318,63 @@ class Notes {
 
   factory Notes.fromRawJson(String str) => Notes.fromJson(json.decode(str));
 
+  String toRawJson() => json.encode(toJson());
+
   factory Notes.fromJson(Map<String, dynamic> json) => Notes(
-        statusInstallation: json['status-Installation'],
+        title: json['title'],
+        modeInstallAuto: json['mode-install-auto'],
+        modeInstallManual: json['mode-install-manual'],
+        statusUpdateActive: json['status-update-active'],
+        statusUpdateInactive: json['status-update-inactive'],
+        statusInstallation: json['status-installation'],
         status: json['status'],
         allNotesButton: json['all-notes-button'],
       );
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'mode-install-auto': modeInstallAuto,
+        'mode-install-manual': modeInstallManual,
+        'status-update-active': statusUpdateActive,
+        'status-update-inactive': statusUpdateInactive,
+        'status-installation': statusInstallation,
+        'status': status,
+        'all-notes-button': allNotesButton,
+      };
+}
+
+class LanguageSection {
+  final String title;
+  final String text;
+  final String titleModal;
+  final String cancelButton;
+
+  LanguageSection({
+    required this.title,
+    required this.text,
+    required this.titleModal,
+    required this.cancelButton,
+  });
+
+  factory LanguageSection.fromRawJson(String str) =>
+      LanguageSection.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory LanguageSection.fromJson(Map<String, dynamic> json) =>
+      LanguageSection(
+        title: json['title'],
+        text: json['text'],
+        titleModal: json['title-modal'],
+        cancelButton: json['cancel-button'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'text': text,
+        'title-modal': titleModal,
+        'cancel-button': cancelButton,
+      };
 }
 
 class SettingsSection {
@@ -258,9 +389,16 @@ class SettingsSection {
   factory SettingsSection.fromRawJson(String str) =>
       SettingsSection.fromJson(json.decode(str));
 
+  String toRawJson() => json.encode(toJson());
+
   factory SettingsSection.fromJson(Map<String, dynamic> json) =>
       SettingsSection(
         title: json['title'],
         changeLanguageTitle: json['change-language-title'],
       );
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'change-language-title': changeLanguageTitle,
+      };
 }

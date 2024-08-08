@@ -20,10 +20,17 @@
     "checker-section": {
       "title": "Updates",
       "check-updates-button": "Check updates",
-      "version-app": "Version app",
+      "version-app": "Version app:",
+      "new-version": "New version available",
+      "restar-button": "Restart app",
       "install-button": "Install",
       "notes": {
-        "status-Installation": "Installation",
+        "title": "All updates",
+        "mode-install-auto": "Automatic",
+        "mode-install-manual": "Manual",
+        "status-update-active": "Active",
+        "status-update-inactive": "Inactive",
+        "status-installation": "Installation:",
         "status": "Status",
         "all-notes-button": "All notes"
       }
@@ -31,6 +38,12 @@
     "settings-section": {
       "title": "Settings",
       "change-language-title": "Change language"
+    },
+    "language-section": {
+      "title": "Language",
+      "text": "Current language:",
+      "title-modal": "Select a language",
+      "cancel-button": "Cancel"
     }
   },
   "live": {
@@ -42,7 +55,7 @@
     "store-section": {
       "title": "Store",
       "no-data-store": "No data store",
-      "refresh-title": "Refresh",
+      "refresh-title": "Refresh in",
       "title-modal": "Items"
     }
   },
