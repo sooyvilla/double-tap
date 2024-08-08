@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:double_tap/app/data/models/weapons.dart';
 import 'package:double_tap/app/ui/screens/live/store/video_player.dart';
@@ -8,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 
-import '../../../../config/language/language_config.dart';
+import '../../../../../main.dart';
 import '../../../providers/providers.dart';
 import '../../../ui.dart';
 
@@ -20,7 +18,6 @@ class StoreSection extends ConsumerWidget {
     final live = ref.watch(liveProvider);
     final settings = ref.watch(settingsAccountProvider);
     final height = MediaQuery.of(context).size.height;
-    final language = LanguageConfig().languageModel;
 
     return Container(
       margin: EdgeInsets.only(bottom: height * 0.15),
@@ -31,7 +28,7 @@ class StoreSection extends ConsumerWidget {
           if (!settings.isLoggedIn && !live.isLoading && !settings.isLoading)
             Column(
               children: [
-                Icon(Icons.storefront_rounded, size: 80),
+                const Icon(Icons.storefront_rounded, size: 80),
                 TextWithPadding(
                   text: language.live.storeSection.noDataStore,
                   style: textTitle,
@@ -150,11 +147,10 @@ class _ShowItemsBundle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final language = LanguageConfig().languageModel;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-         TextWithPadding(
+        TextWithPadding(
           text: language.live.storeSection.titleModal,
           style: textTitle,
         ),
@@ -349,8 +345,8 @@ class _WalletWidget extends ConsumerWidget {
         ),
         Row(
           children: [
-            const TextWithPadding(
-              text: 'Refresh:',
+            TextWithPadding(
+              text: '${language.live.storeSection.refreshTitle}:',
               top: 5,
               style: textNormal,
             ),

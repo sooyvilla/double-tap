@@ -36,10 +36,9 @@ class _LoginWebViewState extends ConsumerState<AccountWebview>
           if (request.url.contains('https://playvalorant.com/')) {
             await ref
                 .read(settingsAccountProvider.notifier)
-                .loginWebView(request.url)
-                .then((value) {
-              Navigator.pop(context);
-            });
+                .loginWebView(request.url);
+
+            if (mounted) Navigator.pop(context);
 
             return NavigationDecision.prevent;
           }

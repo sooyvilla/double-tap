@@ -14,18 +14,20 @@ class LanguageConfig {
 
   LanguageConfig._internal();
 
-  final prefs = SharedPreferencesConfig.prefs!;
+  final _prefs = SharedPreferencesConfig.prefs!;
 
   final _supportedLanguages = ['en', 'es'];
+  final _listLanguage = ['English', 'Español'];
   late String _language;
 
-  List<String> get supportedLanguages => _supportedLanguages;
+  List<String> get supportedLanguages => _listLanguage;
   String get currentLanguage => _language;
   LanguageModel get languageModel => _languageModel;
 
   Future<void> initializeLanguage() async {
-    _language = prefs.getString('language') ?? 'en';
-    await _loadLanguageModel(_language);
+    final lan = _prefs.getString('language') ?? 'en';
+    _language = _getLanguageName(lan);
+    await _loadLanguageModel(lan);
   }
 
   Future<void> _loadLanguageModel(String language) async {
@@ -44,10 +46,21 @@ class LanguageConfig {
   }
 
   Future<void> switchLanguage(String language) async {
-    if (_supportedLanguages.contains(language)) {
-      _language = language;
-      prefs.setString('language', language);
-      await _loadLanguageModel(_language);
+    final lan = _getLanguageByName(language);
+    if (_supportedLanguages.contains(lan)) {
+      _language = _getLanguageName(lan);
+      _prefs.setString('language', lan);
+      await _loadLanguageModel(lan);
     }
+  }
+
+  String _getLanguageName(String language) {
+    final index = _supportedLanguages.indexOf(language);
+    return _listLanguage[index];
+  }
+
+  String _getLanguageByName(String language) {
+    final index = _listLanguage.indexOf(language);
+    return _supportedLanguages[index];
   }
 }

@@ -1,9 +1,10 @@
 import 'package:double_tap/app/config/config.dart';
-import 'package:double_tap/app/config/language/language_config.dart';
 import 'package:double_tap/app/ui/screens/settings/check_update/check_update_section.dart';
+import 'package:double_tap/app/ui/screens/settings/language/language_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../main.dart';
 import '../../providers/providers.dart';
 import '../../ui.dart';
 import 'account/account_section.dart';
@@ -52,13 +53,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
   @override
   Widget build(BuildContext context) {
-    final language = LanguageConfig().languageModel;
     return ScaffoldPrimary(
       appBarText: language.settings.settingsSection.title,
       body: const WidgetBody(
         children: [
           AccountSection(),
           CheckUpdateSection(),
+          LanguageSection(),
         ],
       ),
     );

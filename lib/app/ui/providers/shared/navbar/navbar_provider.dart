@@ -1,3 +1,4 @@
+import 'package:double_tap/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,27 +12,27 @@ class NavbarNotifier extends StateNotifier<NavbarState> {
   NavbarNotifier() : super(const NavbarState());
 
   final tabs = [
-    const FloatingBottomNavItem(
-      activeIcon: Icon(
+    FloatingBottomNavItem(
+      activeIcon: const Icon(
         CupertinoIcons.play_arrow_solid,
         size: 35,
       ),
-      inactiveIcon: Icon(
+      inactiveIcon: const Icon(
         CupertinoIcons.play_arrow_solid,
         size: 30,
       ),
-      label: 'Live',
+      label: language.navBar.live,
     ),
-    const FloatingBottomNavItem(
-      activeIcon: Icon(
+    FloatingBottomNavItem(
+      activeIcon: const Icon(
         CupertinoIcons.settings,
         size: 35,
       ),
-      inactiveIcon: Icon(
+      inactiveIcon: const Icon(
         CupertinoIcons.settings,
         size: 30,
       ),
-      label: 'Settings',
+      label: language.navBar.settings,
     ),
   ];
 

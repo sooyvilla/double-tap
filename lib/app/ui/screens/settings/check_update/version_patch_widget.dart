@@ -18,7 +18,7 @@ class ShowListUpdatesNotesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
       physics: const NeverScrollableScrollPhysics(),
       itemCount: allUpdates ? updates.length : 1,
       itemBuilder: (context, index) {

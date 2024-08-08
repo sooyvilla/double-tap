@@ -1,10 +1,10 @@
 import 'package:double_tap/app/config/config.dart';
-import 'package:double_tap/app/config/language/language_config.dart';
 import 'package:double_tap/app/ui/screens/settings/account/account_webview.dart';
 import 'package:double_tap/app/ui/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../main.dart';
 import '../../../providers/providers.dart';
 import '../../../ui.dart';
 
@@ -14,7 +14,6 @@ class AccountSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final user = ref.watch(settingsAccountProvider);
-    final language = LanguageConfig().languageModel;
 
     Future<void> alert() async => await showAlertCupertino(
           context,

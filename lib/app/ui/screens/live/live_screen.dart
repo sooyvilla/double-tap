@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../config/language/language_config.dart';
+import '../../../../main.dart';
 import '../settings/account/account_webview.dart';
 import 'store/store_section.dart';
 import 'user/user_section.dart';
@@ -16,7 +16,6 @@ class LiveScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsAccountProvider);
-    final language = LanguageConfig().languageModel;
 
     if (settings.showAlertStatusSesion) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -37,7 +36,7 @@ class LiveScreen extends ConsumerWidget {
 
     return ScaffoldPrimary(
       appBarText: language.live.appBarTitle,
-      body: WidgetBody(
+      body: const WidgetBody(
         children: [
           PlaySection(),
           StoreSection(),
