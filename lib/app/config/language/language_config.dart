@@ -38,12 +38,6 @@ class LanguageConfig {
         _languageModel = LanguageModel.fromJson(es);
         break;
     }
-
-    if (language != 'en') {
-      _loadLanguageModel('en');
-    } else {
-      throw Exception('Default language file missing or corrupted');
-    }
   }
 
   void switchLanguage(String language) {

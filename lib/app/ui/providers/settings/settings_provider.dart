@@ -439,10 +439,12 @@ class CheckerNotifier extends StateNotifier<SettingsCheckerState> {
 
     if (isUpdateAvailable) {
       final updateIsImportant =
-          state.updates.where((element) => element.isImportant).first;
-      if (updateIsImportant.isImportant) {
-        await downloadUpdate();
-        Restart.restartApp();
+          state.updates.where((element) => element.isImportant);
+      if (updateIsImportant.isNotEmpty) {
+        if (updateIsImportant.first.isImportant) {
+          await downloadUpdate();
+          Restart.restartApp();
+        }
       }
     }
 
