@@ -177,14 +177,14 @@ class Settings {
   final AccountSection accountSection;
   final CheckerSection checkerSection;
   final SettingsSection settingsSection;
-  final LanguageSection languageSection;
+  final OptionsSection optionsSection;
 
   Settings({
     required this.appBarTitle,
     required this.accountSection,
     required this.checkerSection,
     required this.settingsSection,
-    required this.languageSection,
+    required this.optionsSection,
   });
 
   factory Settings.fromRawJson(String str) =>
@@ -197,7 +197,7 @@ class Settings {
         accountSection: AccountSection.fromJson(json['account-section']),
         checkerSection: CheckerSection.fromJson(json['checker-section']),
         settingsSection: SettingsSection.fromJson(json['settings-section']),
-        languageSection: LanguageSection.fromJson(json['language-section']),
+        optionsSection: OptionsSection.fromJson(json['options-section']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -205,7 +205,7 @@ class Settings {
         'account-section': accountSection.toJson(),
         'checker-section': checkerSection.toJson(),
         'settings-section': settingsSection.toJson(),
-        'language-section': languageSection.toJson(),
+        'options-section': optionsSection.toJson(),
       };
 }
 
@@ -343,26 +343,50 @@ class Notes {
       };
 }
 
-class LanguageSection {
+class OptionsSection {
+  final String title;
+  final LanguageOption languageOption;
+
+  OptionsSection({
+    required this.title,
+    required this.languageOption,
+  });
+
+  factory OptionsSection.fromRawJson(String str) =>
+      OptionsSection.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory OptionsSection.fromJson(Map<String, dynamic> json) => OptionsSection(
+        title: json['title'],
+        languageOption: LanguageOption.fromJson(json['language-option']),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'language-option': languageOption.toJson(),
+      };
+}
+
+class LanguageOption {
   final String title;
   final String text;
   final String titleModal;
   final String cancelButton;
 
-  LanguageSection({
+  LanguageOption({
     required this.title,
     required this.text,
     required this.titleModal,
     required this.cancelButton,
   });
 
-  factory LanguageSection.fromRawJson(String str) =>
-      LanguageSection.fromJson(json.decode(str));
+  factory LanguageOption.fromRawJson(String str) =>
+      LanguageOption.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory LanguageSection.fromJson(Map<String, dynamic> json) =>
-      LanguageSection(
+  factory LanguageOption.fromJson(Map<String, dynamic> json) => LanguageOption(
         title: json['title'],
         text: json['text'],
         titleModal: json['title-modal'],

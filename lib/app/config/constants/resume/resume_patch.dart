@@ -24,11 +24,19 @@ Future<List<ResumePatch>> getNotesPatch() async {
   final packageInfo = await PackageInfo.fromPlatform();
   final resumeList = <ResumePatch>[
     ResumePatch(
-      title: 'Mejoras en el texto',
+      title: 'Mejoras graficas',
       desc:
-          'Se implemento el cambio de idioma',
+          'Se cambio la manera en ver los idiomas, se modifico los items de los packs, se arreglo y implemento carga en el login',
       date: '2024-08-08',
       isImportant: false,
+      version: '${packageInfo.version}+2',
+    ),
+    ResumePatch(
+      title: 'Mejoras en el texto',
+      desc: 'Se implemento el cambio de idioma',
+      date: '2024-08-08',
+      isImportant: false,
+      isInactive: true,
       version: '${packageInfo.version}+1',
     ),
     ResumePatch(
@@ -37,6 +45,7 @@ Future<List<ResumePatch>> getNotesPatch() async {
           'Ahora la seccion "live" se queda cargando hasta que recupera la tienda',
       date: '2024-07-29',
       isImportant: false,
+      isInactive: true,
       version: packageInfo.version,
     ),
     ResumePatch(

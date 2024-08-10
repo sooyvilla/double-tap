@@ -1,6 +1,6 @@
 import 'package:double_tap/app/config/config.dart';
 import 'package:double_tap/app/ui/screens/settings/check_update/check_update_section.dart';
-import 'package:double_tap/app/ui/screens/settings/language/language_section.dart';
+import 'package:double_tap/app/ui/screens/settings/new_settings/new_settings_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -58,8 +58,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       body: const WidgetBody(
         children: [
           AccountSection(),
+          NewSettingsSection(),
           CheckUpdateSection(),
-          LanguageSection(),
         ],
       ),
     );

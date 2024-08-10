@@ -53,6 +53,11 @@ class _ScaffoldPrimaryState extends State<ScaffoldPrimary> {
       child: CupertinoPageScaffold(
         child: CustomScrollView(
           controller: _scrollController,
+          // pon las fisicas de apple
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+            decelerationRate: ScrollDecelerationRate.fast,
+          ),
           slivers: [
             CupertinoSliverNavigationBar(
               largeTitle: ValueListenableBuilder<double>(

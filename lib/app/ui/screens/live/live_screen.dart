@@ -19,13 +19,13 @@ class LiveScreen extends ConsumerWidget {
 
     if (settings.showAlertStatusSesion) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref
+            .read(settingsAccountProvider.notifier)
+            .setShowAlertStatusSesion(false);
         showAlertCupertino(
             context, language.alertSession.title, language.alertSession.desc,
             onPressed: () {
           Navigator.of(context).pop();
-          ref
-              .read(settingsAccountProvider.notifier)
-              .setShowAlertStatusSesion(false);
           showModal(
             context,
             const AccountWebview(),

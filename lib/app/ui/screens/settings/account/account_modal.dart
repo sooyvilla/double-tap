@@ -55,10 +55,8 @@ class AccountModal extends ConsumerWidget {
                 text: 'Login',
                 onPressed: () async {
                   if (settingsState.accounts?.isEmpty ?? true) {
-                    await ref
-                        .read(settingsAccountProvider.notifier)
-                        .login()
-                        .then((value) {
+                    await ref.read(settingsAccountProvider.notifier).login();
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
                       Navigator.of(context).pop();
                     });
                     return;
@@ -67,8 +65,8 @@ class AccountModal extends ConsumerWidget {
                       .read(settingsAccountProvider.notifier)
                       .addAccount()
                       .then((value) {
-                    Navigator.of(context).pop();
-                  });
+                        //todo: implementar el .pop()
+                      });
                   return;
                 },
               ),

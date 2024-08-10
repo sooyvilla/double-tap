@@ -1,5 +1,3 @@
-// import 'dart:developer' as dev;
-
 import 'package:double_tap/app/config/config.dart';
 import 'package:double_tap/app/ui/providers/settings/settings_provider.dart';
 import 'package:double_tap/app/ui/ui.dart';
@@ -9,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-String selectedUrl = ValorantUrls.urlLoginWebView;
-const kAndroidUserAgent =
+String _selectedUrl = ValorantUrls.urlLoginWebView;
+const _kAndroidUserAgent =
     'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36';
 
 class AccountWebview extends ConsumerStatefulWidget {
@@ -23,14 +21,14 @@ class AccountWebview extends ConsumerStatefulWidget {
 class _LoginWebViewState extends ConsumerState<AccountWebview>
     with DioConfigService {
   late WebViewController controller;
-  final isLoading = ValueNotifier<bool>(true);
+  final isLoading = ValueNotifier(true);
 
   @override
   void initState() {
     super.initState();
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setUserAgent(kAndroidUserAgent)
+      ..setUserAgent(_kAndroidUserAgent)
       ..setNavigationDelegate(NavigationDelegate(
         onNavigationRequest: (request) async {
           if (request.url.contains('https://playvalorant.com/')) {
@@ -42,6 +40,16 @@ class _LoginWebViewState extends ConsumerState<AccountWebview>
 
             return NavigationDecision.prevent;
           }
+          if (request.url.contains('about:blank')) {
+            setState(() {
+              isLoading.value = false;
+            });
+            return NavigationDecision.navigate;
+          }
+          setState(() {
+            isLoading.value = true;
+          });
+
           return NavigationDecision.navigate;
         },
         onProgress: (progress) {
@@ -49,7 +57,7 @@ class _LoginWebViewState extends ConsumerState<AccountWebview>
         },
       ))
       ..loadRequest(
-        Uri.parse(selectedUrl),
+        Uri.parse(_selectedUrl),
       );
   }
 
@@ -87,16 +95,26 @@ class _LoginWebViewState extends ConsumerState<AccountWebview>
         ),
         SizedBox(
           height: height,
-          child: WebViewWidget(
-            gestureRecognizers: gestureRecognizers,
-            controller: controller,
+          child: ValueListenableBuilder(
+            valueListenable: isLoading,
+            builder: (_, value, __) {
+              if (value) {
+                return const Center(
+                  child: CircularLoad(),
+                );
+              }
+
+              return WebViewWidget(
+                gestureRecognizers: gestureRecognizers,
+                controller: controller,
+              );
+            },
           ),
         ),
       ],
     );
   }
 }
-
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlOTg0NDA3LTEzODYtNGJjNS1iMjRlLTA4MzRmODg0YmY2YSIsIm5vbmNlIjoiYzVFTFNiRktDeWs9IiwiaWF0IjoxNzIyMTI1Nzk5fQ.VBro8NLtMKfa1CvbsejA-X5X6zZDxGzMAwklQ-z9Zo4
 
 //_ga_0X9JWXB87B=GS1.1.1722123958.1.1.1722126939.0.0.0; _ga=GA1.1.936181038.1722123959; osano_consentmanager=xxr_rKWQviEV88gL2ds9OvGrWbarxRK1i99V-xp-Ymp55aS63AZNF2wgqfkO8SfY1n7b3ZMG_ehMzSUYL5l3iAFVVNtmq2Z4QA5TGZAnGXeew7TnxoNXujCbAM5fbw-MiPi2hZ_9JNOGlSrE1aH4P2dUNFQ-XiFjr-8x6aicJ0HnOdT8lb6v163NVI4-S9F3ZgJLel0FHLrBDLq_vL3QzoS2cRtf6enu8_6vQCv_jkOfq3dqDle1M8D9dg7UefHkSyzvnFUpqXZJnwOUOTCjEyViLFKGlQdylZQuQChJ9c8=; osano_consentmanager_uuid=2d791ef6-3bb5-404d-8af9-9c76b20bc877

@@ -157,7 +157,7 @@ class _ShowItemsBundle extends StatelessWidget {
         ListView.builder(
           itemCount: weapons!.length,
           physics: weapons!.length > 4
-              ? const AlwaysScrollableScrollPhysics()
+              ? const BouncingScrollPhysics()
               : const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemBuilder: (_, index) {
@@ -191,8 +191,7 @@ class _ShowItemsBundle extends StatelessWidget {
                     style: textTitle,
                     textAlign: TextAlign.right,
                   ),
-                  if (index != live.storeUser!.infoItemStores!.length - 1)
-                    const DividerCustom()
+                  if (index != weapons!.length - 1) const DividerCustom(),
                 ],
               ),
             );

@@ -84,9 +84,4 @@ class LiveState {
       wallet: wallet ?? this.wallet,
     );
   }
-
-  @override
-  String toString() {
-    return 'LiveState(partyUser: isLoading: $isLoading, storeUser: $storeUser, wallet: $wallet)';
-  }
 }

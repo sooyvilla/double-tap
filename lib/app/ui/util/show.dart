@@ -9,6 +9,7 @@ void showModal(
 }) async {
   showModalBottomSheet(
       context: context,
+      scrollControlDisabledMaxHeightRatio: 0.9,
       isDismissible: isDismissible ?? true,
       isScrollControlled: true,
       builder: (context) {

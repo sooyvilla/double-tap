@@ -44,23 +44,23 @@ class _CheckUpdateSectionState extends ConsumerState<CheckUpdateSection> {
           children: [
             Row(
               children: [
-                Expanded(
-                  child: ButtonPrimary(
-                    text: language.settings.checkerSection.checkUpdatesButton,
-                    onPressed: () {
-                      ref
-                          .read(settingsCheckerProvider.notifier)
-                          .checkPatchUpdates();
-                    },
+                if (!settingsCheckerState.isUpdateAvailable)
+                  Expanded(
+                    child: ButtonPrimary(
+                      text: language.settings.checkerSection.checkUpdatesButton,
+                      onPressed: () {
+                        ref
+                            .read(settingsCheckerProvider.notifier)
+                            .checkPatchUpdates();
+                      },
+                    ),
                   ),
-                ),
                 if (settingsCheckerState.isUpdateAvailable)
                   Expanded(
                     child: Bounce(
                       infinite: true,
                       child: TextWithPadding(
                         text: language.settings.checkerSection.newVersion,
-                        zeroPadding: true,
                         style: textNormal.copyWith(color: Colors.greenAccent),
                       ),
                     ),
