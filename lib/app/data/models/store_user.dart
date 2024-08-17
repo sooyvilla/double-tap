@@ -1,48 +1,21 @@
 import 'dart:convert';
 
-import 'package:double_tap/app/data/models/weapons.dart';
-
 class StoreUser {
-  final FeaturedBundle? featuredBundle;
-  final SkinsPanelLayout? skinsPanelLayout;
-  final UpgradeCurrencyStore? upgradeCurrencyStore;
-  final AccessoryStore? accessoryStore;
-  final List<PluginStore>? pluginStores;
-  final List<Weapon>? infoItemStores;
-  final List<BundleInfo>? bundleInfos;
-  final List<Weapon>? bundleItems;
+  FeaturedBundle? featuredBundle;
+  SkinsPanelLayout? skinsPanelLayout;
+  UpgradeCurrencyStore? upgradeCurrencyStore;
+  BonusStore? bonusStore;
+  AccessoryStore? accessoryStore;
+  List<PluginStore>? pluginStores;
 
   StoreUser({
     this.featuredBundle,
     this.skinsPanelLayout,
     this.upgradeCurrencyStore,
+    this.bonusStore,
     this.accessoryStore,
     this.pluginStores,
-    this.infoItemStores,
-    this.bundleInfos,
-    this.bundleItems,
   });
-
-  StoreUser copyWith({
-    FeaturedBundle? featuredBundle,
-    SkinsPanelLayout? skinsPanelLayout,
-    UpgradeCurrencyStore? upgradeCurrencyStore,
-    AccessoryStore? accessoryStore,
-    List<PluginStore>? pluginStores,
-    List<Weapon>? infoItemStore,
-    List<BundleInfo>? bundleInfo,
-    List<Weapon>? bundleItems,
-  }) =>
-      StoreUser(
-        featuredBundle: featuredBundle ?? this.featuredBundle,
-        skinsPanelLayout: skinsPanelLayout ?? this.skinsPanelLayout,
-        upgradeCurrencyStore: upgradeCurrencyStore ?? this.upgradeCurrencyStore,
-        accessoryStore: accessoryStore ?? this.accessoryStore,
-        pluginStores: pluginStores ?? this.pluginStores,
-        infoItemStores: infoItemStore ?? infoItemStores,
-        bundleInfos: bundleInfo ?? bundleInfos,
-        bundleItems: bundleItems ?? this.bundleItems,
-      );
 
   factory StoreUser.fromRawJson(String str) =>
       StoreUser.fromJson(json.decode(str));
@@ -59,6 +32,9 @@ class StoreUser {
         upgradeCurrencyStore: json['UpgradeCurrencyStore'] == null
             ? null
             : UpgradeCurrencyStore.fromJson(json['UpgradeCurrencyStore']),
+        bonusStore: json['BonusStore'] == null
+            ? null
+            : BonusStore.fromJson(json['BonusStore']),
         accessoryStore: json['AccessoryStore'] == null
             ? null
             : AccessoryStore.fromJson(json['AccessoryStore']),
@@ -72,6 +48,7 @@ class StoreUser {
         'FeaturedBundle': featuredBundle?.toJson(),
         'SkinsPanelLayout': skinsPanelLayout?.toJson(),
         'UpgradeCurrencyStore': upgradeCurrencyStore?.toJson(),
+        'BonusStore': bonusStore?.toJson(),
         'AccessoryStore': accessoryStore?.toJson(),
         'PluginStores': pluginStores == null
             ? []
@@ -80,28 +57,15 @@ class StoreUser {
 }
 
 class AccessoryStore {
-  final List<AccessoryStoreOffer>? accessoryStoreOffers;
-  final int? accessoryStoreRemainingDurationInSeconds;
-  final String? storefrontId;
+  List<AccessoryStoreOffer>? accessoryStoreOffers;
+  int? accessoryStoreRemainingDurationInSeconds;
+  String? storefrontId;
 
   AccessoryStore({
     this.accessoryStoreOffers,
     this.accessoryStoreRemainingDurationInSeconds,
     this.storefrontId,
   });
-
-  AccessoryStore copyWith({
-    List<AccessoryStoreOffer>? accessoryStoreOffers,
-    int? accessoryStoreRemainingDurationInSeconds,
-    String? storefrontId,
-  }) =>
-      AccessoryStore(
-        accessoryStoreOffers: accessoryStoreOffers ?? this.accessoryStoreOffers,
-        accessoryStoreRemainingDurationInSeconds:
-            accessoryStoreRemainingDurationInSeconds ??
-                this.accessoryStoreRemainingDurationInSeconds,
-        storefrontId: storefrontId ?? this.storefrontId,
-      );
 
   factory AccessoryStore.fromRawJson(String str) =>
       AccessoryStore.fromJson(json.decode(str));
@@ -129,22 +93,13 @@ class AccessoryStore {
 }
 
 class AccessoryStoreOffer {
-  final Offer? offer;
-  final String? contractId;
+  Offer? offer;
+  String? contractId;
 
   AccessoryStoreOffer({
     this.offer,
     this.contractId,
   });
-
-  AccessoryStoreOffer copyWith({
-    Offer? offer,
-    String? contractId,
-  }) =>
-      AccessoryStoreOffer(
-        offer: offer ?? this.offer,
-        contractId: contractId ?? this.contractId,
-      );
 
   factory AccessoryStoreOffer.fromRawJson(String str) =>
       AccessoryStoreOffer.fromJson(json.decode(str));
@@ -164,11 +119,11 @@ class AccessoryStoreOffer {
 }
 
 class Offer {
-  final String? offerId;
-  final bool? isDirectPurchase;
-  final DateTime? startDate;
-  final Cost? cost;
-  final List<Reward>? rewards;
+  String? offerId;
+  bool? isDirectPurchase;
+  DateTime? startDate;
+  Cost? cost;
+  List<Reward>? rewards;
 
   Offer({
     this.offerId,
@@ -177,21 +132,6 @@ class Offer {
     this.cost,
     this.rewards,
   });
-
-  Offer copyWith({
-    String? offerId,
-    bool? isDirectPurchase,
-    DateTime? startDate,
-    Cost? cost,
-    List<Reward>? rewards,
-  }) =>
-      Offer(
-        offerId: offerId ?? this.offerId,
-        isDirectPurchase: isDirectPurchase ?? this.isDirectPurchase,
-        startDate: startDate ?? this.startDate,
-        cost: cost ?? this.cost,
-        rewards: rewards ?? this.rewards,
-      );
 
   factory Offer.fromRawJson(String str) => Offer.fromJson(json.decode(str));
 
@@ -222,20 +162,11 @@ class Offer {
 }
 
 class Cost {
-  final int? the85Ca954A41F2Ce949B458Ca3Dd39A00D;
+  int? the85Ca954A41F2Ce949B458Ca3Dd39A00D;
 
   Cost({
     this.the85Ca954A41F2Ce949B458Ca3Dd39A00D,
   });
-
-  Cost copyWith({
-    int? the85Ca954A41F2Ce949B458Ca3Dd39A00D,
-  }) =>
-      Cost(
-        the85Ca954A41F2Ce949B458Ca3Dd39A00D:
-            the85Ca954A41F2Ce949B458Ca3Dd39A00D ??
-                this.the85Ca954A41F2Ce949B458Ca3Dd39A00D,
-      );
 
   factory Cost.fromRawJson(String str) => Cost.fromJson(json.decode(str));
 
@@ -253,26 +184,15 @@ class Cost {
 }
 
 class Reward {
-  final String? itemTypeId;
-  final String? itemId;
-  final int? quantity;
+  String? itemTypeId;
+  String? itemId;
+  int? quantity;
 
   Reward({
     this.itemTypeId,
     this.itemId,
     this.quantity,
   });
-
-  Reward copyWith({
-    String? itemTypeId,
-    String? itemId,
-    int? quantity,
-  }) =>
-      Reward(
-        itemTypeId: itemTypeId ?? this.itemTypeId,
-        itemId: itemId ?? this.itemId,
-        quantity: quantity ?? this.quantity,
-      );
 
   factory Reward.fromRawJson(String str) => Reward.fromJson(json.decode(str));
 
@@ -291,28 +211,164 @@ class Reward {
       };
 }
 
+class BonusStore {
+  List<BonusStoreOffer>? bonusStoreOffers;
+  int? bonusStoreRemainingDurationInSeconds;
+  int? bonusStoreSecondsSinceItStarted;
+
+  BonusStore({
+    this.bonusStoreOffers,
+    this.bonusStoreRemainingDurationInSeconds,
+    this.bonusStoreSecondsSinceItStarted,
+  });
+
+  factory BonusStore.fromRawJson(String str) =>
+      BonusStore.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory BonusStore.fromJson(Map<String, dynamic> json) => BonusStore(
+        bonusStoreOffers: json['BonusStoreOffers'] == null
+            ? []
+            : List<BonusStoreOffer>.from(json['BonusStoreOffers']!
+                .map((x) => BonusStoreOffer.fromJson(x))),
+        bonusStoreRemainingDurationInSeconds:
+            json['BonusStoreRemainingDurationInSeconds'],
+        bonusStoreSecondsSinceItStarted:
+            json['BonusStoreSecondsSinceItStarted'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'BonusStoreOffers': bonusStoreOffers == null
+            ? []
+            : List<dynamic>.from(bonusStoreOffers!.map((x) => x.toJson())),
+        'BonusStoreRemainingDurationInSeconds':
+            bonusStoreRemainingDurationInSeconds,
+        'BonusStoreSecondsSinceItStarted': bonusStoreSecondsSinceItStarted,
+      };
+}
+
+class BonusStoreOffer {
+  String? bonusOfferId;
+  SingleItemStoreOfferElement? offer;
+  int? discountPercent;
+  TotalBaseCost? discountCosts;
+  bool? isSeen;
+
+  BonusStoreOffer({
+    this.bonusOfferId,
+    this.offer,
+    this.discountPercent,
+    this.discountCosts,
+    this.isSeen,
+  });
+
+  factory BonusStoreOffer.fromRawJson(String str) =>
+      BonusStoreOffer.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory BonusStoreOffer.fromJson(Map<String, dynamic> json) =>
+      BonusStoreOffer(
+        bonusOfferId: json['BonusOfferID'],
+        offer: json['Offer'] == null
+            ? null
+            : SingleItemStoreOfferElement.fromJson(json['Offer']),
+        discountPercent: json['DiscountPercent'],
+        discountCosts: json['DiscountCosts'] == null
+            ? null
+            : TotalBaseCost.fromJson(json['DiscountCosts']),
+        isSeen: json['IsSeen'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'BonusOfferID': bonusOfferId,
+        'Offer': offer?.toJson(),
+        'DiscountPercent': discountPercent,
+        'DiscountCosts': discountCosts?.toJson(),
+        'IsSeen': isSeen,
+      };
+}
+
+class TotalBaseCost {
+  int? cost;
+
+  TotalBaseCost({
+    this.cost,
+  });
+
+  factory TotalBaseCost.fromRawJson(String str) =>
+      TotalBaseCost.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory TotalBaseCost.fromJson(Map<String, dynamic> json) => TotalBaseCost(
+        cost:
+            json['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741':
+            cost,
+      };
+}
+
+class SingleItemStoreOfferElement {
+  String? offerId;
+  bool? isDirectPurchase;
+  DateTime? startDate;
+  TotalBaseCost? cost;
+  List<Reward>? rewards;
+
+  SingleItemStoreOfferElement({
+    this.offerId,
+    this.isDirectPurchase,
+    this.startDate,
+    this.cost,
+    this.rewards,
+  });
+
+  factory SingleItemStoreOfferElement.fromRawJson(String str) =>
+      SingleItemStoreOfferElement.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory SingleItemStoreOfferElement.fromJson(Map<String, dynamic> json) =>
+      SingleItemStoreOfferElement(
+        offerId: json['OfferID'],
+        isDirectPurchase: json['IsDirectPurchase'],
+        startDate: json['StartDate'] == null
+            ? null
+            : DateTime.parse(json['StartDate']),
+        cost:
+            json['Cost'] == null ? null : TotalBaseCost.fromJson(json['Cost']),
+        rewards: json['Rewards'] == null
+            ? []
+            : List<Reward>.from(
+                json['Rewards']!.map((x) => Reward.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'OfferID': offerId,
+        'IsDirectPurchase': isDirectPurchase,
+        'StartDate': startDate?.toIso8601String(),
+        'Cost': cost?.toJson(),
+        'Rewards': rewards == null
+            ? []
+            : List<dynamic>.from(rewards!.map((x) => x.toJson())),
+      };
+}
+
 class FeaturedBundle {
-  final Bundle? bundle;
-  final List<Bundle>? bundles;
-  final int? bundleRemainingDurationInSeconds;
+  Bundle? bundle;
+  List<Bundle>? bundles;
+  int? bundleRemainingDurationInSeconds;
 
   FeaturedBundle({
     this.bundle,
     this.bundles,
     this.bundleRemainingDurationInSeconds,
   });
-
-  FeaturedBundle copyWith({
-    Bundle? bundle,
-    List<Bundle>? bundles,
-    int? bundleRemainingDurationInSeconds,
-  }) =>
-      FeaturedBundle(
-        bundle: bundle ?? this.bundle,
-        bundles: bundles ?? this.bundles,
-        bundleRemainingDurationInSeconds: bundleRemainingDurationInSeconds ??
-            this.bundleRemainingDurationInSeconds,
-      );
 
   factory FeaturedBundle.fromRawJson(String str) =>
       FeaturedBundle.fromJson(json.decode(str));
@@ -339,16 +395,16 @@ class FeaturedBundle {
 }
 
 class Bundle {
-  final String? id;
-  final String? dataAssetId;
-  final String? currencyId;
-  final List<ItemElement>? items;
-  final List<ItemOffer>? itemOffers;
-  final TotalBaseCostClass? totalBaseCost;
-  final TotalBaseCostClass? totalDiscountedCost;
-  final double? totalDiscountPercent;
-  final int? durationRemainingInSeconds;
-  final bool? wholesaleOnly;
+  String? id;
+  String? dataAssetId;
+  String? currencyId;
+  List<ItemElement>? items;
+  List<ItemOffer>? itemOffers;
+  TotalBaseCost? totalBaseCost;
+  TotalBaseCost? totalDiscountedCost;
+  double? totalDiscountPercent;
+  int? durationRemainingInSeconds;
+  bool? wholesaleOnly;
 
   Bundle({
     this.id,
@@ -362,32 +418,6 @@ class Bundle {
     this.durationRemainingInSeconds,
     this.wholesaleOnly,
   });
-
-  Bundle copyWith({
-    String? id,
-    String? dataAssetId,
-    String? currencyId,
-    List<ItemElement>? items,
-    List<ItemOffer>? itemOffers,
-    TotalBaseCostClass? totalBaseCost,
-    TotalBaseCostClass? totalDiscountedCost,
-    double? totalDiscountPercent,
-    int? durationRemainingInSeconds,
-    bool? wholesaleOnly,
-  }) =>
-      Bundle(
-        id: id ?? this.id,
-        dataAssetId: dataAssetId ?? this.dataAssetId,
-        currencyId: currencyId ?? this.currencyId,
-        items: items ?? this.items,
-        itemOffers: itemOffers ?? this.itemOffers,
-        totalBaseCost: totalBaseCost ?? this.totalBaseCost,
-        totalDiscountedCost: totalDiscountedCost ?? this.totalDiscountedCost,
-        totalDiscountPercent: totalDiscountPercent ?? this.totalDiscountPercent,
-        durationRemainingInSeconds:
-            durationRemainingInSeconds ?? this.durationRemainingInSeconds,
-        wholesaleOnly: wholesaleOnly ?? this.wholesaleOnly,
-      );
 
   factory Bundle.fromRawJson(String str) => Bundle.fromJson(json.decode(str));
 
@@ -407,10 +437,10 @@ class Bundle {
                 json['ItemOffers']!.map((x) => ItemOffer.fromJson(x))),
         totalBaseCost: json['TotalBaseCost'] == null
             ? null
-            : TotalBaseCostClass.fromJson(json['TotalBaseCost']),
+            : TotalBaseCost.fromJson(json['TotalBaseCost']),
         totalDiscountedCost: json['TotalDiscountedCost'] == null
             ? null
-            : TotalBaseCostClass.fromJson(json['TotalDiscountedCost']),
+            : TotalBaseCost.fromJson(json['TotalDiscountedCost']),
         totalDiscountPercent: json['TotalDiscountPercent']?.toDouble(),
         durationRemainingInSeconds: json['DurationRemainingInSeconds'],
         wholesaleOnly: json['WholesaleOnly'],
@@ -435,10 +465,10 @@ class Bundle {
 }
 
 class ItemOffer {
-  final String? bundleItemOfferId;
-  final SingleItemStoreOfferElement? offer;
-  final double? discountPercent;
-  final TotalBaseCostClass? discountedCost;
+  String? bundleItemOfferId;
+  SingleItemStoreOfferElement? offer;
+  double? discountPercent;
+  TotalBaseCost? discountedCost;
 
   ItemOffer({
     this.bundleItemOfferId,
@@ -446,19 +476,6 @@ class ItemOffer {
     this.discountPercent,
     this.discountedCost,
   });
-
-  ItemOffer copyWith({
-    String? bundleItemOfferId,
-    SingleItemStoreOfferElement? offer,
-    double? discountPercent,
-    TotalBaseCostClass? discountedCost,
-  }) =>
-      ItemOffer(
-        bundleItemOfferId: bundleItemOfferId ?? this.bundleItemOfferId,
-        offer: offer ?? this.offer,
-        discountPercent: discountPercent ?? this.discountPercent,
-        discountedCost: discountedCost ?? this.discountedCost,
-      );
 
   factory ItemOffer.fromRawJson(String str) =>
       ItemOffer.fromJson(json.decode(str));
@@ -473,7 +490,7 @@ class ItemOffer {
         discountPercent: json['DiscountPercent']?.toDouble(),
         discountedCost: json['DiscountedCost'] == null
             ? null
-            : TotalBaseCostClass.fromJson(json['DiscountedCost']),
+            : TotalBaseCost.fromJson(json['DiscountedCost']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -484,104 +501,13 @@ class ItemOffer {
       };
 }
 
-class TotalBaseCostClass {
-  final int? cost;
-
-  TotalBaseCostClass({
-    this.cost,
-  });
-
-  TotalBaseCostClass copyWith({
-    int? the85Ad13F73D1B51289Eb27Cd8Ee0B5741,
-  }) =>
-      TotalBaseCostClass(
-        cost: the85Ad13F73D1B51289Eb27Cd8Ee0B5741 ?? cost,
-      );
-
-  factory TotalBaseCostClass.fromRawJson(String str) =>
-      TotalBaseCostClass.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory TotalBaseCostClass.fromJson(Map<String, dynamic> json) =>
-      TotalBaseCostClass(
-        cost: json['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'],
-      );
-
-  Map<String, dynamic> toJson() => {
-        '85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741': cost,
-      };
-}
-
-class SingleItemStoreOfferElement {
-  final String? offerId;
-  final bool? isDirectPurchase;
-  final DateTime? startDate;
-  final TotalBaseCostClass? cost;
-  final List<Reward>? rewards;
-
-  SingleItemStoreOfferElement({
-    this.offerId,
-    this.isDirectPurchase,
-    this.startDate,
-    this.cost,
-    this.rewards,
-  });
-
-  SingleItemStoreOfferElement copyWith({
-    String? offerId,
-    bool? isDirectPurchase,
-    DateTime? startDate,
-    TotalBaseCostClass? cost,
-    List<Reward>? rewards,
-  }) =>
-      SingleItemStoreOfferElement(
-        offerId: offerId ?? this.offerId,
-        isDirectPurchase: isDirectPurchase ?? this.isDirectPurchase,
-        startDate: startDate ?? this.startDate,
-        cost: cost ?? this.cost,
-        rewards: rewards ?? this.rewards,
-      );
-
-  factory SingleItemStoreOfferElement.fromRawJson(String str) =>
-      SingleItemStoreOfferElement.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory SingleItemStoreOfferElement.fromJson(Map<String, dynamic> json) =>
-      SingleItemStoreOfferElement(
-        offerId: json['OfferID'],
-        isDirectPurchase: json['IsDirectPurchase'],
-        startDate: json['StartDate'] == null
-            ? null
-            : DateTime.parse(json['StartDate']),
-        cost: json['Cost'] == null
-            ? null
-            : TotalBaseCostClass.fromJson(json['Cost']),
-        rewards: json['Rewards'] == null
-            ? []
-            : List<Reward>.from(
-                json['Rewards']!.map((x) => Reward.fromJson(x))),
-      );
-
-  Map<String, dynamic> toJson() => {
-        'OfferID': offerId,
-        'IsDirectPurchase': isDirectPurchase,
-        'StartDate': startDate?.toIso8601String(),
-        'Cost': cost?.toJson(),
-        'Rewards': rewards == null
-            ? []
-            : List<dynamic>.from(rewards!.map((x) => x.toJson())),
-      };
-}
-
 class ItemElement {
-  final ItemItem? item;
-  final int? basePrice;
-  final String? currencyId;
-  final double? discountPercent;
-  final int? discountedPrice;
-  final bool? isPromoItem;
+  ItemItem? item;
+  int? basePrice;
+  String? currencyId;
+  double? discountPercent;
+  int? discountedPrice;
+  bool? isPromoItem;
 
   ItemElement({
     this.item,
@@ -591,23 +517,6 @@ class ItemElement {
     this.discountedPrice,
     this.isPromoItem,
   });
-
-  ItemElement copyWith({
-    ItemItem? item,
-    int? basePrice,
-    String? currencyId,
-    double? discountPercent,
-    int? discountedPrice,
-    bool? isPromoItem,
-  }) =>
-      ItemElement(
-        item: item ?? this.item,
-        basePrice: basePrice ?? this.basePrice,
-        currencyId: currencyId ?? this.currencyId,
-        discountPercent: discountPercent ?? this.discountPercent,
-        discountedPrice: discountedPrice ?? this.discountedPrice,
-        isPromoItem: isPromoItem ?? this.isPromoItem,
-      );
 
   factory ItemElement.fromRawJson(String str) =>
       ItemElement.fromJson(json.decode(str));
@@ -634,26 +543,15 @@ class ItemElement {
 }
 
 class ItemItem {
-  final String? itemTypeId;
-  final String? itemId;
-  final int? amount;
+  String? itemTypeId;
+  String? itemId;
+  int? amount;
 
   ItemItem({
     this.itemTypeId,
     this.itemId,
     this.amount,
   });
-
-  ItemItem copyWith({
-    String? itemTypeId,
-    String? itemId,
-    int? amount,
-  }) =>
-      ItemItem(
-        itemTypeId: itemTypeId ?? this.itemTypeId,
-        itemId: itemId ?? this.itemId,
-        amount: amount ?? this.amount,
-      );
 
   factory ItemItem.fromRawJson(String str) =>
       ItemItem.fromJson(json.decode(str));
@@ -674,22 +572,13 @@ class ItemItem {
 }
 
 class PluginStore {
-  final String? pluginId;
-  final PluginOffers? pluginOffers;
+  String? pluginId;
+  PluginOffers? pluginOffers;
 
   PluginStore({
     this.pluginId,
     this.pluginOffers,
   });
-
-  PluginStore copyWith({
-    String? pluginId,
-    PluginOffers? pluginOffers,
-  }) =>
-      PluginStore(
-        pluginId: pluginId ?? this.pluginId,
-        pluginOffers: pluginOffers ?? this.pluginOffers,
-      );
 
   factory PluginStore.fromRawJson(String str) =>
       PluginStore.fromJson(json.decode(str));
@@ -710,23 +599,13 @@ class PluginStore {
 }
 
 class PluginOffers {
-  final List<StoreOffer>? storeOffers;
-  final int? remainingDurationInSeconds;
+  List<StoreOffer>? storeOffers;
+  int? remainingDurationInSeconds;
 
   PluginOffers({
     this.storeOffers,
     this.remainingDurationInSeconds,
   });
-
-  PluginOffers copyWith({
-    List<StoreOffer>? storeOffers,
-    int? remainingDurationInSeconds,
-  }) =>
-      PluginOffers(
-        storeOffers: storeOffers ?? this.storeOffers,
-        remainingDurationInSeconds:
-            remainingDurationInSeconds ?? this.remainingDurationInSeconds,
-      );
 
   factory PluginOffers.fromRawJson(String str) =>
       PluginOffers.fromJson(json.decode(str));
@@ -750,22 +629,13 @@ class PluginOffers {
 }
 
 class StoreOffer {
-  final PurchaseInformation? purchaseInformation;
-  final List<SubOffer>? subOffers;
+  PurchaseInformation? purchaseInformation;
+  List<SubOffer>? subOffers;
 
   StoreOffer({
     this.purchaseInformation,
     this.subOffers,
   });
-
-  StoreOffer copyWith({
-    PurchaseInformation? purchaseInformation,
-    List<SubOffer>? subOffers,
-  }) =>
-      StoreOffer(
-        purchaseInformation: purchaseInformation ?? this.purchaseInformation,
-        subOffers: subOffers ?? this.subOffers,
-      );
 
   factory StoreOffer.fromRawJson(String str) =>
       StoreOffer.fromJson(json.decode(str));
@@ -791,16 +661,16 @@ class StoreOffer {
 }
 
 class PurchaseInformation {
-  final String? dataAssetId;
-  final String? offerId;
-  final DateTime? startDate;
-  final String? primaryCurrencyId;
-  final TotalBaseCostClass? cost;
-  final TotalBaseCostClass? discountedCost;
-  final int? discountedPercentage;
-  final List<Reward>? rewards;
-  final List<dynamic>? additionalContext;
-  final bool? wholesaleOnly;
+  String? dataAssetId;
+  String? offerId;
+  DateTime? startDate;
+  String? primaryCurrencyId;
+  TotalBaseCost? cost;
+  TotalBaseCost? discountedCost;
+  int? discountedPercentage;
+  List<Reward>? rewards;
+  List<dynamic>? additionalContext;
+  bool? wholesaleOnly;
 
   PurchaseInformation({
     this.dataAssetId,
@@ -815,31 +685,6 @@ class PurchaseInformation {
     this.wholesaleOnly,
   });
 
-  PurchaseInformation copyWith({
-    String? dataAssetId,
-    String? offerId,
-    DateTime? startDate,
-    String? primaryCurrencyId,
-    TotalBaseCostClass? cost,
-    TotalBaseCostClass? discountedCost,
-    int? discountedPercentage,
-    List<Reward>? rewards,
-    List<dynamic>? additionalContext,
-    bool? wholesaleOnly,
-  }) =>
-      PurchaseInformation(
-        dataAssetId: dataAssetId ?? this.dataAssetId,
-        offerId: offerId ?? this.offerId,
-        startDate: startDate ?? this.startDate,
-        primaryCurrencyId: primaryCurrencyId ?? this.primaryCurrencyId,
-        cost: cost ?? this.cost,
-        discountedCost: discountedCost ?? this.discountedCost,
-        discountedPercentage: discountedPercentage ?? this.discountedPercentage,
-        rewards: rewards ?? this.rewards,
-        additionalContext: additionalContext ?? this.additionalContext,
-        wholesaleOnly: wholesaleOnly ?? this.wholesaleOnly,
-      );
-
   factory PurchaseInformation.fromRawJson(String str) =>
       PurchaseInformation.fromJson(json.decode(str));
 
@@ -853,12 +698,11 @@ class PurchaseInformation {
             ? null
             : DateTime.parse(json['StartDate']),
         primaryCurrencyId: json['PrimaryCurrencyID'],
-        cost: json['Cost'] == null
-            ? null
-            : TotalBaseCostClass.fromJson(json['Cost']),
+        cost:
+            json['Cost'] == null ? null : TotalBaseCost.fromJson(json['Cost']),
         discountedCost: json['DiscountedCost'] == null
             ? null
-            : TotalBaseCostClass.fromJson(json['DiscountedCost']),
+            : TotalBaseCost.fromJson(json['DiscountedCost']),
         discountedPercentage: json['DiscountedPercentage'],
         rewards: json['Rewards'] == null
             ? []
@@ -889,18 +733,11 @@ class PurchaseInformation {
 }
 
 class SubOffer {
-  final PurchaseInformation? purchaseInformation;
+  PurchaseInformation? purchaseInformation;
 
   SubOffer({
     this.purchaseInformation,
   });
-
-  SubOffer copyWith({
-    PurchaseInformation? purchaseInformation,
-  }) =>
-      SubOffer(
-        purchaseInformation: purchaseInformation ?? this.purchaseInformation,
-      );
 
   factory SubOffer.fromRawJson(String str) =>
       SubOffer.fromJson(json.decode(str));
@@ -919,29 +756,15 @@ class SubOffer {
 }
 
 class SkinsPanelLayout {
-  final List<String>? singleItemOffers;
-  final List<SingleItemStoreOfferElement>? singleItemStoreOffers;
-  final int? singleItemOffersRemainingDurationInSeconds;
+  List<String>? singleItemOffers;
+  List<SingleItemStoreOfferElement>? singleItemStoreOffers;
+  int? singleItemOffersRemainingDurationInSeconds;
 
   SkinsPanelLayout({
     this.singleItemOffers,
     this.singleItemStoreOffers,
     this.singleItemOffersRemainingDurationInSeconds,
   });
-
-  SkinsPanelLayout copyWith({
-    List<String>? singleItemOffers,
-    List<SingleItemStoreOfferElement>? singleItemStoreOffers,
-    int? singleItemOffersRemainingDurationInSeconds,
-  }) =>
-      SkinsPanelLayout(
-        singleItemOffers: singleItemOffers ?? this.singleItemOffers,
-        singleItemStoreOffers:
-            singleItemStoreOffers ?? this.singleItemStoreOffers,
-        singleItemOffersRemainingDurationInSeconds:
-            singleItemOffersRemainingDurationInSeconds ??
-                this.singleItemOffersRemainingDurationInSeconds,
-      );
 
   factory SkinsPanelLayout.fromRawJson(String str) =>
       SkinsPanelLayout.fromJson(json.decode(str));
@@ -975,19 +798,11 @@ class SkinsPanelLayout {
 }
 
 class UpgradeCurrencyStore {
-  final List<UpgradeCurrencyOffer>? upgradeCurrencyOffers;
+  List<UpgradeCurrencyOffer>? upgradeCurrencyOffers;
 
   UpgradeCurrencyStore({
     this.upgradeCurrencyOffers,
   });
-
-  UpgradeCurrencyStore copyWith({
-    List<UpgradeCurrencyOffer>? upgradeCurrencyOffers,
-  }) =>
-      UpgradeCurrencyStore(
-        upgradeCurrencyOffers:
-            upgradeCurrencyOffers ?? this.upgradeCurrencyOffers,
-      );
 
   factory UpgradeCurrencyStore.fromRawJson(String str) =>
       UpgradeCurrencyStore.fromJson(json.decode(str));
@@ -1010,10 +825,10 @@ class UpgradeCurrencyStore {
 }
 
 class UpgradeCurrencyOffer {
-  final String? offerId;
-  final String? storefrontItemId;
-  final SingleItemStoreOfferElement? offer;
-  final double? discountedPercent;
+  String? offerId;
+  String? storefrontItemId;
+  SingleItemStoreOfferElement? offer;
+  double? discountedPercent;
 
   UpgradeCurrencyOffer({
     this.offerId,
@@ -1021,19 +836,6 @@ class UpgradeCurrencyOffer {
     this.offer,
     this.discountedPercent,
   });
-
-  UpgradeCurrencyOffer copyWith({
-    String? offerId,
-    String? storefrontItemId,
-    SingleItemStoreOfferElement? offer,
-    double? discountedPercent,
-  }) =>
-      UpgradeCurrencyOffer(
-        offerId: offerId ?? this.offerId,
-        storefrontItemId: storefrontItemId ?? this.storefrontItemId,
-        offer: offer ?? this.offer,
-        discountedPercent: discountedPercent ?? this.discountedPercent,
-      );
 
   factory UpgradeCurrencyOffer.fromRawJson(String str) =>
       UpgradeCurrencyOffer.fromJson(json.decode(str));
@@ -1057,11 +859,6 @@ class UpgradeCurrencyOffer {
         'DiscountedPercent': discountedPercent,
       };
 }
-
-InfoItemStore infoItemStoreFromJson(String str) =>
-    InfoItemStore.fromJson(json.decode(str));
-
-String infoItemStoreToJson(InfoItemStore data) => json.encode(data.toJson());
 
 class InfoItemStore {
   final int? status;

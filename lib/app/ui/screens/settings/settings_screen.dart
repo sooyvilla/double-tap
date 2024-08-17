@@ -60,6 +60,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           AccountSection(),
           NewSettingsSection(),
           CheckUpdateSection(),
+          SizedBox(height: 100),
         ],
       ),
     );

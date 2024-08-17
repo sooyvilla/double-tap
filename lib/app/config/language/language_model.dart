@@ -36,12 +36,14 @@ class LanguageModel {
 class AlertSession {
   final String title;
   final String desc;
-  final String button;
+  final String buttonLogin;
+  final String buttonOk;
 
   AlertSession({
     required this.title,
     required this.desc,
-    required this.button,
+    required this.buttonLogin,
+    required this.buttonOk,
   });
 
   factory AlertSession.fromRawJson(String str) =>
@@ -52,13 +54,15 @@ class AlertSession {
   factory AlertSession.fromJson(Map<String, dynamic> json) => AlertSession(
         title: json['title'],
         desc: json['desc'],
-        button: json['button'],
+        buttonLogin: json['button-login'],
+        buttonOk: json['button-ok'],
       );
 
   Map<String, dynamic> toJson() => {
         'title': title,
         'desc': desc,
-        'button': button,
+        'button-login': buttonLogin,
+        'button-ok': buttonOk,
       };
 }
 
@@ -215,7 +219,7 @@ class AccountSection {
   final String loginButton;
   final String logoutButton;
   final String logoutAllButton;
-  final AlertSession infoButton;
+  final InfoButton infoButton;
 
   AccountSection({
     required this.title,
@@ -237,7 +241,7 @@ class AccountSection {
         loginButton: json['login-button'],
         logoutButton: json['logout-button'],
         logoutAllButton: json['logout-all-button'],
-        infoButton: AlertSession.fromJson(json['info-button']),
+        infoButton: InfoButton.fromJson(json['info-button']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -250,11 +254,41 @@ class AccountSection {
       };
 }
 
+class InfoButton {
+  final String title;
+  final String desc;
+  final String button;
+
+  InfoButton({
+    required this.title,
+    required this.desc,
+    required this.button,
+  });
+
+  factory InfoButton.fromRawJson(String str) =>
+      InfoButton.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory InfoButton.fromJson(Map<String, dynamic> json) => InfoButton(
+        title: json['title'],
+        desc: json['desc'],
+        button: json['button'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'desc': desc,
+        'button': button,
+      };
+}
+
 class CheckerSection {
   final String title;
   final String checkUpdatesButton;
   final String versionApp;
   final String newVersion;
+  final String installedVersion;
   final String restarButton;
   final String installButton;
   final Notes notes;
@@ -264,6 +298,7 @@ class CheckerSection {
     required this.checkUpdatesButton,
     required this.versionApp,
     required this.newVersion,
+    required this.installedVersion,
     required this.restarButton,
     required this.installButton,
     required this.notes,
@@ -279,6 +314,7 @@ class CheckerSection {
         checkUpdatesButton: json['check-updates-button'],
         versionApp: json['version-app'],
         newVersion: json['new-version'],
+        installedVersion: json['installed-version'],
         restarButton: json['restar-button'],
         installButton: json['install-button'],
         notes: Notes.fromJson(json['notes']),
@@ -289,6 +325,7 @@ class CheckerSection {
         'check-updates-button': checkUpdatesButton,
         'version-app': versionApp,
         'new-version': newVersion,
+        'installed-version': installedVersion,
         'restar-button': restarButton,
         'install-button': installButton,
         'notes': notes.toJson(),

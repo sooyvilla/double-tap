@@ -1,8 +1,9 @@
 import 'dart:developer';
 
-import 'package:double_tap/app/data/models/store_user.dart';
 import 'package:double_tap/app/data/repositories/valorant_api_live_repository.dart';
+import 'package:double_tap/app/domain/entities/store.dart';
 import 'package:double_tap/app/domain/entities/wallet.dart';
+import 'package:double_tap/app/domain/mappers/store_mapper.dart';
 import 'package:double_tap/app/ui/providers/live/live_provider_imp.dart';
 import 'package:double_tap/app/ui/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,7 +33,8 @@ class LiveProvider extends StateNotifier<LiveState> {
   Future<void> getStore() async {
     try {
       final response = await datasource.getStore();
-      state = state.copyWith(storeUser: response);
+      final store = await StoreMapper.mapper(response);
+      state = state.copyWith(storeUser: store);
     } catch (e) {
       ref.read(settingsAccountProvider.notifier).validateSession();
       log('getStore error: $e', name: 'getStore error');
@@ -63,7 +65,7 @@ class LiveProvider extends StateNotifier<LiveState> {
 
 class LiveState {
   final bool isLoading;
-  final StoreUser? storeUser;
+  final Store? storeUser;
   final Wallet? wallet;
 
   LiveState({
@@ -75,7 +77,7 @@ class LiveState {
   LiveState copyWith({
     bool? isLoading,
     int? coldDown,
-    StoreUser? storeUser,
+    Store? storeUser,
     Wallet? wallet,
   }) {
     return LiveState(

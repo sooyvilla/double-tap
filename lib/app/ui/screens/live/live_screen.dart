@@ -23,14 +23,21 @@ class LiveScreen extends ConsumerWidget {
             .read(settingsAccountProvider.notifier)
             .setShowAlertStatusSesion(false);
         showAlertCupertino(
-            context, language.alertSession.title, language.alertSession.desc,
-            onPressed: () {
-          Navigator.of(context).pop();
-          showModal(
-            context,
-            const AccountWebview(),
-          );
-        });
+          context,
+          language.alertSession.title,
+          language.alertSession.desc,
+          onPressedPrimary: () {
+            Navigator.of(context).pop();
+            showModal(
+              context,
+              const AccountWebview(),
+            );
+          },
+          onPressedSecondary: () async {
+            ref.read(liveProvider.notifier).cleanAll();
+            await ref.read(settingsAccountProvider.notifier).logoutAll();
+          },
+        );
       });
     }
 

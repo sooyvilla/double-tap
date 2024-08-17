@@ -18,8 +18,7 @@ class AccountWebview extends ConsumerStatefulWidget {
   ConsumerState<AccountWebview> createState() => _LoginWebViewState();
 }
 
-class _LoginWebViewState extends ConsumerState<AccountWebview>
-    with DioConfigService {
+class _LoginWebViewState extends ConsumerState<AccountWebview> {
   late WebViewController controller;
   final isLoading = ValueNotifier(true);
 

@@ -24,6 +24,7 @@ const Map<String, dynamic> en = {
       "check-updates-button": "Check updates",
       "version-app": "Version app:",
       "new-version": "New version available",
+      "installed-version": "Installed version",
       "restar-button": "Restart app",
       "install-button": "Install",
       "notes": {
@@ -67,7 +68,8 @@ const Map<String, dynamic> en = {
   "alert-session": {
     "title": "Action required",
     "desc": "You must log in",
-    "button": "Ok"
+    "button-login": "Login",
+    "button-ok": "Ok"
   }
 };
 
@@ -93,6 +95,7 @@ const Map<String, dynamic> es = {
       "check-updates-button": "Buscar actualizaciones",
       "version-app": "Versión de la aplicación: ",
       "new-version": "Nueva versión disponible",
+      "installed-version": "Versión instalada",
       "restar-button": "Reiniciar aplicación",
       "install-button": "Instalar",
       "notes": {
@@ -111,6 +114,7 @@ const Map<String, dynamic> es = {
       "change-language-title": "Cambiar idioma"
     },
     "options-section": {
+      "title": "Opciones",
       "language-option": {
         "title": "Idioma",
         "text": "Idioma actual",
@@ -135,6 +139,7 @@ const Map<String, dynamic> es = {
   "alert-session": {
     "title": "Acción necesaria",
     "desc": "Debes iniciar sesión",
-    "button": "Aceptar"
+    "button-login": "Iniciar sesión",
+    "button-ok": "Aceptar"
   }
 };

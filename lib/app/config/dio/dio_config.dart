@@ -9,3 +9,7 @@ mixin DioConfigService {
     headers: {'Content-Type': 'application/json'},
   ));
 }
+
+class DioImplement with DioConfigService {
+  Dio get dioImp => dio;
+}

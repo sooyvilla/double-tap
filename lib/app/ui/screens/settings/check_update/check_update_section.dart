@@ -58,9 +58,11 @@ class _CheckUpdateSectionState extends ConsumerState<CheckUpdateSection> {
                 if (settingsCheckerState.isUpdateAvailable)
                   Expanded(
                     child: Bounce(
-                      infinite: true,
+                      infinite: !settingsCheckerState.isUpdateDownloaded,
                       child: TextWithPadding(
-                        text: language.settings.checkerSection.newVersion,
+                        text: !settingsCheckerState.isUpdateDownloaded
+                            ? language.settings.checkerSection.newVersion
+                            : language.settings.checkerSection.installedVersion,
                         style: textNormal.copyWith(color: Colors.greenAccent),
                       ),
                     ),

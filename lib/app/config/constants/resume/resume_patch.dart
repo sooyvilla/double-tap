@@ -24,12 +24,19 @@ Future<List<ResumePatch>> getNotesPatch() async {
   final packageInfo = await PackageInfo.fromPlatform();
   final resumeList = <ResumePatch>[
     ResumePatch(
+      title: 'Implementacion del mercado nocturno',
+      desc: 'Se agrego el mercado nocturno y se implementaron algunas mejoras',
+      date: '2024-08-16',
+      isImportant: false,
+      version: '${packageInfo.version}+3',
+    ),
+    ResumePatch(
       title: 'Mejoras graficas',
       desc:
           'Se cambio la manera en ver los idiomas, se modifico los items de los packs, se arreglo y implemento carga en el login',
       date: '2024-08-08',
       isImportant: false,
-      version: '${packageInfo.version}+2',
+      version: '2.0.0+2',
     ),
     ResumePatch(
       title: 'Mejoras en el texto',
@@ -37,7 +44,7 @@ Future<List<ResumePatch>> getNotesPatch() async {
       date: '2024-08-08',
       isImportant: false,
       isInactive: true,
-      version: '${packageInfo.version}+1',
+      version: '2.0.0+1',
     ),
     ResumePatch(
       title: 'Mejoras en el loading',
@@ -46,7 +53,7 @@ Future<List<ResumePatch>> getNotesPatch() async {
       date: '2024-07-29',
       isImportant: false,
       isInactive: true,
-      version: packageInfo.version,
+      version: '2.0.0',
     ),
     ResumePatch(
       title: 'Cambios en el login',

@@ -1,4 +1,5 @@
 import 'package:double_tap/app/ui/theme/theme.dart';
+import 'package:double_tap/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -83,7 +84,8 @@ void showModalCupertino(
 }
 
 Future<void> showAlertCupertino(BuildContext context, String title, String desc,
-    {void Function()? onPressed}) async {
+    {void Function()? onPressedPrimary,
+    void Function()? onPressedSecondary}) async {
   await showCupertinoDialog(
     context: context,
     builder: (context) {
@@ -98,15 +100,23 @@ Future<void> showAlertCupertino(BuildContext context, String title, String desc,
         ),
         actions: [
           CupertinoDialogAction(
-            child: const Text('Ok'),
+            child: Text(language.alertSession.buttonOk),
             onPressed: () {
-              if (onPressed != null) {
-                onPressed();
+              if (onPressedSecondary != null) {
+                onPressedSecondary();
                 return;
               }
               Navigator.of(context).pop();
             },
           ),
+          if (onPressedPrimary != null)
+            CupertinoDialogAction(
+              child: Text(language.alertSession.buttonLogin),
+              onPressed: () {
+                onPressedPrimary();
+                Navigator.of(context).pop();
+              },
+            ),
         ],
       );
     },

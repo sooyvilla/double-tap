@@ -51,6 +51,7 @@ class ContainerGreyColumn extends StatelessWidget {
           ),
           child: Column(
             crossAxisAlignment: crossAxisAlignment,
+            mainAxisSize: MainAxisSize.min,
             children: _buildChildrenWithDividers(),
           ),
         ),
