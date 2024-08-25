@@ -17,7 +17,7 @@ class WeaponSingle {
   String typeId;
   String id;
   int price;
-  String? discount;
+  int? discount;
   String? displayIcon;
   String? displayVideo;
   WeaponSingle({
