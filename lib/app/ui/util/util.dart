@@ -1,2 +1,2 @@
 export 'show.dart';
-export 'format_numbers.dart';
+export '../extensions/format_numbers.dart';

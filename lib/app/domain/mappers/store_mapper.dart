@@ -1,7 +1,5 @@
 import 'dart:developer';
-
 import 'package:double_tap/app/config/config.dart';
-
 import '../../data/models/store_user.dart';
 import '../../data/models/weapons.dart';
 import '../entities/store.dart';
@@ -11,163 +9,107 @@ class StoreMapper {
   static WeaponsSkins? _allSkinsInfo;
 
   static Future<Store> mapper(StoreUser storeUser) async {
-    final storeWeapons =
-        storeUser.skinsPanelLayout!.singleItemStoreOffers!.map((e) async {
-      final weapon = await _getWeaponInfo(e.offerId!, 'e.rewards![0].itemId!');
-      final displayIcon = weapon?.displayIcon ??
-          weapon?.levels
-              ?.firstWhere(
-                (level) => level.uuid == e.offerId,
-                orElse: () => Level(),
-              )
-              .displayIcon;
-      final displayVideo = weapon?.levels?.last.streamedVideo ??
-          weapon?.levels?.reversed
-              .firstWhere(
-                (level) => level.streamedVideo != null,
-                orElse: () => Level(),
-              )
-              .streamedVideo;
-      final name = weapon?.displayName ??
-          weapon?.levels
-              ?.firstWhere(
-                (level) => level.uuid == e.offerId,
-                orElse: () => Level(),
-              )
-              .displayName;
-      return WeaponSingle(
-        name: name ?? '',
-        typeId: e.rewards?.first.itemTypeId ?? '',
-        id: e.offerId ?? '',
-        price: e.cost?.cost ?? 0,
-        displayIcon: displayIcon,
-        discount: null,
-        displayVideo: displayVideo,
-      );
-    }).toList();
-    final packs = storeUser.featuredBundle!.bundles?.map((e) async {
+    _allSkinsInfo ??= await _fetchAllSkinsInfo();
+
+    final storeWeapons = await _mapStoreWeapons(storeUser);
+    final packs = await _mapPacks(storeUser);
+    final nightMarket = await _mapNightMarket(storeUser);
+
+    _allSkinsInfo = null;
+
+    return Store(
+      timeStore: storeUser
+          .skinsPanelLayout!.singleItemOffersRemainingDurationInSeconds!,
+      store: storeWeapons,
+      packs: packs,
+      nightMarket: nightMarket,
+    );
+  }
+
+  static Future<List<WeaponSingle>> _mapStoreWeapons(
+      StoreUser storeUser) async {
+    return Future.wait(storeUser.skinsPanelLayout!.singleItemStoreOffers!
+        .map((e) => _createWeaponSingle(e)));
+  }
+
+  static Future<List<Packs>> _mapPacks(StoreUser storeUser) async {
+    return Future.wait(storeUser.featuredBundle!.bundles!.map((e) async {
       final pack = await _getBundle(e.dataAssetId!);
-      final weapons = e.itemOffers?.map((e) async {
-        if (getTypeItem(e.offer!.rewards!.first.itemTypeId!) ==
-            TypeItemName.skins) {
-          final weapon =
-              await _getWeaponInfo(e.offer!.offerId!, 'e.rewards![0].itemId!');
-          final displayIcon = weapon?.displayIcon ??
-              weapon?.levels
-                  ?.firstWhere(
-                    (level) => level.uuid == e.offer!.offerId!,
-                    orElse: () => Level(),
-                  )
-                  .displayIcon;
-          final displayVideo = weapon?.levels?.last.streamedVideo ??
-              weapon?.levels?.reversed
-                  .firstWhere(
-                    (level) => level.streamedVideo != null,
-                    orElse: () => Level(),
-                  )
-                  .streamedVideo;
-          final name = weapon?.displayName ??
-              weapon?.levels
-                  ?.firstWhere(
-                    (level) => level.uuid == e.offer!.offerId!,
-                    orElse: () => Level(),
-                  )
-                  .displayName;
-          return WeaponSingle(
-            name: name ?? '',
-            typeId: e.offer!.rewards?.first.itemTypeId ?? '',
-            id: e.offer!.offerId ?? '',
-            price: e.offer!.cost?.cost ?? 0,
-            displayIcon: displayIcon,
-            displayVideo: displayVideo,
-          );
-        }
-      });
-      final listWeaponPack = await Future.wait(weapons!);
+      final weapons = await Future.wait(
+        e.itemOffers!
+            .where((e) =>
+                getTypeItem(e.offer!.rewards!.first.itemTypeId!) ==
+                TypeItemName.skins)
+            .map((e) => _createWeaponSingle(e.offer!)),
+      );
       return Packs(
         name: pack?.data?.displayName ?? '',
         id: pack?.data?.uuid ?? '',
         price: e.totalDiscountedCost!.cost!,
         discount: e.totalDiscountPercent!,
         displayIcon: pack?.data?.displayIcon ?? '',
-        weapons: listWeaponPack.where((e) => e != null).toList(),
+        weapons: weapons.whereType<WeaponSingle>().toList(),
         timePack: e.durationRemainingInSeconds ?? 0,
       );
-    }).toList();
-    final nightMarket = storeUser.bonusStore?.bonusStoreOffers?.map((el) async {
-      final e = el.offer!;
-      final weapon = await _getWeaponInfo(e.offerId!, 'e.rewards![0].itemId!');
-      final displayIcon = weapon?.displayIcon ??
-          weapon?.levels
-              ?.firstWhere(
-                (level) => level.uuid == e.offerId,
-                orElse: () => Level(),
-              )
-              .displayIcon;
-      final displayVideo = weapon?.levels?.last.streamedVideo ??
-          weapon?.levels?.reversed
-              .firstWhere(
-                (level) => level.streamedVideo != null,
-                orElse: () => Level(),
-              )
-              .streamedVideo;
-      final name = weapon?.displayName ??
-          weapon?.levels
-              ?.firstWhere(
-                (level) => level.uuid == e.offerId,
-                orElse: () => Level(),
-              )
-              .displayName;
-      return WeaponSingle(
-        name: name ?? '',
-        typeId: e.rewards?.first.itemTypeId ?? '',
-        id: e.offerId ?? '',
-        price: e.cost?.cost ?? 0,
-        displayIcon: displayIcon,
-        discount: null,
-        displayVideo: displayVideo,
-      );
-    }).toList();
-    _allSkinsInfo = null;
-    return Store(
-      timeStore: storeUser
-          .skinsPanelLayout!.singleItemOffersRemainingDurationInSeconds!,
-      store: await Future.wait(storeWeapons),
-      packs: await Future.wait(packs!),
-      nightMarket: await Future.wait(nightMarket?.toList() ?? []),
+    }));
+  }
+
+  static Future<List<WeaponSingle>> _mapNightMarket(StoreUser storeUser) async {
+    return Future.wait(storeUser.bonusStore?.bonusStoreOffers?.map((el) async {
+          return _createWeaponSingle(
+            el.offer!,
+            nighMarketDiscount: el.discountPercent,
+          );
+        }).toList() ??
+        []);
+  }
+
+  static Future<WeaponSingle> _createWeaponSingle(
+    SingleItemStoreOfferElement e, {
+    int? nighMarketDiscount,
+  }) async {
+    final weapon = await _getWeaponInfo(e.offerId!);
+    final displayIcon = weapon?.displayIcon ??
+        weapon?.levels
+            ?.firstWhere(
+              (level) => level.uuid == e.offerId!,
+              orElse: () => Level(),
+            )
+            .displayIcon;
+    final displayVideo = weapon?.levels?.last.streamedVideo ??
+        weapon?.levels?.reversed
+            .firstWhere(
+              (level) => level.streamedVideo != null,
+              orElse: () => Level(),
+            )
+            .streamedVideo;
+    final name = weapon?.displayName ??
+        weapon?.levels
+            ?.firstWhere(
+              (level) => level.uuid == e.offerId!,
+              orElse: () => Level(),
+            )
+            .displayName;
+
+    return WeaponSingle(
+      name: name ?? '',
+      typeId: e.rewards!.first.itemTypeId!,
+      id: e.offerId!,
+      price: e.cost?.cost ?? 0,
+      displayIcon: displayIcon,
+      discount: nighMarketDiscount,
+      displayVideo: displayVideo,
     );
   }
 
-  static Future<String?> _getDisplayIcon(String id, String itemId) async {
+  static Future<WeaponsSkins?> _fetchAllSkinsInfo() async {
     try {
-      if (_allSkinsInfo == null) {
-        final response =
-            await _dio.get('https://valorant-api.com/v1/weapons/skins');
-        if (response.statusCode != 200) throw Exception('Server error');
-        _allSkinsInfo = WeaponsSkins.fromJson(response.data);
-      }
-
-      if (_allSkinsInfo!.data!.isEmpty) {
-        throw Exception('No have weapons found');
-      }
-
-      for (var weapon in _allSkinsInfo!.data!) {
-        final Level? level = weapon.levels
-            ?.firstWhere((level) => level.uuid == id, orElse: () => Level());
-        if (level!.uuid != null) {
-          return weapon.levels!.map((e) {
-            if (weapon.displayIcon != null) {
-              return weapon.displayIcon;
-            }
-            if (e.displayIcon != null) {
-              return e.displayIcon;
-            }
-          }).toString();
-        }
-      }
-      return null;
+      final response =
+          await _dio.get('https://valorant-api.com/v1/weapons/skins');
+      if (response.statusCode != 200) throw Exception('Server error');
+      return WeaponsSkins.fromJson(response.data);
     } catch (e) {
-      log('mapper store error: $e', name: 'Mapper Store');
+      log('Error fetching all skins info: $e', name: 'fetchAllSkinsInfo');
       rethrow;
     }
   }
@@ -184,29 +126,15 @@ class StoreMapper {
     }
   }
 
-  static Future<Weapon?> _getWeaponInfo(String id, String itemId) async {
+  static Future<Weapon?> _getWeaponInfo(String id) async {
     try {
-      if (_allSkinsInfo == null) {
-        final response =
-            await _dio.get('https://valorant-api.com/v1/weapons/skins');
-        if (response.statusCode != 200) throw Exception('Server error');
-        _allSkinsInfo = WeaponsSkins.fromJson(response.data);
-      }
-
-      if (_allSkinsInfo!.data!.isEmpty) {
-        throw Exception('No have weapons found');
-      }
-
-      for (var weapon in _allSkinsInfo!.data!) {
-        final Level? level = weapon.levels
-            ?.firstWhere((level) => level.uuid == id, orElse: () => Level());
-        if (level!.uuid != null) {
-          return weapon;
-        }
-      }
-      return null;
+      _allSkinsInfo ??= await _fetchAllSkinsInfo();
+      return _allSkinsInfo?.data?.firstWhere(
+        (weapon) => weapon.levels!.any((level) => level.uuid == id),
+        orElse: () => Weapon(),
+      );
     } catch (e) {
-      log('getWeaponWithLevelId error: $e', name: 'getWeaponWithLevelId error');
+      log('getWeaponInfo error: $e', name: 'getWeaponInfo error');
       rethrow;
     }
   }

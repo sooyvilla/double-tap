@@ -12,7 +12,9 @@ const _kAndroidUserAgent =
     'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36';
 
 class AccountWebview extends ConsumerStatefulWidget {
-  const AccountWebview({super.key});
+  const AccountWebview({super.key, this.isShow = true});
+
+  final bool isShow;
 
   @override
   ConsumerState<AccountWebview> createState() => _LoginWebViewState();
@@ -21,10 +23,12 @@ class AccountWebview extends ConsumerStatefulWidget {
 class _LoginWebViewState extends ConsumerState<AccountWebview> {
   late WebViewController controller;
   final isLoading = ValueNotifier(true);
+  late bool isShow;
 
   @override
   void initState() {
     super.initState();
+    isShow = widget.isShow;
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setUserAgent(_kAndroidUserAgent)
@@ -42,6 +46,7 @@ class _LoginWebViewState extends ConsumerState<AccountWebview> {
           if (request.url.contains('about:blank')) {
             setState(() {
               isLoading.value = false;
+              isShow = true;
             });
             return NavigationDecision.navigate;
           }
@@ -67,50 +72,53 @@ class _LoginWebViewState extends ConsumerState<AccountWebview> {
       Factory(() => EagerGestureRecognizer())
     };
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Stack(
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.close,
-                size: 33,
+    return Visibility(
+      visible: isShow,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.close,
+                  size: 33,
+                ),
+                onPressed: () => Navigator.pop(context),
               ),
-              onPressed: () => Navigator.pop(context),
-            ),
-            const Positioned(
-              child: Align(
-                alignment: Alignment.center,
-                child: TextWithPadding(
-                  text: 'Login Riot Games',
-                  textAlign: TextAlign.center,
-                  style: textTitle,
+              const Positioned(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: TextWithPadding(
+                    text: 'Login Riot Games',
+                    textAlign: TextAlign.center,
+                    style: textTitle,
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: height,
-          child: ValueListenableBuilder(
-            valueListenable: isLoading,
-            builder: (_, value, __) {
-              if (value) {
-                return const Center(
-                  child: CircularLoad(),
-                );
-              }
-
-              return WebViewWidget(
-                gestureRecognizers: gestureRecognizers,
-                controller: controller,
-              );
-            },
+            ],
           ),
-        ),
-      ],
+          SizedBox(
+            height: height,
+            child: ValueListenableBuilder(
+              valueListenable: isLoading,
+              builder: (_, value, __) {
+                if (value) {
+                  return const Center(
+                    child: CircularLoad(),
+                  );
+                }
+
+                return WebViewWidget(
+                  gestureRecognizers: gestureRecognizers,
+                  controller: controller,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

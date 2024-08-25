@@ -1,5 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:animate_do/animate_do.dart';
 import 'package:double_tap/app/domain/entities/store.dart';
+import 'package:double_tap/app/ui/extensions/color_raimbow.dart';
 import 'package:double_tap/app/ui/screens/live/store/video_player.dart';
 import 'package:double_tap/app/ui/util/util.dart';
 import 'package:flutter/material.dart';
@@ -41,85 +43,13 @@ class StoreSection extends ConsumerWidget {
               settings.isLoggedIn) ...[
             _WalletWidget(live: live),
             _PacksStoreWidget(live: live),
-            _StoreTab(live: live),
+            _ItemsStoreWidget(live: live),
+            if (live.storeUser!.nightMarket != null)
+              _ItemsStoreWidget(live: live, isNightMarket: true),
           ],
         ],
       ),
     );
-  }
-}
-
-class _StoreTab extends StatefulWidget {
-  const _StoreTab({required this.live});
-
-  final LiveState live;
-
-  @override
-  State<_StoreTab> createState() => __StoreTabState();
-}
-
-class __StoreTabState extends State<_StoreTab> with TickerProviderStateMixin {
-  late LiveState live;
-  late TabController _tabController;
-  late PageController _pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    live = widget.live;
-    _tabController = TabController(length: 2, vsync: this);
-    _pageController = PageController();
-
-    // Sync tabController with pageController
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        _pageController.animateToPage(
-          _tabController.index,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.ease,
-        );
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        TabBar(
-          indicatorSize: TabBarIndicatorSize.tab,
-          dividerColor: Colors.transparent,
-          controller: _tabController,
-          tabs: [
-            Tab(text: language.live.storeSection.title),
-            const Tab(text: 'Night Market'),
-          ],
-        ),
-        SizedBox(
-          height: _tabController.index == 0 ? height * 0.79 : height * 1.17,
-          child: PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              _tabController.animateTo(index);
-              setState(() {});
-            },
-            children: [
-              _ItemsStoreWidget(live: live),
-              _ItemsStoreWidget(live: live, isNightMarket: true),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    _pageController.dispose();
-    super.dispose();
   }
 }
 
@@ -146,7 +76,10 @@ class _PacksStoreWidget extends StatelessWidget {
             onTap: () {
               showModal(
                 context,
-                _ShowItemsBundle(weapons: item.weapons, live: live),
+                _ItemsStoreWidget(
+                  live: null,
+                  packsWeapon: item.weapons,
+                ),
               );
             },
             child: Container(
@@ -206,41 +139,85 @@ class _PacksStoreWidget extends StatelessWidget {
   }
 }
 
-class _ShowItemsBundle extends StatelessWidget {
-  const _ShowItemsBundle({
-    required this.weapons,
+class _ItemsStoreWidget extends StatefulWidget {
+  const _ItemsStoreWidget({
     required this.live,
+    this.packsWeapon,
+    this.isNightMarket = false,
   });
 
-  final List<WeaponSingle?>? weapons;
-  final LiveState live;
+  final LiveState? live;
+  final bool isNightMarket;
+  final List<WeaponSingle?>? packsWeapon;
+
+  @override
+  State<_ItemsStoreWidget> createState() => _ItemsStoreWidgetState();
+}
+
+class _ItemsStoreWidgetState extends State<_ItemsStoreWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late List<WeaponSingle?>? weapons;
+
+  @override
+  void initState() {
+    super.initState();
+    _setItems();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(
+        reverse: true,
+      );
+  }
+
+  void _setItems() {
+    if (widget.isNightMarket) {
+      weapons = widget.live!.storeUser!.nightMarket;
+    } else if (widget.packsWeapon != null) {
+      weapons = widget.packsWeapon;
+    } else {
+      weapons = widget.live!.storeUser!.store;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height * 0.85;
-
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextWithPadding(
-            text: language.live.storeSection.titleModal,
-            style: textTitle,
-          ),
-          SizedBox(
-            height: weapons!.length > 5 ? height : null,
-            child: ListView.builder(
+    final height = MediaQuery.of(context).size.height;
+    return SizedBox(
+      height: widget.packsWeapon != null && weapons!.length > 3
+          ? height * 0.9
+          : null,
+      child: SingleChildScrollView(
+        physics: widget.packsWeapon != null
+            ? const BouncingScrollPhysics()
+            : const NeverScrollableScrollPhysics(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (widget.isNightMarket)
+              TextWithPadding(
+                text: 'Night Market',
+                style: textTitle.copyWith(fontSize: 30),
+              ).withAnimatedRainbowEffect(
+                animation: _controller,
+              ),
+            ListView.builder(
               itemCount: weapons!.length,
-              physics: weapons!.length > 4
-                  ? const BouncingScrollPhysics()
-                  : const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (_, index) {
-                final item = weapons![index];
+                final item = weapons![index]!;
                 return GestureDetector(
                   onTap: () {
                     if (item.displayVideo == null) return;
-
                     showModal(
                       context,
                       VideoPlayerWidget(
@@ -253,99 +230,52 @@ class _ShowItemsBundle extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if (widget.isNightMarket)
+                            TextWithPadding(
+                              text:
+                                  '${item.price.formatNumber()} - ${item.discount}%',
+                              style: textNormal.copyWith(color: Colors.red),
+                            ),
+                          Image.asset(
+                            'assets/valorant/wallet/vp-modified.png',
+                            width: 25,
+                            color: Colors.white,
+                          ),
+                          TextWithPadding(
+                            text: item.price.formatNumber(
+                              discountPercentage:
+                                  widget.isNightMarket ? item.discount : null,
+                            ),
+                            left: widget.isNightMarket ? 12 : 12,
+                            style: textNormal,
+                          ),
+                        ],
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: Image.network(
-                          item?.displayIcon! ?? '',
+                          item.displayIcon ?? '',
                           width: double.infinity,
                           height: 70,
                         ),
                       ),
                       TextWithPadding(
-                        text: item!.name,
+                        text: item.name,
                         style: textTitle,
                         textAlign: TextAlign.right,
                       ),
-                      if (index != weapons!.length - 1) const DividerCustom(),
+                      if (index != weapons!.length - 1) const DividerCustom()
                     ],
                   ),
                 );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    );
-  }
-}
-
-class _ItemsStoreWidget extends StatelessWidget {
-  const _ItemsStoreWidget({
-    required this.live,
-    this.isNightMarket = false,
-  });
-
-  final LiveState live;
-  final bool isNightMarket;
-
-  @override
-  Widget build(BuildContext context) {
-    final weapons =
-        isNightMarket ? live.storeUser!.nightMarket : live.storeUser!.store;
-
-    return ListView.builder(
-      itemCount: weapons!.length,
-      padding: EdgeInsets.zero,
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemBuilder: (_, index) {
-        final item = weapons[index];
-        return GestureDetector(
-          onTap: () {
-            if (item.displayVideo == null) return;
-            showModal(
-              context,
-              VideoPlayerWidget(
-                url: item.displayVideo!,
-                text: item.name,
-              ),
-            );
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Image.asset(
-                    'assets/valorant/wallet/vp-modified.png',
-                    width: 25,
-                  ),
-                  TextWithPadding(
-                    text: item.price.formatNumber(),
-                    style: textNormal,
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Image.network(
-                  item.displayIcon ?? '',
-                  width: double.infinity,
-                  height: 70,
-                ),
-              ),
-              TextWithPadding(
-                text: item.name,
-                style: textTitle,
-                textAlign: TextAlign.right,
-              ),
-              if (index != weapons.length - 1) const DividerCustom()
-            ],
-          ),
-        );
-      },
     );
   }
 }
@@ -381,6 +311,7 @@ class _WalletWidget extends ConsumerWidget {
                   Image.asset(
                     'assets/valorant/wallet/vp-modified.png',
                     width: 25,
+                    color: Colors.white,
                   ),
                   TextWithPadding(
                     text: live.wallet!.valorantPoints!.formatNumber(),
@@ -394,6 +325,7 @@ class _WalletWidget extends ConsumerWidget {
                   Image.asset(
                     'assets/valorant/wallet/rp-modified.png',
                     width: 25,
+                    color: Colors.white,
                   ),
                   TextWithPadding(
                     text: live.wallet!.radianitePoints!.formatNumber(),

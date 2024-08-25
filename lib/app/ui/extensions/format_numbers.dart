@@ -1,6 +1,13 @@
 extension FormatNumbers on int {
-  String formatNumber() {
-    return toString().replaceAllMapped(
+  String formatNumber({int? discountPercentage}) {
+    double number = toDouble();
+
+    // Si se proporciona un porcentaje de descuento, aplicar el descuento
+    if (discountPercentage != null) {
+      number = number - (number * (discountPercentage / 100));
+    }
+
+    return number.toStringAsFixed(0).replaceAllMapped(
         RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (match) => '${match[1]},');
   }
 }

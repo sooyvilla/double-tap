@@ -9,24 +9,25 @@ void showModal(
   bool? isDismissible,
 }) async {
   showModalBottomSheet(
-      context: context,
-      scrollControlDisabledMaxHeightRatio: 0.9,
-      isDismissible: isDismissible ?? true,
-      isScrollControlled: true,
-      builder: (context) {
-        return GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Container(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
-            decoration: BoxDecoration(
-              color: primaryGrey,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: widget,
+    context: context,
+    scrollControlDisabledMaxHeightRatio: 0.9,
+    isDismissible: isDismissible ?? true,
+    isScrollControlled: true,
+    builder: (context) {
+      return GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Container(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          decoration: BoxDecoration(
+            color: primaryGrey,
+            borderRadius: BorderRadius.circular(10),
           ),
-        );
-      });
+          child: widget,
+        ),
+      );
+    },
+  );
 }
 
 void showModalCupertino(
@@ -83,9 +84,14 @@ void showModalCupertino(
   );
 }
 
-Future<void> showAlertCupertino(BuildContext context, String title, String desc,
-    {void Function()? onPressedPrimary,
-    void Function()? onPressedSecondary}) async {
+Future<void> showAlertCupertino(
+  BuildContext context,
+  String title,
+  String desc, {
+  void Function()? onPressedPrimary,
+  void Function()? onPressedSecondary,
+  bool seconButton = false,
+}) async {
   await showCupertinoDialog(
     context: context,
     builder: (context) {
@@ -109,11 +115,14 @@ Future<void> showAlertCupertino(BuildContext context, String title, String desc,
               Navigator.of(context).pop();
             },
           ),
-          if (onPressedPrimary != null)
+          if (seconButton)
             CupertinoDialogAction(
               child: Text(language.alertSession.buttonLogin),
               onPressed: () {
-                onPressedPrimary();
+                if (onPressedPrimary != null) {
+                  onPressedPrimary();
+                  return;
+                }
                 Navigator.of(context).pop();
               },
             ),
