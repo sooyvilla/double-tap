@@ -44,7 +44,8 @@ class StoreSection extends ConsumerWidget {
             _WalletWidget(live: live),
             _PacksStoreWidget(live: live),
             _ItemsStoreWidget(live: live),
-            if (live.storeUser!.nightMarket != null)
+            if (live.storeUser?.nightMarket != null &&
+                live.storeUser!.nightMarket!.isNotEmpty)
               _ItemsStoreWidget(live: live, isNightMarket: true),
           ],
         ],
@@ -201,7 +202,7 @@ class _ItemsStoreWidgetState extends State<_ItemsStoreWidget>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (widget.isNightMarket)
+            if (widget.isNightMarket && widget.packsWeapon != null)
               TextWithPadding(
                 text: 'Night Market',
                 style: textTitle.copyWith(fontSize: 30),
