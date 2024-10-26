@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class GradientWidget extends StatelessWidget {
-  const GradientWidget({super.key});
+  final bool roundedTopCorners;
+
+  const GradientWidget({super.key, this.roundedTopCorners = false});
 
   @override
   Widget build(BuildContext context) {
@@ -9,10 +11,9 @@ class GradientWidget extends StatelessWidget {
       child: Align(
         alignment: Alignment.topCenter,
         child: Container(
-          height: MediaQuery.of(context).size.height /
-              2, // Ajusta esto según el tamaño de la imagen
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
+          height: MediaQuery.of(context).size.height / 2,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
@@ -20,6 +21,12 @@ class GradientWidget extends StatelessWidget {
                 Colors.transparent,
               ],
             ),
+            borderRadius: roundedTopCorners
+                ? const BorderRadius.only(
+                    topLeft: Radius.circular(10.0),
+                    topRight: Radius.circular(10.0),
+                  )
+                : null,
           ),
         ),
       ),

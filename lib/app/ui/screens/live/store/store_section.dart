@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:animate_do/animate_do.dart';
 import 'package:double_tap/app/domain/entities/store.dart';
 import 'package:double_tap/app/ui/extensions/color_raimbow.dart';
@@ -63,34 +62,47 @@ class _PacksStoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200,
-      child: ListView.builder(
-        itemCount: live.storeUser?.packs?.length ?? 0,
-        padding: EdgeInsets.zero,
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        itemBuilder: (_, index) {
-          final item = live.storeUser!.packs![index];
+    final size = MediaQuery.of(context).size;
 
-          return GestureDetector(
-            onTap: () {
-              showModal(
-                context,
-                _ItemsStoreWidget(
-                  live: null,
-                  packsWeapon: item.weapons,
-                ),
-              );
-            },
-            child: Container(
+    return Container(
+      height: size.height * 0.23,
+      margin: const EdgeInsets.all(4),
+      child: CarouselView(
+        itemSnapping: true,
+        onTap: (index) {
+          final item = live.storeUser!.packs![index];
+          showModal(
+            context,
+            _ItemsStoreWidget(
+              live: null,
+              packsWeapon: item.weapons,
+            ),
+          );
+        },
+        itemExtent: size.width * 0.85,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        backgroundColor: Colors.transparent,
+        children: List.generate(
+          live.storeUser?.packs?.length ?? 0,
+          (index) {
+            final item = live.storeUser!.packs![0];
+
+            return Container(
               padding: const EdgeInsets.all(8),
               child: Stack(
                 children: [
-                  Image.network(
-                    item.displayIcon,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      item.displayIcon,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                  const GradientWidget(),
+                  const GradientWidget(
+                    roundedTopCorners: true,
+                  ),
                   Positioned(
                     left: 12,
                     child: Column(
@@ -132,9 +144,9 @@ class _PacksStoreWidget extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
