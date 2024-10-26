@@ -214,7 +214,7 @@ class _ItemsStoreWidgetState extends State<_ItemsStoreWidget>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (widget.isNightMarket && widget.packsWeapon != null)
+            if (widget.isNightMarket)
               TextWithPadding(
                 text: 'Night Market',
                 style: textTitle.copyWith(fontSize: 30),
