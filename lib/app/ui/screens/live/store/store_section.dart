@@ -87,7 +87,7 @@ class _PacksStoreWidget extends StatelessWidget {
         children: List.generate(
           live.storeUser?.packs?.length ?? 0,
           (index) {
-            final item = live.storeUser!.packs![0];
+            final item = live.storeUser!.packs![index];
 
             return Container(
               padding: const EdgeInsets.all(8),

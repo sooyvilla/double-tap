@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:double_tap/app/config/config.dart';
 import 'package:double_tap/app/ui/providers/settings/settings_provider.dart';
 import 'package:double_tap/app/ui/ui.dart';
@@ -45,6 +43,16 @@ class _LoginWebViewState extends ConsumerState<AccountWebview> {
 
             return NavigationDecision.prevent;
           }
+          if (request.url.contains('about:blank')) {
+            setState(() {
+              isLoading.value = false;
+              isShow = true;
+            });
+            return NavigationDecision.navigate;
+          }
+          setState(() {
+            isLoading.value = true;
+          });
 
           return NavigationDecision.navigate;
         },
@@ -91,9 +99,12 @@ class _LoginWebViewState extends ConsumerState<AccountWebview> {
               ),
             ],
           ),
-          WebViewWidget(
-            gestureRecognizers: gestureRecognizers,
-            controller: controller,
+          SizedBox(
+            height: height,
+            child: WebViewWidget(
+              gestureRecognizers: gestureRecognizers,
+              controller: controller,
+            ),
           ),
         ],
       ),

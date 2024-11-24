@@ -27,7 +27,7 @@ Future<List<ResumePatch>> getNotesPatch() async {
       title: 'Cambios visuales',
       desc: 'Se mejoro la forma en la que se muestran los packs de la tienda, correccion de errores',
       date: '2024-10-26',
-      isImportant: false,
+      isImportant: true,
       version: '${packageInfo.version}+1',
     ),
     ResumePatch(
